@@ -1,2 +1,9 @@
+# Build dir
 target
+
+# IDE
 .vscode
+
+# Quickfix output path
+store
+log
