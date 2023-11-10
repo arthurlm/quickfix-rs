@@ -1,0 +1,8 @@
+[package]
+name = "quickfix"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+quickfix-ffi = { path = "../quickfix-ffi" }
+thiserror = "1.0.50"

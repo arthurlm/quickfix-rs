@@ -8,8 +8,15 @@ To build:
     cd target
     cmake -DCMAKE_BUILD_TYPE=Release ..
     make
+
+To run C example:
+
     ./quickfix-bind/demo_basic_binding ../example/settings.ini
 
 To run rust FFI example:
 
     LD_LIBRARY_PATH=$(pwd)/target/quickfix-bind cargo r --example demo_basic_ffi -- example/settings.ini
+
+To run rust full binding example:
+
+    LD_LIBRARY_PATH=$(pwd)/target/quickfix-bind cargo r --example demo_basic -- example/settings.ini
