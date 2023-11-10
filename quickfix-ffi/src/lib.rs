@@ -62,8 +62,8 @@ extern "C" {
         settings: FixSessionSettings_t,
         logFactory: FixFileLogFactory_t,
     ) -> FixSocketAcceptor_t;
-    pub fn FixSocketAcceptor_start(obj: FixSocketAcceptor_t);
-    pub fn FixSocketAcceptor_stop(obj: FixSocketAcceptor_t);
+    pub fn FixSocketAcceptor_start(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    pub fn FixSocketAcceptor_stop(obj: FixSocketAcceptor_t) -> ffi::c_int;
     pub fn FixSocketAcceptor_delete(obj: FixSocketAcceptor_t);
 
 }

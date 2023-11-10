@@ -38,8 +38,8 @@ extern "C"
     void FixApplication_delete(FixApplication_t *obj);
 
     FixSocketAcceptor_t *FixSocketAcceptor_new(FixApplication_t *application, FixFileStoreFactory_t *storeFactory, FixSessionSettings_t *settings, FixFileLogFactory_t *logFactory);
-    void FixSocketAcceptor_start(FixSocketAcceptor_t *obj);
-    void FixSocketAcceptor_stop(FixSocketAcceptor_t *obj);
+    int FixSocketAcceptor_start(FixSocketAcceptor_t *obj);
+    int FixSocketAcceptor_stop(FixSocketAcceptor_t *obj);
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj);
 
 #ifdef __cplusplus

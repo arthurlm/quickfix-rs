@@ -1,5 +1,7 @@
 #include "quickfix_bind.h"
 
+#include <exception>
+
 #include <quickfix/FileStore.h>
 #include <quickfix/FileLog.h>
 #include <quickfix/SocketAcceptor.h>
@@ -75,7 +77,14 @@ extern "C"
     FixSessionSettings_t *
     FixSessionSettings_new(const char *configPath)
     {
-        return (FixSessionSettings_t *)(new FIX::SessionSettings(configPath));
+        try
+        {
+            return (FixSessionSettings_t *)(new FIX::SessionSettings(configPath));
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
     }
 
     void FixSessionSettings_delete(FixSessionSettings_t *obj)
@@ -94,7 +103,15 @@ extern "C"
             return NULL;
 
         auto fix_settings = *(FIX::SessionSettings *)(settings);
-        return (FixFileStoreFactory_t *)(new FIX::FileStoreFactory(fix_settings));
+
+        try
+        {
+            return (FixFileStoreFactory_t *)(new FIX::FileStoreFactory(fix_settings));
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
     }
 
     void FixFileStoreFactory_delete(FixFileStoreFactory_t *obj)
@@ -113,7 +130,15 @@ extern "C"
             return NULL;
 
         auto fix_settings = *(FIX::SessionSettings *)(settings);
-        return (FixFileLogFactory_t *)(new FIX::FileLogFactory(fix_settings));
+
+        try
+        {
+            return (FixFileLogFactory_t *)(new FIX::FileLogFactory(fix_settings));
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
     }
 
     void FixFileLogFactory_delete(FixFileLogFactory_t *obj)
@@ -130,7 +155,14 @@ extern "C"
         if (callbacks == nullptr)
             return NULL;
 
-        return (FixApplication_t *)(new ApplicationBind(callbacks));
+        try
+        {
+            return (FixApplication_t *)(new ApplicationBind(callbacks));
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
     }
 
     void FixApplication_delete(FixApplication_t *obj)
@@ -152,25 +184,48 @@ extern "C"
         auto fix_log_factory = *(FIX::FileLogFactory *)(logFactory);
         auto fix_settings = *(FIX::SessionSettings *)(settings);
 
-        return (FixSocketAcceptor_t *)(new FIX::SocketAcceptor(fix_application, fix_store_factory, fix_settings, fix_log_factory));
+        try
+        {
+            return (FixSocketAcceptor_t *)(new FIX::SocketAcceptor(fix_application, fix_store_factory, fix_settings, fix_log_factory));
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
     }
 
-    void FixSocketAcceptor_start(FixSocketAcceptor_t *obj)
+    int FixSocketAcceptor_start(FixSocketAcceptor_t *obj)
     {
         if (obj == nullptr)
-            return;
+            return -1;
 
         auto fix_obj = (FIX::SocketAcceptor *)(obj);
-        fix_obj->start();
+        try
+        {
+            fix_obj->start();
+        }
+        catch (std::exception &ex)
+        {
+            return -1;
+        }
+        return 0;
     }
 
-    void FixSocketAcceptor_stop(FixSocketAcceptor_t *obj)
+    int FixSocketAcceptor_stop(FixSocketAcceptor_t *obj)
     {
         if (obj == nullptr)
-            return;
+            return -1;
 
         auto fix_obj = (FIX::SocketAcceptor *)(obj);
-        fix_obj->stop();
+        try
+        {
+            fix_obj->stop();
+        }
+        catch (std::exception &ex)
+        {
+            return -1;
+        }
+        return 0;
     }
 
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj)
