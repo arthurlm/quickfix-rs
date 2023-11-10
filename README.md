@@ -12,4 +12,4 @@ To build:
 
 To run rust FFI example:
 
-    LD_LIBRARY_PATH=$(pwd)/target/quickfix-bind cargo r -- example/settings.ini
+    LD_LIBRARY_PATH=$(pwd)/target/quickfix-bind cargo r --example demo_basic_ffi -- example/settings.ini
