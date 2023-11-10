@@ -8,7 +8,7 @@ To build:
     cd target
     cmake -DCMAKE_BUILD_TYPE=Release ..
     make
-    ./quickfix-bind/quickfix_bind_tester ../example/settings.ini
+    ./quickfix-bind/demo_basic_binding ../example/settings.ini
 
 To run rust FFI example:
 
