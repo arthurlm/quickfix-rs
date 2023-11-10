@@ -60,14 +60,16 @@ fn main() {
 
     unsafe {
         println!(">> Creating resources");
-        let settings = FixSessionSettings_new(config_path.as_ptr());
-        let store_factory = FixFileStoreFactory_new(settings);
-        let log_factory = FixFileLogFactory_new(settings);
-        let application = FixApplication_new(std::ptr::addr_of!(callbacks));
-        let acceptor = FixSocketAcceptor_new(application, store_factory, settings, log_factory);
+        let settings = FixSessionSettings_new(config_path.as_ptr()).expect("Fail to load settings");
+        let store_factory = FixFileStoreFactory_new(settings).expect("Fail to build store factory");
+        let log_factory = FixFileLogFactory_new(settings).expect("Fail to build log factory");
+        let application =
+            FixApplication_new(std::ptr::addr_of!(callbacks)).expect("Fail to build application");
+        let acceptor = FixSocketAcceptor_new(application, store_factory, settings, log_factory)
+            .expect("Fail to build acceptor");
 
         println!(">> Acceptor START");
-        FixSocketAcceptor_start(acceptor);
+        assert_eq!(FixSocketAcceptor_start(acceptor), 0);
 
         println!(">> Press Q to exit");
         loop {
@@ -78,7 +80,7 @@ fn main() {
         }
 
         println!(">> Acceptor STOP");
-        FixSocketAcceptor_stop(acceptor);
+        assert_eq!(FixSocketAcceptor_stop(acceptor), 0);
 
         println!(">> Cleaning resources");
         // FixSocketAcceptor_delete(acceptor); // FIXME
