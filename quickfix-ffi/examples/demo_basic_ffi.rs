@@ -1,38 +1,50 @@
 use std::{
     env,
-    ffi::CString,
+    ffi::{self, CString},
     io::{stdin, Read},
     process::exit,
 };
 
 use quickfix_ffi::*;
 
-extern "C" fn custom_on_create(session: FixSessionID_t) {
-    println!("customOnCreate: {session:?}");
+extern "C" fn custom_on_create(data: *const ffi::c_void, session: FixSessionID_t) {
+    println!("customOnCreate: {data:?} {session:?}");
 }
 
-extern "C" fn custom_on_logon(session: FixSessionID_t) {
-    println!("customOnLogon:{session:?}");
+extern "C" fn custom_on_logon(data: *const ffi::c_void, session: FixSessionID_t) {
+    println!("customOnLogon: {data:?} {session:?}");
 }
 
-extern "C" fn custom_on_logout(session: FixSessionID_t) {
-    println!("customOnLogout:{session:?}");
+extern "C" fn custom_on_logout(data: *const ffi::c_void, session: FixSessionID_t) {
+    println!("customOnLogout: {data:?} {session:?}");
 }
 
-extern "C" fn custom_to_admin(msg: FixMessage_t, session: FixSessionID_t) {
-    println!("customToAdmin: {msg:?} {session:?}");
+extern "C" fn custom_to_admin(
+    data: *const ffi::c_void,
+    msg: FixMessage_t,
+    session: FixSessionID_t,
+) {
+    println!("customToAdmin: {data:?} {msg:?} {session:?}");
 }
 
-extern "C" fn custom_to_app(msg: FixMessage_t, session: FixSessionID_t) {
-    println!("customToApp: {msg:?} {session:?}");
+extern "C" fn custom_to_app(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
+    println!("customToApp: {data:?} {msg:?} {session:?}");
 }
 
-extern "C" fn custom_from_admin(msg: FixMessage_t, session: FixSessionID_t) {
-    println!("customFromAdmin: {msg:?} {session:?}");
+extern "C" fn custom_from_admin(
+    data: *const ffi::c_void,
+    msg: FixMessage_t,
+    session: FixSessionID_t,
+) {
+    println!("customFromAdmin: {data:?} {msg:?} {session:?}");
 }
 
-extern "C" fn custom_from_app(msg: FixMessage_t, session: FixSessionID_t) {
-    println!("customFromApp: {msg:?} {session:?}");
+extern "C" fn custom_from_app(
+    data: *const ffi::c_void,
+    msg: FixMessage_t,
+    session: FixSessionID_t,
+) {
+    println!("customFromApp: {data:?} {msg:?} {session:?}");
 }
 
 fn main() {
@@ -64,7 +76,8 @@ fn main() {
         let store_factory = FixFileStoreFactory_new(settings).expect("Fail to build store factory");
         let log_factory = FixFileLogFactory_new(settings).expect("Fail to build log factory");
         let application =
-            FixApplication_new(std::ptr::addr_of!(callbacks)).expect("Fail to build application");
+            FixApplication_new(0xFEED as *const ffi::c_void, std::ptr::addr_of!(callbacks))
+                .expect("Fail to build application");
         let acceptor = FixSocketAcceptor_new(application, store_factory, settings, log_factory)
             .expect("Fail to build acceptor");
 

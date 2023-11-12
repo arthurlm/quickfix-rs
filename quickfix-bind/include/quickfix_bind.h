@@ -16,30 +16,30 @@ extern "C"
 
     typedef struct FixApplicationCallbacks
     {
-        void (*onCreate)(const FixSessionID_t *session);
-        void (*onLogon)(const FixSessionID_t *session);
-        void (*onLogout)(const FixSessionID_t *session);
-        void (*toAdmin)(FixMessage_t *msg, const FixSessionID_t *session);
-        void (*toApp)(FixMessage_t *msg, const FixSessionID_t *session);
-        void (*fromAdmin)(const FixMessage_t *msg, const FixSessionID_t *session);
-        void (*fromApp)(const FixMessage_t *msg, const FixSessionID_t *session);
+        void (*onCreate)(const void *data, const FixSessionID_t *session);
+        void (*onLogon)(const void *data, const FixSessionID_t *session);
+        void (*onLogout)(const void *data, const FixSessionID_t *session);
+        void (*toAdmin)(const void *data, const FixMessage_t *msg, const FixSessionID_t *session);
+        void (*toApp)(const void *data, const FixMessage_t *msg, const FixSessionID_t *session);
+        void (*fromAdmin)(const void *data, const FixMessage_t *msg, const FixSessionID_t *session);
+        void (*fromApp)(const void *data, const FixMessage_t *msg, const FixSessionID_t *session);
     } FixApplicationCallbacks_t;
 
     FixSessionSettings_t *FixSessionSettings_new(const char *configPath);
     void FixSessionSettings_delete(FixSessionSettings_t *obj);
 
-    FixFileStoreFactory_t *FixFileStoreFactory_new(FixSessionSettings_t *settings);
+    FixFileStoreFactory_t *FixFileStoreFactory_new(const FixSessionSettings_t *settings);
     void FixFileStoreFactory_delete(FixFileStoreFactory_t *obj);
 
-    FixFileLogFactory_t *FixFileLogFactory_new(FixSessionSettings_t *settings);
+    FixFileLogFactory_t *FixFileLogFactory_new(const FixSessionSettings_t *settings);
     void FixFileLogFactory_delete(FixFileLogFactory_t *obj);
 
-    FixApplication_t *FixApplication_new(FixApplicationCallbacks_t *callbacks);
+    FixApplication_t *FixApplication_new(const void *data, const FixApplicationCallbacks_t *callbacks);
     void FixApplication_delete(FixApplication_t *obj);
 
-    FixSocketAcceptor_t *FixSocketAcceptor_new(FixApplication_t *application, FixFileStoreFactory_t *storeFactory, FixSessionSettings_t *settings, FixFileLogFactory_t *logFactory);
-    int FixSocketAcceptor_start(FixSocketAcceptor_t *obj);
-    int FixSocketAcceptor_stop(FixSocketAcceptor_t *obj);
+    FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory);
+    int FixSocketAcceptor_start(const FixSocketAcceptor_t *obj);
+    int FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj);
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj);
 
 #ifdef __cplusplus

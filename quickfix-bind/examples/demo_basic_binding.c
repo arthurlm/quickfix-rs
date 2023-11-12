@@ -4,39 +4,39 @@
 
 #include "quickfix_bind.h"
 
-static void customOnCreate(const FixSessionID_t *session)
+static void customOnCreate(const void *data, const FixSessionID_t *session)
 {
-    printf("customOnCreate: %p\n", session);
+    printf("customOnCreate: %p %p\n", data, session);
 }
 
-static void customOnLogon(const FixSessionID_t *session)
+static void customOnLogon(const void *data, const FixSessionID_t *session)
 {
-    printf("customOnLogon: %p\n", session);
+    printf("customOnLogon: %p %p\n", data, session);
 }
 
-static void customOnLogout(const FixSessionID_t *session)
+static void customOnLogout(const void *data, const FixSessionID_t *session)
 {
-    printf("customOnLogout: %p\n", session);
+    printf("customOnLogout: %p %p\n", data, session);
 }
 
-static void customToAdmin(FixMessage_t *msg, const FixSessionID_t *session)
+static void customToAdmin(const void *data, const FixMessage_t *msg, const FixSessionID_t *session)
 {
-    printf("customToAdmin: %p %p\n", msg, session);
+    printf("customToAdmin: %p %p %p\n", data, msg, session);
 }
 
-static void customToApp(FixMessage_t *msg, const FixSessionID_t *session)
+static void customToApp(const void *data, const FixMessage_t *msg, const FixSessionID_t *session)
 {
-    printf("customToApp:  %p %p\n", msg, session);
+    printf("customToApp: %p %p %p\n", data, msg, session);
 }
 
-static void customFromAdmin(const FixMessage_t *msg, const FixSessionID_t *session)
+static void customFromAdmin(const void *data, const FixMessage_t *msg, const FixSessionID_t *session)
 {
-    printf("customFromAdmin:  %p %p\n", msg, session);
+    printf("customFromAdmin: %p %p %p\n", data, msg, session);
 }
 
-static void customFromApp(const FixMessage_t *msg, const FixSessionID_t *session)
+static void customFromApp(const void *data, const FixMessage_t *msg, const FixSessionID_t *session)
 {
-    printf("customFromApp:  %p %p\n", msg, session);
+    printf("customFromApp: %p %p %p\n", data, msg, session);
 }
 
 int main(int argc, char **argv)
@@ -47,7 +47,7 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-    FixApplicationCallbacks_t callbacks = {
+    const FixApplicationCallbacks_t callbacks = {
         .onCreate = customOnCreate,
         .onLogon = customOnLogon,
         .onLogout = customOnLogout,
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
     FixSessionSettings_t *settings = FixSessionSettings_new(argv[1]);
     FixFileStoreFactory_t *storeFactory = FixFileStoreFactory_new(settings);
     FixFileLogFactory_t *logFactory = FixFileLogFactory_new(settings);
-    FixApplication_t *application = FixApplication_new(&callbacks);
+    FixApplication_t *application = FixApplication_new((void *)0xBEEF, &callbacks);
     FixSocketAcceptor_t *acceptor = FixSocketAcceptor_new(application, storeFactory, settings, logFactory);
 
     printf(">> Acceptor START\n");

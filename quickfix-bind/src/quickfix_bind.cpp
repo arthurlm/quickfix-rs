@@ -19,11 +19,12 @@ extern "C"
     class ApplicationBind : public FIX::Application
     {
     private:
-        FixApplicationCallbacks_t *callbacks;
+        const FixApplicationCallbacks_t *callbacks;
+        const void *data;
 
     public:
-        ApplicationBind(FixApplicationCallbacks_t *callbacks)
-            : callbacks(callbacks)
+        ApplicationBind(const void *data, const FixApplicationCallbacks_t *callbacks)
+            : callbacks(callbacks), data(data)
         {
         }
 
@@ -34,43 +35,43 @@ extern "C"
         void onCreate(const FIX::SessionID &session) override
         {
             assert(callbacks != nullptr);
-            callbacks->onCreate((FixSessionID_t *)(&session));
+            callbacks->onCreate(data, (FixSessionID_t *)(&session));
         }
 
         void onLogon(const FIX::SessionID &session) override
         {
             assert(callbacks != nullptr);
-            callbacks->onLogon((FixSessionID_t *)(&session));
+            callbacks->onLogon(data, (FixSessionID_t *)(&session));
         }
 
         void onLogout(const FIX::SessionID &session) override
         {
             assert(callbacks != nullptr);
-            callbacks->onLogout((FixSessionID_t *)(&session));
+            callbacks->onLogout(data, (FixSessionID_t *)(&session));
         }
 
         void toAdmin(FIX::Message &msg, const FIX::SessionID &session) override
         {
             assert(callbacks != nullptr);
-            callbacks->toAdmin((FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+            callbacks->toAdmin(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
         }
 
         void toApp(FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::DoNotSend) override
         {
             assert(callbacks != nullptr);
-            callbacks->toApp((FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+            callbacks->toApp(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
         }
 
         void fromAdmin(const FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) override
         {
             assert(callbacks != nullptr);
-            callbacks->fromAdmin((FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+            callbacks->fromAdmin(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
         }
 
         void fromApp(const FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) override
         {
             assert(callbacks != nullptr);
-            callbacks->fromApp((FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+            callbacks->fromApp(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
         }
     };
 
@@ -97,7 +98,7 @@ extern "C"
     }
 
     FixFileStoreFactory_t *
-    FixFileStoreFactory_new(FixSessionSettings_t *settings)
+    FixFileStoreFactory_new(const FixSessionSettings_t *settings)
     {
         if (settings == nullptr)
             return NULL;
@@ -124,7 +125,7 @@ extern "C"
     }
 
     FixFileLogFactory_t *
-    FixFileLogFactory_new(FixSessionSettings_t *settings)
+    FixFileLogFactory_new(const FixSessionSettings_t *settings)
     {
         if (settings == nullptr)
             return NULL;
@@ -150,14 +151,14 @@ extern "C"
         delete fix_obj;
     }
 
-    FixApplication_t *FixApplication_new(FixApplicationCallbacks_t *callbacks)
+    FixApplication_t *FixApplication_new(const void *data, const FixApplicationCallbacks_t *callbacks)
     {
         if (callbacks == nullptr)
             return NULL;
 
         try
         {
-            return (FixApplication_t *)(new ApplicationBind(callbacks));
+            return (FixApplication_t *)(new ApplicationBind(data, callbacks));
         }
         catch (std::exception &ex)
         {
@@ -174,7 +175,7 @@ extern "C"
         delete fix_obj;
     }
 
-    FixSocketAcceptor_t *FixSocketAcceptor_new(FixApplication_t *application, FixFileStoreFactory_t *storeFactory, FixSessionSettings_t *settings, FixFileLogFactory_t *logFactory)
+    FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory)
     {
         if (application == nullptr || storeFactory == nullptr || logFactory == nullptr || settings == nullptr)
             return NULL;
@@ -194,7 +195,7 @@ extern "C"
         }
     }
 
-    int FixSocketAcceptor_start(FixSocketAcceptor_t *obj)
+    int FixSocketAcceptor_start(const FixSocketAcceptor_t *obj)
     {
         if (obj == nullptr)
             return -1;
@@ -211,7 +212,7 @@ extern "C"
         return 0;
     }
 
-    int FixSocketAcceptor_stop(FixSocketAcceptor_t *obj)
+    int FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj)
     {
         if (obj == nullptr)
             return -1;

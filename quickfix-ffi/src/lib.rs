@@ -33,13 +33,13 @@ pub struct FixSocketAcceptor_t(pub NonNull<ffi::c_void>);
 
 #[repr(C)]
 pub struct FixApplicationCallbacks_t {
-    pub onCreate: extern "C" fn(session: FixSessionID_t),
-    pub onLogon: extern "C" fn(session: FixSessionID_t),
-    pub onLogout: extern "C" fn(session: FixSessionID_t),
-    pub toAdmin: extern "C" fn(msg: FixMessage_t, session: FixSessionID_t),
-    pub toApp: extern "C" fn(msg: FixMessage_t, session: FixSessionID_t),
-    pub fromAdmin: extern "C" fn(msg: FixMessage_t, session: FixSessionID_t),
-    pub fromApp: extern "C" fn(msg: FixMessage_t, session: FixSessionID_t),
+    pub onCreate: extern "C" fn(*const ffi::c_void, FixSessionID_t),
+    pub onLogon: extern "C" fn(*const ffi::c_void, FixSessionID_t),
+    pub onLogout: extern "C" fn(*const ffi::c_void, FixSessionID_t),
+    pub toAdmin: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t),
+    pub toApp: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t),
+    pub fromAdmin: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t),
+    pub fromApp: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t),
 }
 
 #[link(name = "quickfixbind")]
@@ -58,6 +58,7 @@ extern "C" {
     pub fn FixFileLogFactory_delete(obj: FixFileLogFactory_t);
 
     pub fn FixApplication_new(
+        data: *const ffi::c_void,
         callbacks: *const FixApplicationCallbacks_t,
     ) -> Option<FixApplication_t>;
 
