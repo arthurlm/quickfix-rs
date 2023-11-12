@@ -7,6 +7,9 @@ pub enum QuickFixError {
     #[error("invalid function return")]
     InvalidFunctionReturn,
 
+    #[error("invalid function return code")]
+    InvalidFunctionReturnCode(i32),
+
     #[error("Invalid argument: {0}")]
     InvalidArgument(String),
 }

@@ -1,4 +1,4 @@
-use crate::{error::QuickFixError, session_settings::SessionSettings};
+use crate::{QuickFixError, SessionSettings};
 
 #[derive(Debug)]
 pub struct FileLogFactory(pub(crate) quickfix_ffi::FixFileLogFactory_t);

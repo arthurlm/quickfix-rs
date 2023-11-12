@@ -1,6 +1,6 @@
 use std::{ffi::CString, path::Path};
 
-use crate::error::QuickFixError;
+use crate::QuickFixError;
 
 #[derive(Debug)]
 pub struct SessionSettings(pub(crate) quickfix_ffi::FixSessionSettings_t);
