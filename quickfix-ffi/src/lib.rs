@@ -46,23 +46,19 @@ pub struct FixApplicationCallbacks_t {
 #[link(name = "quickfixbind")]
 extern "C" {
     pub fn FixSessionSettings_new(configPath: *const ffi::c_char) -> Option<FixSessionSettings_t>;
-
     pub fn FixSessionSettings_delete(obj: FixSessionSettings_t);
 
     pub fn FixFileStoreFactory_new(settings: FixSessionSettings_t)
         -> Option<FixFileStoreFactory_t>;
-
     pub fn FixFileStoreFactory_delete(obj: FixFileStoreFactory_t);
 
     pub fn FixFileLogFactory_new(settings: FixSessionSettings_t) -> Option<FixFileLogFactory_t>;
-
     pub fn FixFileLogFactory_delete(obj: FixFileLogFactory_t);
 
     pub fn FixApplication_new(
         data: *const ffi::c_void,
         callbacks: *const FixApplicationCallbacks_t,
     ) -> Option<FixApplication_t>;
-
     pub fn FixApplication_delete(obj: FixApplication_t);
 
     pub fn FixSocketAcceptor_new(
@@ -71,12 +67,15 @@ extern "C" {
         settings: FixSessionSettings_t,
         logFactory: FixFileLogFactory_t,
     ) -> Option<FixSocketAcceptor_t>;
-
     #[must_use]
     pub fn FixSocketAcceptor_start(obj: FixSocketAcceptor_t) -> ffi::c_int;
-
     #[must_use]
     pub fn FixSocketAcceptor_stop(obj: FixSocketAcceptor_t) -> ffi::c_int;
-
     pub fn FixSocketAcceptor_delete(obj: FixSocketAcceptor_t);
+
+    pub fn FixSessionID_getBeginString(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
+    pub fn FixSessionID_getSenderCompID(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
+    pub fn FixSessionID_getTargetCompID(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
+    pub fn FixSessionID_getSessionQualifier(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
+    pub fn FixSessionID_isFIXT(obj: FixSessionID_t) -> i8;
 }

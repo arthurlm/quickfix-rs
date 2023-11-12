@@ -1,6 +1,8 @@
 #ifndef _QUICKFIX_BIND_H_
 #define _QUICKFIX_BIND_H_
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -41,6 +43,12 @@ extern "C"
     int FixSocketAcceptor_start(const FixSocketAcceptor_t *obj);
     int FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj);
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj);
+
+    const char *FixSessionID_getBeginString(const FixSessionID_t *session);
+    const char *FixSessionID_getSenderCompID(const FixSessionID_t *session);
+    const char *FixSessionID_getTargetCompID(const FixSessionID_t *session);
+    const char *FixSessionID_getSessionQualifier(const FixSessionID_t *session);
+    int8_t FixSessionID_isFIXT(const FixSessionID_t *session);
 
 #ifdef __cplusplus
 }

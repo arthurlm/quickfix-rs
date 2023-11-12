@@ -64,6 +64,14 @@ impl ApplicationCallback for MyApplication<'_> {
             self.name,
             self.active_session.load(Ordering::Relaxed)
         );
+        println!(
+            "Session info: {:?}, {:?}->{:?}, qual={:?} FIXT={}",
+            session.get_begin_string(),
+            session.get_sender_comp_id(),
+            session.get_target_comp_id(),
+            session.get_session_qualifier(),
+            session.is_fixt()
+        )
     }
 
     fn on_logon(&self, session: &SessionId) {

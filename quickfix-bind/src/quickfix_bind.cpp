@@ -11,6 +11,31 @@
 #include <quickfix/Application.h>
 #include <quickfix/Message.h>
 
+#define RETURN_IF_NULL(_OBJ_) \
+    if ((_OBJ_) == nullptr)   \
+        return;
+
+#define RETURN_VAL_IF_NULL(_OBJ_, _VAL_) \
+    if ((_OBJ_) == nullptr)              \
+        return (_VAL_);
+
+#define DELETE_OBJ(_TYPE_, _OBJ_)         \
+    {                                     \
+        auto fix_obj = (_TYPE_ *)(_OBJ_); \
+        delete fix_obj;                   \
+    }
+
+#define RETURN_CXX_TO_C_STR(_TYPE_, _OBJ_, _METHOD_) \
+    try                                              \
+    {                                                \
+        auto fix_obj = (_TYPE_ *)((_OBJ_));          \
+        return fix_obj->_METHOD_.c_str();            \
+    }                                                \
+    catch (std::exception & e)                       \
+    {                                                \
+        return NULL;                                 \
+    }
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -90,21 +115,16 @@ extern "C"
 
     void FixSessionSettings_delete(FixSessionSettings_t *obj)
     {
-        if (obj == nullptr)
-            return;
-
-        auto fix_obj = (FIX::SessionSettings *)(obj);
-        delete fix_obj;
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::SessionSettings, obj);
     }
 
     FixFileStoreFactory_t *
     FixFileStoreFactory_new(const FixSessionSettings_t *settings)
     {
-        if (settings == nullptr)
-            return NULL;
+        RETURN_VAL_IF_NULL(settings, NULL);
 
         auto fix_settings = *(FIX::SessionSettings *)(settings);
-
         try
         {
             return (FixFileStoreFactory_t *)(new FIX::FileStoreFactory(fix_settings));
@@ -117,21 +137,16 @@ extern "C"
 
     void FixFileStoreFactory_delete(FixFileStoreFactory_t *obj)
     {
-        if (obj == nullptr)
-            return;
-
-        auto fix_obj = (FIX::FileStoreFactory *)(obj);
-        delete fix_obj;
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::FileStoreFactory, obj);
     }
 
     FixFileLogFactory_t *
     FixFileLogFactory_new(const FixSessionSettings_t *settings)
     {
-        if (settings == nullptr)
-            return NULL;
+        RETURN_VAL_IF_NULL(settings, NULL);
 
         auto fix_settings = *(FIX::SessionSettings *)(settings);
-
         try
         {
             return (FixFileLogFactory_t *)(new FIX::FileLogFactory(fix_settings));
@@ -144,17 +159,13 @@ extern "C"
 
     void FixFileLogFactory_delete(FixFileLogFactory_t *obj)
     {
-        if (obj == nullptr)
-            return;
-
-        auto fix_obj = (FIX::FileLogFactory *)(obj);
-        delete fix_obj;
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::FileLogFactory, obj);
     }
 
     FixApplication_t *FixApplication_new(const void *data, const FixApplicationCallbacks_t *callbacks)
     {
-        if (callbacks == nullptr)
-            return NULL;
+        RETURN_VAL_IF_NULL(callbacks, NULL);
 
         try
         {
@@ -168,17 +179,16 @@ extern "C"
 
     void FixApplication_delete(FixApplication_t *obj)
     {
-        if (obj == nullptr)
-            return;
-
-        auto fix_obj = (ApplicationBind *)(obj);
-        delete fix_obj;
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(ApplicationBind, obj);
     }
 
     FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory)
     {
-        if (application == nullptr || storeFactory == nullptr || logFactory == nullptr || settings == nullptr)
-            return NULL;
+        RETURN_VAL_IF_NULL(application, NULL);
+        RETURN_VAL_IF_NULL(storeFactory, NULL);
+        RETURN_VAL_IF_NULL(logFactory, NULL);
+        RETURN_VAL_IF_NULL(settings, NULL);
 
         auto fix_application = *(ApplicationBind *)(application);
         auto fix_store_factory = *(FIX::FileStoreFactory *)(storeFactory);
@@ -231,11 +241,47 @@ extern "C"
 
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj)
     {
-        if (obj == nullptr)
-            return;
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::SocketAcceptor, obj);
+    }
 
-        auto fix_obj = (FIX::SocketAcceptor *)(obj);
-        delete fix_obj;
+    const char *FixSessionID_getBeginString(const FixSessionID_t *session)
+    {
+        RETURN_VAL_IF_NULL(session, NULL);
+        RETURN_CXX_TO_C_STR(FIX::SessionID, session, getBeginString().getString())
+    }
+
+    const char *FixSessionID_getSenderCompID(const FixSessionID_t *session)
+    {
+        RETURN_VAL_IF_NULL(session, NULL);
+        RETURN_CXX_TO_C_STR(FIX::SessionID, session, getSenderCompID().getString())
+    }
+
+    const char *FixSessionID_getTargetCompID(const FixSessionID_t *session)
+    {
+        RETURN_VAL_IF_NULL(session, NULL);
+        RETURN_CXX_TO_C_STR(FIX::SessionID, session, getTargetCompID().getString())
+    }
+
+    const char *FixSessionID_getSessionQualifier(const FixSessionID_t *session)
+    {
+        RETURN_VAL_IF_NULL(session, NULL);
+        RETURN_CXX_TO_C_STR(FIX::SessionID, session, getSessionQualifier())
+    }
+
+    int8_t FixSessionID_isFIXT(const FixSessionID_t *session)
+    {
+        RETURN_VAL_IF_NULL(session, 0);
+
+        auto fix_obj = (FIX::SessionID *)(session);
+        try
+        {
+            return fix_obj->isFIXT();
+        }
+        catch (std::exception &e)
+        {
+            return 0;
+        }
     }
 
 #ifdef __cplusplus
