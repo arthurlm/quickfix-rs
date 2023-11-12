@@ -53,6 +53,9 @@ extern "C"
         {
         }
 
+        ApplicationBind(const ApplicationBind &) = delete;
+        ApplicationBind &operator=(const ApplicationBind &) = delete;
+
         virtual ~ApplicationBind()
         {
         }
@@ -131,10 +134,10 @@ extern "C"
     {
         RETURN_VAL_IF_NULL(settings, NULL);
 
-        auto fix_settings = *(FIX::SessionSettings *)(settings);
+        auto fix_settings = (FIX::SessionSettings *)(settings);
         try
         {
-            return (FixFileStoreFactory_t *)(new FIX::FileStoreFactory(fix_settings));
+            return (FixFileStoreFactory_t *)(new FIX::FileStoreFactory(*fix_settings));
         }
         catch (std::exception &ex)
         {
@@ -153,10 +156,10 @@ extern "C"
     {
         RETURN_VAL_IF_NULL(settings, NULL);
 
-        auto fix_settings = *(FIX::SessionSettings *)(settings);
+        auto fix_settings = (FIX::SessionSettings *)(settings);
         try
         {
-            return (FixFileLogFactory_t *)(new FIX::FileLogFactory(fix_settings));
+            return (FixFileLogFactory_t *)(new FIX::FileLogFactory(*fix_settings));
         }
         catch (std::exception &ex)
         {
@@ -197,14 +200,14 @@ extern "C"
         RETURN_VAL_IF_NULL(logFactory, NULL);
         RETURN_VAL_IF_NULL(settings, NULL);
 
-        auto fix_application = *(ApplicationBind *)(application);
-        auto fix_store_factory = *(FIX::FileStoreFactory *)(storeFactory);
-        auto fix_log_factory = *(FIX::FileLogFactory *)(logFactory);
-        auto fix_settings = *(FIX::SessionSettings *)(settings);
+        auto fix_application = (ApplicationBind *)(application);
+        auto fix_store_factory = (FIX::FileStoreFactory *)(storeFactory);
+        auto fix_log_factory = (FIX::FileLogFactory *)(logFactory);
+        auto fix_settings = (FIX::SessionSettings *)(settings);
 
         try
         {
-            return (FixSocketAcceptor_t *)(new FIX::SocketAcceptor(fix_application, fix_store_factory, fix_settings, fix_log_factory));
+            return (FixSocketAcceptor_t *)(new FIX::SocketAcceptor(*fix_application, *fix_store_factory, *fix_settings, *fix_log_factory));
         }
         catch (std::exception &ex)
         {

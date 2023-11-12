@@ -76,7 +76,7 @@ int main(int argc, char **argv)
     FixSocketAcceptor_stop(acceptor);
 
     printf(">> Cleaning resources\n");
-    // FixSocketAcceptor_delete(acceptor); // FIXME
+    FixSocketAcceptor_delete(acceptor);
     FixApplication_delete(application);
     FixFileLogFactory_delete(logFactory);
     FixFileStoreFactory_delete(storeFactory);

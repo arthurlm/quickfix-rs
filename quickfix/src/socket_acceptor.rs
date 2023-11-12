@@ -1,7 +1,8 @@
 use std::marker::PhantomData;
 
 use quickfix_ffi::{
-    FixSocketAcceptor_new, FixSocketAcceptor_start, FixSocketAcceptor_stop, FixSocketAcceptor_t,
+    FixSocketAcceptor_delete, FixSocketAcceptor_new, FixSocketAcceptor_start,
+    FixSocketAcceptor_stop, FixSocketAcceptor_t,
 };
 
 use crate::{
@@ -53,8 +54,8 @@ impl<'a, C: ApplicationCallback> SocketAcceptor<'a, C> {
     }
 }
 
-// impl<C: ApplicationCallback> Drop for SocketAcceptor<'_, C> {
-//     fn drop(&mut self) {
-//         unsafe { FixSocketAcceptor_delete(self.inner) }
-//     }
-// }
+impl<C: ApplicationCallback> Drop for SocketAcceptor<'_, C> {
+    fn drop(&mut self) {
+        unsafe { FixSocketAcceptor_delete(self.inner) }
+    }
+}

@@ -96,7 +96,7 @@ fn main() {
         assert_eq!(FixSocketAcceptor_stop(acceptor), 0);
 
         println!(">> Cleaning resources");
-        // FixSocketAcceptor_delete(acceptor); // FIXME
+        FixSocketAcceptor_delete(acceptor);
         FixApplication_delete(application);
         FixFileLogFactory_delete(log_factory);
         FixFileStoreFactory_delete(store_factory);
