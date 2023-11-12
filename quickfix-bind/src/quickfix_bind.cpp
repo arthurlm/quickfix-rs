@@ -59,43 +59,50 @@ extern "C"
 
         void onCreate(const FIX::SessionID &session) override
         {
-            assert(callbacks != nullptr);
+            RETURN_IF_NULL(callbacks);
+            RETURN_IF_NULL(callbacks->onCreate);
             callbacks->onCreate(data, (FixSessionID_t *)(&session));
         }
 
         void onLogon(const FIX::SessionID &session) override
         {
-            assert(callbacks != nullptr);
+            RETURN_IF_NULL(callbacks);
+            RETURN_IF_NULL(callbacks->onLogon);
             callbacks->onLogon(data, (FixSessionID_t *)(&session));
         }
 
         void onLogout(const FIX::SessionID &session) override
         {
-            assert(callbacks != nullptr);
+            RETURN_IF_NULL(callbacks);
+            RETURN_IF_NULL(callbacks->onLogout);
             callbacks->onLogout(data, (FixSessionID_t *)(&session));
         }
 
         void toAdmin(FIX::Message &msg, const FIX::SessionID &session) override
         {
-            assert(callbacks != nullptr);
+            RETURN_IF_NULL(callbacks);
+            RETURN_IF_NULL(callbacks->toAdmin);
             callbacks->toAdmin(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
         }
 
         void toApp(FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::DoNotSend) override
         {
-            assert(callbacks != nullptr);
+            RETURN_IF_NULL(callbacks);
+            RETURN_IF_NULL(callbacks->toApp);
             callbacks->toApp(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
         }
 
         void fromAdmin(const FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) override
         {
-            assert(callbacks != nullptr);
+            RETURN_IF_NULL(callbacks);
+            RETURN_IF_NULL(callbacks->fromAdmin);
             callbacks->fromAdmin(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
         }
 
         void fromApp(const FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) override
         {
-            assert(callbacks != nullptr);
+            RETURN_IF_NULL(callbacks);
+            RETURN_IF_NULL(callbacks->fromApp);
             callbacks->fromApp(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
         }
     };
@@ -207,8 +214,7 @@ extern "C"
 
     int FixSocketAcceptor_start(const FixSocketAcceptor_t *obj)
     {
-        if (obj == nullptr)
-            return -1;
+        RETURN_VAL_IF_NULL(obj, -1);
 
         auto fix_obj = (FIX::SocketAcceptor *)(obj);
         try
@@ -224,8 +230,7 @@ extern "C"
 
     int FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj)
     {
-        if (obj == nullptr)
-            return -1;
+        RETURN_VAL_IF_NULL(obj, -1);
 
         auto fix_obj = (FIX::SocketAcceptor *)(obj);
         try
