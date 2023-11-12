@@ -31,6 +31,7 @@ pub struct FixMessage_t(pub NonNull<ffi::c_void>);
 #[repr(transparent)]
 pub struct FixSocketAcceptor_t(pub NonNull<ffi::c_void>);
 
+#[derive(Debug, Clone, Copy)]
 #[repr(C)]
 pub struct FixApplicationCallbacks_t {
     pub onCreate: extern "C" fn(*const ffi::c_void, FixSessionID_t),
