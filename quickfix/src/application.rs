@@ -1,4 +1,4 @@
-use std::ffi;
+use std::{ffi, marker::PhantomData};
 
 use quickfix_ffi::{
     FixApplicationCallbacks_t, FixApplication_delete, FixApplication_t, FixMessage_t,
@@ -19,17 +19,15 @@ pub trait ApplicationCallback {
 }
 
 #[derive(Debug)]
-pub struct Application<C: ApplicationCallback> {
+pub struct Application<'a, C: ApplicationCallback> {
     pub(crate) fix_application: FixApplication_t,
     #[allow(dead_code)]
     fix_callbacks: Box<FixApplicationCallbacks_t>,
-    #[allow(dead_code)]
-    callbacks: Box<C>,
+    phantom: PhantomData<&'a C>,
 }
 
-impl<C: ApplicationCallback> Application<C> {
-    pub fn try_new(callbacks: C) -> Result<Self, QuickFixError> {
-        let callbacks = Box::new(callbacks);
+impl<'a, C: ApplicationCallback> Application<'a, C> {
+    pub fn try_new(callbacks: &'a C) -> Result<Self, QuickFixError> {
         let fix_callbacks = Box::new(FixApplicationCallbacks_t {
             onCreate: Self::on_create,
             onLogon: Self::on_logon,
@@ -42,14 +40,14 @@ impl<C: ApplicationCallback> Application<C> {
 
         match unsafe {
             quickfix_ffi::FixApplication_new(
-                callbacks.as_ref() as *const C as *const ffi::c_void,
+                callbacks as *const C as *const ffi::c_void,
                 &*fix_callbacks,
             )
         } {
             Some(fix_application) => Ok(Self {
                 fix_application,
                 fix_callbacks,
-                callbacks,
+                phantom: PhantomData,
             }),
             None => todo!(),
         }
@@ -91,7 +89,7 @@ impl<C: ApplicationCallback> Application<C> {
     }
 }
 
-impl<C: ApplicationCallback> Drop for Application<C> {
+impl<C: ApplicationCallback> Drop for Application<'_, C> {
     fn drop(&mut self) {
         unsafe { FixApplication_delete(self.fix_application) };
     }

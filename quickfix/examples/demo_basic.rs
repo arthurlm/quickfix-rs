@@ -21,7 +21,8 @@ fn main() {
     let settings = SessionSettings::try_new(config_file).expect("Fail to load settings");
     let store_factory = FileStoreFactory::try_new(&settings).expect("Fail to build store factory");
     let log_factory = FileLogFactory::try_new(&settings).expect("Fail to build log factory");
-    let app = Application::try_new(MyApplication::new("hello_FIX")).expect("Fail to init app");
+    let callbacks = MyApplication::new("hello_FIX");
+    let app = Application::try_new(&callbacks).expect("Fail to init app");
 
     let acceptor = SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)
         .expect("Fail to build acceptor");
