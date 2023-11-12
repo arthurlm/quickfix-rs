@@ -5,31 +5,31 @@ use std::{ffi, ptr::NonNull};
 
 #[derive(Debug, Clone, Copy)]
 #[repr(transparent)]
-pub struct FixSessionSettings_t(pub NonNull<ffi::c_void>);
+pub struct FixSessionSettings_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy)]
 #[repr(transparent)]
-pub struct FixFileStoreFactory_t(pub NonNull<ffi::c_void>);
+pub struct FixFileStoreFactory_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy)]
 #[repr(transparent)]
-pub struct FixFileLogFactory_t(pub NonNull<ffi::c_void>);
+pub struct FixFileLogFactory_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy)]
 #[repr(transparent)]
-pub struct FixApplication_t(pub NonNull<ffi::c_void>);
+pub struct FixApplication_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy)]
 #[repr(transparent)]
-pub struct FixSessionID_t(pub NonNull<ffi::c_void>);
+pub struct FixSessionID_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy)]
 #[repr(transparent)]
-pub struct FixMessage_t(pub NonNull<ffi::c_void>);
+pub struct FixMessage_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy)]
 #[repr(transparent)]
-pub struct FixSocketAcceptor_t(pub NonNull<ffi::c_void>);
+pub struct FixSocketAcceptor_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy)]
 #[repr(C)]
