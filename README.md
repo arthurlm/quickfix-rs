@@ -1,6 +1,6 @@
 # Quick fix binding for Rust
 
-This project is a WIP to bind [quickfix library](https://github.com/arthurlm/quickfix-rs/tree/main) and rust project.
+This project is a WIP to bind [quickfix library](https://github.com/quickfix/quickfix) and rust project.
 
 ## What is it, what it is not ?
 
@@ -19,6 +19,8 @@ Since it is not possible (yet) to produce binding from Rust to C++ library, I ha
 1. Create a C++ to C library: `quickfix-bind`.
 2. Create a C to Rust unsafe library: `quickfix-ffi`.
 3. Create a Rust unsafe to safe library: `quickfix`.
+
+Check [DEV_NOTES](./doc/DEV_NOTES.md) for more information on the dev workflow and my research.
 
 ## How do I ?
 
