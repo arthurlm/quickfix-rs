@@ -1,8 +1,9 @@
 use std::marker::PhantomData;
 
 use quickfix_ffi::{
-    FixSocketAcceptor_delete, FixSocketAcceptor_new, FixSocketAcceptor_start,
-    FixSocketAcceptor_stop, FixSocketAcceptor_t,
+    FixSocketAcceptor_block, FixSocketAcceptor_delete, FixSocketAcceptor_isLoggedOn,
+    FixSocketAcceptor_isStopped, FixSocketAcceptor_new, FixSocketAcceptor_poll,
+    FixSocketAcceptor_start, FixSocketAcceptor_stop, FixSocketAcceptor_t,
 };
 
 use crate::{
@@ -46,9 +47,40 @@ impl<'a, C: ApplicationCallback> SocketAcceptor<'a, C> {
         }
     }
 
+    pub fn block(&self) -> Result<(), QuickFixError> {
+        match unsafe { FixSocketAcceptor_block(self.inner) } {
+            0 => Ok(()),
+            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+        }
+    }
+
+    pub fn poll(&self) -> Result<bool, QuickFixError> {
+        match unsafe { FixSocketAcceptor_poll(self.inner) } {
+            1 => Ok(true),
+            0 => Ok(false),
+            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+        }
+    }
+
     pub fn stop(&self) -> Result<(), QuickFixError> {
         match unsafe { FixSocketAcceptor_stop(self.inner) } {
             0 => Ok(()),
+            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+        }
+    }
+
+    pub fn is_logged_on(&self) -> Result<bool, QuickFixError> {
+        match unsafe { FixSocketAcceptor_isLoggedOn(self.inner) } {
+            1 => Ok(true),
+            0 => Ok(false),
+            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+        }
+    }
+
+    pub fn is_stopped(&self) -> Result<bool, QuickFixError> {
+        match unsafe { FixSocketAcceptor_isStopped(self.inner) } {
+            1 => Ok(true),
+            0 => Ok(false),
             code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
         }
     }

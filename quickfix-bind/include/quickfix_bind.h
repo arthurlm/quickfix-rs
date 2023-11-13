@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define ERRNO_INVAL -1
+#define ERRNO_EXCEPTION -2
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -42,7 +45,11 @@ extern "C"
 
     FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory);
     int FixSocketAcceptor_start(const FixSocketAcceptor_t *obj);
+    int FixSocketAcceptor_block(const FixSocketAcceptor_t *obj);
+    int FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj);
     int FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj);
+    int FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj);
+    int FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj);
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj);
 
     const char *FixSessionID_getBeginString(const FixSessionID_t *session);

@@ -230,7 +230,7 @@ extern "C"
 
     int FixSocketAcceptor_start(const FixSocketAcceptor_t *obj)
     {
-        RETURN_VAL_IF_NULL(obj, -1);
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
 
         auto fix_obj = (FIX::SocketAcceptor *)(obj);
         try
@@ -239,14 +239,45 @@ extern "C"
         }
         catch (std::exception &ex)
         {
-            return -1;
+            return ERRNO_EXCEPTION;
         }
         return 0;
     }
 
+    int FixSocketAcceptor_block(const FixSocketAcceptor_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::SocketAcceptor *)(obj);
+        try
+        {
+            fix_obj->block();
+        }
+        catch (std::exception &ex)
+        {
+            return ERRNO_EXCEPTION;
+        }
+        return 0;
+    }
+
+    int FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::SocketAcceptor *)(obj);
+        try
+        {
+            return fix_obj->poll() ? 1 : 0;
+        }
+        catch (std::exception &ex)
+        {
+            return ERRNO_EXCEPTION;
+        }
+    }
+
     int FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj)
     {
-        RETURN_VAL_IF_NULL(obj, -1);
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
 
         auto fix_obj = (FIX::SocketAcceptor *)(obj);
         try
@@ -255,9 +286,39 @@ extern "C"
         }
         catch (std::exception &ex)
         {
-            return -1;
+            return ERRNO_EXCEPTION;
         }
         return 0;
+    }
+
+    int FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::SocketAcceptor *)(obj);
+        try
+        {
+            return fix_obj->isLoggedOn() ? 1 : 0;
+        }
+        catch (std::exception &ex)
+        {
+            return ERRNO_EXCEPTION;
+        }
+    }
+
+    int FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::SocketAcceptor *)(obj);
+        try
+        {
+            return fix_obj->isStopped() ? 1 : 0;
+        }
+        catch (std::exception &ex)
+        {
+            return ERRNO_EXCEPTION;
+        }
     }
 
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj)

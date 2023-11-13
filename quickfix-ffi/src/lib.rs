@@ -73,7 +73,15 @@ extern "C" {
     #[must_use]
     pub fn FixSocketAcceptor_start(obj: FixSocketAcceptor_t) -> ffi::c_int;
     #[must_use]
+    pub fn FixSocketAcceptor_block(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    #[must_use]
+    pub fn FixSocketAcceptor_poll(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    #[must_use]
     pub fn FixSocketAcceptor_stop(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    #[must_use]
+    pub fn FixSocketAcceptor_isLoggedOn(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    #[must_use]
+    pub fn FixSocketAcceptor_isStopped(obj: FixSocketAcceptor_t) -> ffi::c_int;
     pub fn FixSocketAcceptor_delete(obj: FixSocketAcceptor_t);
 
     pub fn FixSessionID_getBeginString(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
