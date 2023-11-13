@@ -24,7 +24,7 @@ fn main() {
     let callbacks = MyApplication::new("hello_FIX");
     let app = Application::try_new(&callbacks).expect("Fail to init app");
 
-    let acceptor = SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)
+    let mut acceptor = SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)
         .expect("Fail to build acceptor");
 
     println!(">> Acceptor START");
@@ -32,7 +32,7 @@ fn main() {
 
     println!(">> Type 'help', 'quit' for more information.");
     let mut shell = FixShell::new();
-    shell.repl(&acceptor);
+    shell.repl(&mut acceptor);
 
     println!(">> Acceptor STOP");
     acceptor.stop().expect("Fail to start acceptor");
@@ -146,7 +146,7 @@ impl FixShell<'_> {
         Ok(())
     }
 
-    fn repl<C: ApplicationCallback>(&mut self, acceptor: &SocketAcceptor<'_, C>) {
+    fn repl<C: ApplicationCallback>(&mut self, acceptor: &mut SocketAcceptor<'_, C>) {
         loop {
             self.wait_user_input().expect("I/O error");
 

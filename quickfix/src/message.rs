@@ -29,7 +29,7 @@ impl Message {
         unsafe { FixMessage_getField(self.0, tag) }.map(read_checked_cstr)
     }
 
-    pub fn remove_field(&self, tag: i32) -> Result<(), QuickFixError> {
+    pub fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixMessage_removeField(self.0, tag) })
     }
 

@@ -36,19 +36,19 @@ impl<'a, C: ApplicationCallback> SocketAcceptor<'a, C> {
         }
     }
 
-    pub fn start(&self) -> Result<(), QuickFixError> {
+    pub fn start(&mut self) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixSocketAcceptor_start(self.inner) })
     }
 
-    pub fn block(&self) -> Result<(), QuickFixError> {
+    pub fn block(&mut self) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixSocketAcceptor_block(self.inner) })
     }
 
-    pub fn poll(&self) -> Result<bool, QuickFixError> {
+    pub fn poll(&mut self) -> Result<bool, QuickFixError> {
         ffi_code_to_bool(unsafe { FixSocketAcceptor_poll(self.inner) })
     }
 
-    pub fn stop(&self) -> Result<(), QuickFixError> {
+    pub fn stop(&mut self) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixSocketAcceptor_stop(self.inner) })
     }
 
