@@ -1,7 +1,8 @@
 # TODO & DONE
 
-- [ ] Improve cmakefiles
-- [ ] Make `build.rs` less error prone.
+- [x] Improve CMakeLists.txt.
+- [x] Make `build.rs` less environment dependent.
+- [ ] Add CI.
 - [ ] Add basic capabilities for order sending / receiving.
 - [ ] Doc.
 - [ ] Explain about design.

@@ -2,21 +2,34 @@
 
 This project is WIP to allow binding between quickfix library and rust project.
 
-To build:
+## How to ?
+
+Build C binding library:
 
     mkdir target
     cd target
-    cmake -DCMAKE_BUILD_TYPE=Release ..
+    CFLAGS="-I$HOME/.local/include" CXXFLAGS="-I$HOME/.local/include" LDFLAGS="-L$HOME/.local/lib" cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DQUICKFIX_BIND_EXAMPLES=ON \
+        ..
     make
 
-To run C example:
+Run C binding example:
 
-    ./quickfix-bind/demo_basic_binding ../example/settings.ini
+    LD_LIBRARY_PATH="$HOME/.local/lib" ./quickfix-bind/demo_basic_binding ../example/settings.ini
 
-To run rust FFI example:
+Rust FFI example:
 
-    LD_LIBRARY_PATH=$(pwd)/target/quickfix-bind cargo r --example demo_basic_ffi -- example/settings.ini
+    cargo r --example demo_basic_ffi -- example/settings.ini
 
-To run rust full binding example:
+Run rust full binding example:
 
-    LD_LIBRARY_PATH=$(pwd)/target/quickfix-bind cargo r --example demo_basic -- example/settings.ini
+    cargo r --example demo_basic -- example/settings.ini
+
+## Build requirements
+
+Following package must be install to build the library:
+
+- `cmake`
+- a C++ compiler
+- `rustup` / `rustc` / `cargo` (obviously 😉)
