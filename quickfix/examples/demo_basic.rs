@@ -1,6 +1,6 @@
 use std::{
     env,
-    io::{stdin, stdout, BufRead, Write},
+    io::{self, stdin, stdout, BufRead, StdinLock, Write},
     process::exit,
     sync::atomic::{AtomicU32, Ordering},
 };
@@ -31,52 +31,8 @@ fn main() {
     acceptor.start().expect("Fail to start acceptor");
 
     println!(">> Type 'help', 'quit' for more information.");
-    let mut stdin = stdin().lock();
-    loop {
-        let mut line = String::with_capacity(500);
-
-        print!("> ");
-        let _ = stdout().lock().flush();
-        let _ = stdin.read_line(&mut line);
-
-        // Handle CTRL-D
-        if line.is_empty() {
-            println!("CTRL-D");
-            break;
-        }
-        // Handle other commands
-        match line.trim() {
-            "quit" | "q" => break,
-            "help" => {
-                println!("Available commands:");
-                println!("- status: Print Socket acceptor status");
-                println!("- start:  Start socket acceptor");
-                println!("- block:  Block socket acceptor");
-                println!("- poll:   Poll socket acceptor");
-                println!("- stop:   Stop socket acceptor");
-            }
-            "status" => {
-                println!(
-                    "SocketAcceptorStatus: logged_on={:?}, stopped={:?}",
-                    acceptor.is_logged_on(),
-                    acceptor.is_stopped(),
-                );
-            }
-            "stop" => {
-                println!("RESULT: {:?}", acceptor.stop());
-            }
-            "start" => {
-                println!("RESULT: {:?}", acceptor.start());
-            }
-            "block" => {
-                println!("RESULT: {:?}", acceptor.block());
-            }
-            "poll" => {
-                println!("RESULT: {:?}", acceptor.poll());
-            }
-            _ => {}
-        };
-    }
+    let mut shell = FixShell::new();
+    shell.repl(&acceptor);
 
     println!(">> Acceptor STOP");
     acceptor.stop().expect("Fail to start acceptor");
@@ -163,5 +119,77 @@ impl ApplicationCallback for MyApplication<'_> {
             self.name,
             self.active_session.load(Ordering::Relaxed)
         );
+    }
+}
+
+struct FixShell<'a> {
+    stdin: StdinLock<'a>,
+    last_command: String,
+}
+
+impl FixShell<'_> {
+    fn new() -> Self {
+        Self {
+            stdin: stdin().lock(),
+            last_command: String::with_capacity(1024),
+        }
+    }
+
+    fn wait_user_input(&mut self) -> io::Result<()> {
+        let mut stdout = stdout().lock();
+        write!(stdout, "quickfix> ")?;
+        stdout.flush()?;
+
+        self.last_command.clear();
+        self.stdin.read_line(&mut self.last_command)?;
+
+        Ok(())
+    }
+
+    fn repl<C: ApplicationCallback>(&mut self, acceptor: &SocketAcceptor<'_, C>) {
+        loop {
+            self.wait_user_input().expect("I/O error");
+
+            // Handle CTRL-D
+            if self.last_command.is_empty() {
+                println!("CTRL-D");
+                break;
+            }
+            // Handle other commands
+            match self.last_command.trim() {
+                "quit" | "q" => break,
+                "help" => {
+                    println!("Available commands:");
+                    println!("- status: Print Socket acceptor status");
+                    println!("- start:  Start socket acceptor");
+                    println!("- block:  Block socket acceptor");
+                    println!("- poll:   Poll socket acceptor");
+                    println!("- stop:   Stop socket acceptor");
+                }
+                "status" => {
+                    println!(
+                        "SocketAcceptorStatus: logged_on={:?}, stopped={:?}",
+                        acceptor.is_logged_on(),
+                        acceptor.is_stopped(),
+                    );
+                }
+                "stop" => {
+                    println!("RESULT: {:?}", acceptor.stop());
+                }
+                "start" => {
+                    println!("RESULT: {:?}", acceptor.start());
+                }
+                "block" => {
+                    println!("RESULT: {:?}", acceptor.block());
+                }
+                "poll" => {
+                    println!("RESULT: {:?}", acceptor.poll());
+                }
+                "" => {}
+                _ => {
+                    eprintln!("UNKNOWN COMMAND: {}", self.last_command)
+                }
+            };
+        }
     }
 }
