@@ -2,7 +2,7 @@ use std::ffi::NulError;
 
 use thiserror::Error;
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, PartialEq, Eq, Clone)]
 pub enum QuickFixError {
     #[error("invalid function return")]
     InvalidFunctionReturn,
