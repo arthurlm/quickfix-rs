@@ -84,11 +84,19 @@ extern "C" {
     pub fn FixSocketAcceptor_isStopped(obj: FixSocketAcceptor_t) -> ffi::c_int;
     pub fn FixSocketAcceptor_delete(obj: FixSocketAcceptor_t);
 
+    pub fn FixSessionID_new(
+        beginString: *const ffi::c_char,
+        senderCompID: *const ffi::c_char,
+        targetCompID: *const ffi::c_char,
+        sessionQualifier: *const ffi::c_char,
+    ) -> Option<FixSessionID_t>;
     pub fn FixSessionID_getBeginString(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
     pub fn FixSessionID_getSenderCompID(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
     pub fn FixSessionID_getTargetCompID(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
     pub fn FixSessionID_getSessionQualifier(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
     pub fn FixSessionID_isFIXT(obj: FixSessionID_t) -> i8;
+    pub fn FixSessionID_toString(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
+    pub fn FixSessionID_delete(obj: FixSessionID_t);
 
     pub fn FixMessage_new() -> Option<FixMessage_t>;
     #[must_use]

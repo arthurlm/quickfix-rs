@@ -54,11 +54,14 @@ extern "C"
     int FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj);
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj);
 
+    FixSessionID_t *FixSessionID_new(const char *beginString, const char *senderCompID, const char *targetCompID, const char *sessionQualifier);
     const char *FixSessionID_getBeginString(const FixSessionID_t *session);
     const char *FixSessionID_getSenderCompID(const FixSessionID_t *session);
     const char *FixSessionID_getTargetCompID(const FixSessionID_t *session);
     const char *FixSessionID_getSessionQualifier(const FixSessionID_t *session);
     int8_t FixSessionID_isFIXT(const FixSessionID_t *session);
+    const char *FixSessionID_toString(const FixSessionID *session);
+    void FixSessionID_delete(FixSessionID_t *session);
 
     FixMessage_t *FixMessage_new();
     int FixMessage_setField(const FixMessage_t *obj, int tag, const char *value);

@@ -327,6 +327,24 @@ extern "C"
         DELETE_OBJ(FIX::SocketAcceptor, obj);
     }
 
+    FixSessionID_t *
+    FixSessionID_new(const char *beginString, const char *senderCompID, const char *targetCompID, const char *sessionQualifier)
+    {
+        RETURN_VAL_IF_NULL(beginString, NULL);
+        RETURN_VAL_IF_NULL(senderCompID, NULL);
+        RETURN_VAL_IF_NULL(targetCompID, NULL);
+        RETURN_VAL_IF_NULL(sessionQualifier, NULL);
+
+        try
+        {
+            return (FixSessionID_t *)(new FIX::SessionID(beginString, senderCompID, targetCompID, sessionQualifier));
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
+    }
+
     const char *FixSessionID_getBeginString(const FixSessionID_t *session)
     {
         RETURN_VAL_IF_NULL(session, NULL);
@@ -353,17 +371,38 @@ extern "C"
 
     int8_t FixSessionID_isFIXT(const FixSessionID_t *session)
     {
-        RETURN_VAL_IF_NULL(session, 0);
+        RETURN_VAL_IF_NULL(session, ERRNO_INVAL);
 
         auto fix_obj = (FIX::SessionID *)(session);
         try
         {
-            return fix_obj->isFIXT();
+            return fix_obj->isFIXT() ? 1 : 0;
         }
         catch (std::exception &e)
         {
-            return 0;
+            return ERRNO_EXCEPTION;
         }
+    }
+
+    const char *FixSessionID_toString(const FixSessionID *session)
+    {
+        RETURN_VAL_IF_NULL(session, NULL);
+
+        auto fix_obj = (FIX::SessionID *)(session);
+        try
+        {
+            return fix_obj->toStringFrozen().c_str();
+        }
+        catch (std::exception &e)
+        {
+            return NULL;
+        }
+    }
+
+    void FixSessionID_delete(FixSessionID_t *session)
+    {
+        RETURN_IF_NULL(session);
+        DELETE_OBJ(FIX::SessionID, session);
     }
 
     FixMessage_t *
