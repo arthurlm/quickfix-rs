@@ -1,4 +1,4 @@
-use std::{ffi, marker::PhantomData};
+use std::{ffi, marker::PhantomData, mem::ManuallyDrop};
 
 use quickfix_ffi::{
     FixApplicationCallbacks_t, FixApplication_delete, FixApplication_t, FixMessage_t,
@@ -70,22 +70,30 @@ impl<'a, C: ApplicationCallback> Application<'a, C> {
 
     extern "C" fn to_admin(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
         let this = unsafe { &*(data as *const C) };
-        this.on_msg_to_admin(&mut Message(msg), &SessionId(session))
+        let mut msg = ManuallyDrop::new(Message(msg));
+        let session_id = ManuallyDrop::new(SessionId(session));
+        this.on_msg_to_admin(&mut msg, &session_id)
     }
 
     extern "C" fn to_app(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
         let this = unsafe { &*(data as *const C) };
-        this.on_msg_to_app(&mut Message(msg), &SessionId(session))
+        let mut msg = ManuallyDrop::new(Message(msg));
+        let session_id = ManuallyDrop::new(SessionId(session));
+        this.on_msg_to_app(&mut msg, &session_id)
     }
 
     extern "C" fn from_admin(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
         let this = unsafe { &*(data as *const C) };
-        this.on_msg_from_admin(&Message(msg), &SessionId(session))
+        let msg = ManuallyDrop::new(Message(msg));
+        let session_id = ManuallyDrop::new(SessionId(session));
+        this.on_msg_from_admin(&msg, &session_id)
     }
 
     extern "C" fn from_app(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
         let this = unsafe { &*(data as *const C) };
-        this.on_msg_from_app(&Message(msg), &SessionId(session))
+        let msg = ManuallyDrop::new(Message(msg));
+        let session_id = ManuallyDrop::new(SessionId(session));
+        this.on_msg_from_app(&msg, &session_id)
     }
 }
 
