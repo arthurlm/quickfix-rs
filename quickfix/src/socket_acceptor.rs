@@ -26,12 +26,7 @@ impl<'a, C: ApplicationCallback> SocketAcceptor<'a, C> {
         log_factory: &'a FileLogFactory,
     ) -> Result<Self, QuickFixError> {
         match unsafe {
-            FixSocketAcceptor_new(
-                application.fix_application,
-                store_factory.0,
-                settings.0,
-                log_factory.0,
-            )
+            FixSocketAcceptor_new(application.0, store_factory.0, settings.0, log_factory.0)
         } {
             Some(inner) => Ok(Self {
                 inner,

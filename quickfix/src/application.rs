@@ -1,8 +1,8 @@
 use std::{ffi, marker::PhantomData, mem::ManuallyDrop};
 
 use quickfix_ffi::{
-    FixApplicationCallbacks_t, FixApplication_delete, FixApplication_t, FixMessage_t,
-    FixSessionID_t,
+    FixApplicationCallbacks_t, FixApplication_delete, FixApplication_new, FixApplication_t,
+    FixMessage_t, FixSessionID_t,
 };
 
 use crate::{Message, QuickFixError, SessionId};
@@ -19,36 +19,30 @@ pub trait ApplicationCallback {
 }
 
 #[derive(Debug)]
-pub struct Application<'a, C: ApplicationCallback> {
-    pub(crate) fix_application: FixApplication_t,
-    #[allow(dead_code)]
-    fix_callbacks: Box<FixApplicationCallbacks_t>,
-    phantom: PhantomData<&'a C>,
-}
+pub struct Application<'a, C: ApplicationCallback>(pub(crate) FixApplication_t, PhantomData<&'a C>);
 
-impl<'a, C: ApplicationCallback> Application<'a, C> {
+impl<'a, C> Application<'a, C>
+where
+    C: ApplicationCallback + 'static,
+{
+    const CALLBACKS: FixApplicationCallbacks_t = FixApplicationCallbacks_t {
+        onCreate: Self::on_create,
+        onLogon: Self::on_logon,
+        onLogout: Self::on_logout,
+        toAdmin: Self::to_admin,
+        toApp: Self::to_app,
+        fromAdmin: Self::from_admin,
+        fromApp: Self::from_app,
+    };
+
     pub fn try_new(callbacks: &'a C) -> Result<Self, QuickFixError> {
-        let fix_callbacks = Box::new(FixApplicationCallbacks_t {
-            onCreate: Self::on_create,
-            onLogon: Self::on_logon,
-            onLogout: Self::on_logout,
-            toAdmin: Self::to_admin,
-            toApp: Self::to_app,
-            fromAdmin: Self::from_admin,
-            fromApp: Self::from_app,
-        });
-
         match unsafe {
-            quickfix_ffi::FixApplication_new(
+            FixApplication_new(
                 callbacks as *const C as *const ffi::c_void,
-                &*fix_callbacks,
+                &Self::CALLBACKS,
             )
         } {
-            Some(fix_application) => Ok(Self {
-                fix_application,
-                fix_callbacks,
-                phantom: PhantomData,
-            }),
+            Some(fix_application) => Ok(Self(fix_application, PhantomData)),
             None => todo!(),
         }
     }
@@ -102,6 +96,6 @@ impl<'a, C: ApplicationCallback> Application<'a, C> {
 
 impl<C: ApplicationCallback> Drop for Application<'_, C> {
     fn drop(&mut self) {
-        unsafe { FixApplication_delete(self.fix_application) };
+        unsafe { FixApplication_delete(self.0) };
     }
 }
