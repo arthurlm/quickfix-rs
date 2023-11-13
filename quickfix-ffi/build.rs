@@ -3,6 +3,12 @@ use std::env;
 use cmake::Config;
 
 fn main() {
+    // Tell Cargo that if the given file changes, to rerun this build script.
+    println!("cargo:rerun-if-changed=../CMakeLists.txt");
+    println!("cargo:rerun-if-changed=../quickfix-bind/CMakeLists.txt");
+    println!("cargo:rerun-if-changed=../quickfix-bind/include/quickfix_bind.h");
+    println!("cargo:rerun-if-changed=../quickfix-bind/src/quickfix_bind.cpp");
+
     // Build quickfix as a static library
     let quickfix_dst = Config::new("../libquickfix")
         .define("HAVE_PYTHON", "OFF")
