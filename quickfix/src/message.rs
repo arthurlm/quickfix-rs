@@ -1,4 +1,4 @@
-use std::ffi::CString;
+use std::{ffi::CString, fmt};
 
 use quickfix_ffi::{
     FixMessage_delete, FixMessage_getField, FixMessage_new, FixMessage_removeField,
@@ -10,7 +10,6 @@ use crate::{
     QuickFixError,
 };
 
-#[derive(Debug)]
 pub struct Message(pub(crate) quickfix_ffi::FixMessage_t);
 
 impl Message {
@@ -45,6 +44,12 @@ impl Message {
             0 => Ok(read_buffer_to_string(&buffer)),
             code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
         }
+    }
+}
+
+impl fmt::Debug for Message {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("Message").field(&self.as_string()).finish()
     }
 }
 
