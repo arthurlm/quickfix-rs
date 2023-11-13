@@ -98,6 +98,10 @@ extern "C" {
         value: *const ffi::c_char,
     ) -> ffi::c_int;
     #[must_use]
+    pub fn FixMessage_getField(obj: FixMessage_t, tag: ffi::c_int) -> Option<NonNull<ffi::c_char>>;
+    #[must_use]
+    pub fn FixMessage_removeField(obj: FixMessage_t, tag: ffi::c_int) -> ffi::c_int;
+    #[must_use]
     pub fn FixMessage_toBuffer(
         obj: FixMessage_t,
         buffer: *mut ffi::c_char,

@@ -379,7 +379,8 @@ extern "C"
         }
     }
 
-    int FixMessage_setField(const FixMessage_t *obj, int tag, const char *value)
+    int
+    FixMessage_setField(const FixMessage_t *obj, int tag, const char *value)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
@@ -396,7 +397,41 @@ extern "C"
         return 0;
     }
 
-    int FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length)
+    const char *
+    FixMessage_getField(const FixMessage_t *obj, int tag)
+    {
+        RETURN_VAL_IF_NULL(obj, NULL);
+
+        auto fix_obj = (FIX::Message *)(obj);
+        try
+        {
+            return fix_obj->getField(tag).c_str();
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
+    }
+
+    int
+    FixMessage_removeField(const FixMessage_t *obj, int tag)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Message *)(obj);
+        try
+        {
+            fix_obj->removeField(tag);
+        }
+        catch (std::exception &ex)
+        {
+            return ERRNO_EXCEPTION;
+        }
+        return 0;
+    }
+
+    int
+    FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length)
     {
         if (length == 0)
             return 0;

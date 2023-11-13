@@ -62,6 +62,8 @@ extern "C"
 
     FixMessage_t *FixMessage_new();
     int FixMessage_setField(const FixMessage_t *obj, int tag, const char *value);
+    const char *FixMessage_getField(const FixMessage_t *obj, int tag);
+    int FixMessage_removeField(const FixMessage_t *obj, int tag);
     int FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length);
     void FixMessage_delete(FixMessage_t *obj);
 

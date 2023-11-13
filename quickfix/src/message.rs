@@ -1,8 +1,14 @@
 use std::ffi::CString;
 
-use quickfix_ffi::{FixMessage_delete, FixMessage_new, FixMessage_setField, FixMessage_toBuffer};
+use quickfix_ffi::{
+    FixMessage_delete, FixMessage_getField, FixMessage_new, FixMessage_removeField,
+    FixMessage_setField, FixMessage_toBuffer,
+};
 
-use crate::{utils::read_buffer_to_string, QuickFixError};
+use crate::{
+    utils::{read_buffer_to_string, read_checked_cstr},
+    QuickFixError,
+};
 
 #[derive(Debug)]
 pub struct Message(pub(crate) quickfix_ffi::FixMessage_t);
@@ -19,6 +25,17 @@ impl Message {
         let ffi_value = CString::new(value)?;
 
         match unsafe { FixMessage_setField(self.0, tag, ffi_value.as_ptr()) } {
+            0 => Ok(()),
+            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+        }
+    }
+
+    pub fn get_field(&self, tag: i32) -> Option<String> {
+        unsafe { FixMessage_getField(self.0, tag) }.map(read_checked_cstr)
+    }
+
+    pub fn remove_field(&self, tag: i32) -> Result<(), QuickFixError> {
+        match unsafe { FixMessage_removeField(self.0, tag) } {
             0 => Ok(()),
             code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
         }
