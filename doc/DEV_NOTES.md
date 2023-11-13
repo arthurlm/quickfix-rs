@@ -40,3 +40,7 @@ quickfix-ffi (lang: rust)
 quickfix (lang: rust)
 
 ```
+
+## Other project inspiration
+
+- [rust-rdkafka](https://github.com/fede1024/rust-rdkafka): for how to build C library using cmake and link to rust project.
