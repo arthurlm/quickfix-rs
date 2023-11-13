@@ -7,6 +7,7 @@ use quickfix_ffi::{
 };
 
 use crate::{
+    utils::{ffi_code_to_bool, ffi_code_to_result},
     Application, ApplicationCallback, FileLogFactory, FileStoreFactory, QuickFixError,
     SessionSettings,
 };
@@ -41,48 +42,27 @@ impl<'a, C: ApplicationCallback> SocketAcceptor<'a, C> {
     }
 
     pub fn start(&self) -> Result<(), QuickFixError> {
-        match unsafe { FixSocketAcceptor_start(self.inner) } {
-            0 => Ok(()),
-            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
-        }
+        ffi_code_to_result(unsafe { FixSocketAcceptor_start(self.inner) })
     }
 
     pub fn block(&self) -> Result<(), QuickFixError> {
-        match unsafe { FixSocketAcceptor_block(self.inner) } {
-            0 => Ok(()),
-            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
-        }
+        ffi_code_to_result(unsafe { FixSocketAcceptor_block(self.inner) })
     }
 
     pub fn poll(&self) -> Result<bool, QuickFixError> {
-        match unsafe { FixSocketAcceptor_poll(self.inner) } {
-            1 => Ok(true),
-            0 => Ok(false),
-            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
-        }
+        ffi_code_to_bool(unsafe { FixSocketAcceptor_poll(self.inner) })
     }
 
     pub fn stop(&self) -> Result<(), QuickFixError> {
-        match unsafe { FixSocketAcceptor_stop(self.inner) } {
-            0 => Ok(()),
-            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
-        }
+        ffi_code_to_result(unsafe { FixSocketAcceptor_stop(self.inner) })
     }
 
     pub fn is_logged_on(&self) -> Result<bool, QuickFixError> {
-        match unsafe { FixSocketAcceptor_isLoggedOn(self.inner) } {
-            1 => Ok(true),
-            0 => Ok(false),
-            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
-        }
+        ffi_code_to_bool(unsafe { FixSocketAcceptor_isLoggedOn(self.inner) })
     }
 
     pub fn is_stopped(&self) -> Result<bool, QuickFixError> {
-        match unsafe { FixSocketAcceptor_isStopped(self.inner) } {
-            1 => Ok(true),
-            0 => Ok(false),
-            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
-        }
+        ffi_code_to_bool(unsafe { FixSocketAcceptor_isStopped(self.inner) })
     }
 }
 

@@ -6,7 +6,7 @@ use quickfix_ffi::{
 };
 
 use crate::{
-    utils::{read_buffer_to_string, read_checked_cstr},
+    utils::{ffi_code_to_result, read_buffer_to_string, read_checked_cstr},
     QuickFixError,
 };
 
@@ -23,11 +23,7 @@ impl Message {
 
     pub fn set_field(&mut self, tag: i32, value: &str) -> Result<(), QuickFixError> {
         let ffi_value = CString::new(value)?;
-
-        match unsafe { FixMessage_setField(self.0, tag, ffi_value.as_ptr()) } {
-            0 => Ok(()),
-            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
-        }
+        ffi_code_to_result(unsafe { FixMessage_setField(self.0, tag, ffi_value.as_ptr()) })
     }
 
     pub fn get_field(&self, tag: i32) -> Option<String> {
@@ -35,10 +31,7 @@ impl Message {
     }
 
     pub fn remove_field(&self, tag: i32) -> Result<(), QuickFixError> {
-        match unsafe { FixMessage_removeField(self.0, tag) } {
-            0 => Ok(()),
-            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
-        }
+        ffi_code_to_result(unsafe { FixMessage_removeField(self.0, tag) })
     }
 
     pub fn as_string(&self) -> Result<String, QuickFixError> {

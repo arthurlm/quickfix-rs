@@ -3,12 +3,33 @@ use std::{
     ptr::NonNull,
 };
 
+use crate::QuickFixError;
+
+#[inline(always)]
 pub fn read_buffer_to_string(buffer: &[u8]) -> String {
     let null_index = buffer.iter().position(|x| *x == 0).unwrap_or(buffer.len());
     String::from_utf8_lossy(&buffer[..null_index]).to_string()
 }
 
+#[inline(always)]
 pub fn read_checked_cstr(val: NonNull<ffi::c_char>) -> String {
     let cstr = unsafe { CStr::from_ptr(val.as_ptr()) };
     String::from_utf8_lossy(cstr.to_bytes()).to_string()
+}
+
+#[inline(always)]
+pub fn ffi_code_to_result(code: ffi::c_int) -> Result<(), QuickFixError> {
+    match code {
+        0 => Ok(()),
+        code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+    }
+}
+
+#[inline(always)]
+pub fn ffi_code_to_bool(code: ffi::c_int) -> Result<bool, QuickFixError> {
+    match code {
+        1 => Ok(true),
+        0 => Ok(false),
+        code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+    }
 }
