@@ -1,6 +1,6 @@
 use std::{
     env,
-    io::{stdin, Read},
+    io::{stdin, stdout, BufRead, Write},
     process::exit,
     sync::atomic::{AtomicU32, Ordering},
 };
@@ -30,14 +30,52 @@ fn main() {
     println!(">> Acceptor START");
     acceptor.start().expect("Fail to start acceptor");
 
-    println!(">> Press Q to exit");
+    println!(">> Type 'help', 'quit' for more information.");
     let mut stdin = stdin().lock();
-    let mut stdin_buf = [0];
     loop {
-        let _ = stdin.read_exact(&mut stdin_buf);
-        if stdin_buf[0] == b'q' {
+        let mut line = String::with_capacity(500);
+
+        print!("> ");
+        let _ = stdout().lock().flush();
+        let _ = stdin.read_line(&mut line);
+
+        // Handle CTRL-D
+        if line.is_empty() {
+            println!("CTRL-D");
             break;
         }
+        // Handle other commands
+        match line.trim() {
+            "quit" | "q" => break,
+            "help" => {
+                println!("Available commands:");
+                println!("- status: Print Socket acceptor status");
+                println!("- start:  Start socket acceptor");
+                println!("- block:  Block socket acceptor");
+                println!("- poll:   Poll socket acceptor");
+                println!("- stop:   Stop socket acceptor");
+            }
+            "status" => {
+                println!(
+                    "SocketAcceptorStatus: logged_on={:?}, stopped={:?}",
+                    acceptor.is_logged_on(),
+                    acceptor.is_stopped(),
+                );
+            }
+            "stop" => {
+                println!("RESULT: {:?}", acceptor.stop());
+            }
+            "start" => {
+                println!("RESULT: {:?}", acceptor.start());
+            }
+            "block" => {
+                println!("RESULT: {:?}", acceptor.block());
+            }
+            "poll" => {
+                println!("RESULT: {:?}", acceptor.poll());
+            }
+            _ => {}
+        };
     }
 
     println!(">> Acceptor STOP");
