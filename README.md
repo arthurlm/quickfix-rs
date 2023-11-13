@@ -1,30 +1,56 @@
 # Quick fix binding for Rust
 
-This project is WIP to allow binding between quickfix library and rust project.
+This project is a WIP to bind [quickfix library](https://github.com/arthurlm/quickfix-rs/tree/main) and rust project.
 
-## How to ?
+## What is it, what it is not ?
+
+Main idea of this project is to provide a **minimal** safe and working bridge between rust and C++ quickfix library.
+
+Not all methods, functions, classes, nor features of the original library will be exposed to Rust crate.
+Target is just to have minimal features to create small and safe applications like:
+
+- some program that can send order / receive messages to adjust strategy from.
+- basic router with no smart order router capabilities.
+
+## How does it work ?
+
+Since it is not possible (yet) to produce binding from Rust to C++ library, I have take another approach.
+
+1. Create a C++ to C library: `quickfix-bind`.
+2. Create a C to Rust unsafe library: `quickfix-ffi`.
+3. Create a Rust unsafe to safe library: `quickfix`.
+
+## How do I ?
 
 Build C binding library:
 
-    mkdir target
-    cd target
-    CFLAGS="-I$HOME/.local/include" CXXFLAGS="-I$HOME/.local/include" LDFLAGS="-L$HOME/.local/lib" cmake \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DQUICKFIX_BIND_EXAMPLES=ON \
-        ..
-    make
+```sh
+mkdir target
+cd target
+CFLAGS="-I$HOME/.local/include" CXXFLAGS="-I$HOME/.local/include" LDFLAGS="-L$HOME/.local/lib" cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DQUICKFIX_BIND_EXAMPLES=ON \
+    ..
+make
+```
 
 Run C binding example:
 
-    LD_LIBRARY_PATH="$HOME/.local/lib" ./quickfix-bind/demo_basic_binding ../example/settings.ini
+```sh
+LD_LIBRARY_PATH="$HOME/.local/lib" ./quickfix-bind/demo_basic_binding ../example/settings.ini
+```
 
 Rust FFI example:
 
-    cargo r --example demo_basic_ffi -- example/settings.ini
+```sh
+cargo r --example demo_basic_ffi -- example/settings.ini
+```
 
 Run rust full binding example:
 
-    cargo r --example demo_basic -- example/settings.ini
+```sh
+cargo r --example demo_basic -- example/settings.ini
+```
 
 ## Build requirements
 

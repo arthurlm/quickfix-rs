@@ -3,7 +3,7 @@
 - [x] Improve CMakeLists.txt.
 - [x] Make `build.rs` less environment dependent.
 - [x] Add CI.
+- [x] Doc.
+- [x] Explain about design.
 - [ ] Add basic capabilities for order sending / receiving.
-- [ ] Doc.
-- [ ] Explain about design.
 - [ ] Make PR to explain idea behind the crate.
