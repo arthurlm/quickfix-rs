@@ -55,17 +55,20 @@ impl<'a, C: ApplicationCallback> Application<'a, C> {
 
     extern "C" fn on_create(data: *const ffi::c_void, session: FixSessionID_t) {
         let this = unsafe { &*(data as *const C) };
-        this.on_create(&SessionId(session))
+        let session_id = ManuallyDrop::new(SessionId(session));
+        this.on_create(&session_id)
     }
 
     extern "C" fn on_logon(data: *const ffi::c_void, session: FixSessionID_t) {
         let this = unsafe { &*(data as *const C) };
-        this.on_logon(&SessionId(session))
+        let session_id = ManuallyDrop::new(SessionId(session));
+        this.on_logon(&session_id)
     }
 
     extern "C" fn on_logout(data: *const ffi::c_void, session: FixSessionID_t) {
         let this = unsafe { &*(data as *const C) };
-        this.on_logout(&SessionId(session))
+        let session_id = ManuallyDrop::new(SessionId(session));
+        this.on_logout(&session_id)
     }
 
     extern "C" fn to_admin(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
