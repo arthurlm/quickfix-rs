@@ -2,9 +2,11 @@
 #define _QUICKFIX_BIND_H_
 
 #include <stdint.h>
+#include <stddef.h>
 
 #define ERRNO_INVAL -1
 #define ERRNO_EXCEPTION -2
+#define ERRNO_BUFFER_TO_SMALL -3
 
 #ifdef __cplusplus
 extern "C"
@@ -57,6 +59,11 @@ extern "C"
     const char *FixSessionID_getTargetCompID(const FixSessionID_t *session);
     const char *FixSessionID_getSessionQualifier(const FixSessionID_t *session);
     int8_t FixSessionID_isFIXT(const FixSessionID_t *session);
+
+    FixMessage_t *FixMessage_new();
+    int FixMessage_setField(const FixMessage_t *obj, int tag, const char *value);
+    int FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length);
+    void FixMessage_delete(FixMessage_t *obj);
 
 #ifdef __cplusplus
 }

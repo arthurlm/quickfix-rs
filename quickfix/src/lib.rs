@@ -7,6 +7,8 @@ mod session_id;
 mod session_settings;
 mod socket_acceptor;
 
+mod utils;
+
 pub use application::{Application, ApplicationCallback};
 pub use error::QuickFixError;
 pub use file_log_factory::FileLogFactory;

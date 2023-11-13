@@ -89,4 +89,19 @@ extern "C" {
     pub fn FixSessionID_getTargetCompID(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
     pub fn FixSessionID_getSessionQualifier(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
     pub fn FixSessionID_isFIXT(obj: FixSessionID_t) -> i8;
+
+    pub fn FixMessage_new() -> Option<FixMessage_t>;
+    #[must_use]
+    pub fn FixMessage_setField(
+        obj: FixMessage_t,
+        tag: ffi::c_int,
+        value: *const ffi::c_char,
+    ) -> ffi::c_int;
+    #[must_use]
+    pub fn FixMessage_toBuffer(
+        obj: FixMessage_t,
+        buffer: *mut ffi::c_char,
+        length: ffi::c_long,
+    ) -> ffi::c_int;
+    pub fn FixMessage_delete(obj: FixMessage_t);
 }

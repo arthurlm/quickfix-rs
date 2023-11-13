@@ -366,6 +366,69 @@ extern "C"
         }
     }
 
+    FixMessage_t *
+    FixMessage_new()
+    {
+        try
+        {
+            return (FixMessage_t *)(new FIX::Message());
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
+    }
+
+    int FixMessage_setField(const FixMessage_t *obj, int tag, const char *value)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Message *)(obj);
+        try
+        {
+            fix_obj->setField(tag, value);
+        }
+        catch (std::exception &ex)
+        {
+            return ERRNO_EXCEPTION;
+        }
+        return 0;
+    }
+
+    int FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length)
+    {
+        if (length == 0)
+            return 0;
+
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(buffer, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Message *)(obj);
+        try
+        {
+            auto repr = fix_obj->toString();
+            if (length <= repr.length())
+            {
+                return ERRNO_BUFFER_TO_SMALL;
+            }
+
+            strncpy(buffer, repr.c_str(), length);
+            buffer[repr.length()] = '\0';
+        }
+        catch (std::exception &ex)
+        {
+            return ERRNO_EXCEPTION;
+        }
+        return 0;
+    }
+
+    void FixMessage_delete(FixMessage_t *obj)
+    {
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::Message, obj);
+    }
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
