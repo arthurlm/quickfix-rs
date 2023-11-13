@@ -18,7 +18,7 @@ fn main() {
     };
 
     println!(">> Creating resources");
-    let settings = SessionSettings::try_new(config_file).expect("Fail to load settings");
+    let settings = SessionSettings::try_from_path(config_file).expect("Fail to load settings");
     let store_factory = FileStoreFactory::try_new(&settings).expect("Fail to build store factory");
     let log_factory = FileLogFactory::try_new(&settings).expect("Fail to build log factory");
     let callbacks = MyApplication::new("hello_FIX");

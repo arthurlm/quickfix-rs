@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     };
 
     printf(">> Creating resources\n");
-    FixSessionSettings_t *settings = FixSessionSettings_new(argv[1]);
+    FixSessionSettings_t *settings = FixSessionSettings_fromPath(argv[1]);
     FixFileStoreFactory_t *storeFactory = FixFileStoreFactory_new(settings);
     FixFileLogFactory_t *logFactory = FixFileLogFactory_new(settings);
     FixApplication_t *application = FixApplication_new((void *)0xBEEF, &callbacks);

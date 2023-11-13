@@ -111,7 +111,7 @@ extern "C"
     };
 
     FixSessionSettings_t *
-    FixSessionSettings_new(const char *configPath)
+    FixSessionSettings_fromPath(const char *configPath)
     {
         try
         {

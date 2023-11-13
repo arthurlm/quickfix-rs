@@ -72,7 +72,8 @@ fn main() {
 
     unsafe {
         println!(">> Creating resources");
-        let settings = FixSessionSettings_new(config_path.as_ptr()).expect("Fail to load settings");
+        let settings =
+            FixSessionSettings_fromPath(config_path.as_ptr()).expect("Fail to load settings");
         let store_factory = FixFileStoreFactory_new(settings).expect("Fail to build store factory");
         let log_factory = FixFileLogFactory_new(settings).expect("Fail to build log factory");
         let application =
