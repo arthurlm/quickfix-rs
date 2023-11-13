@@ -111,6 +111,19 @@ extern "C"
     };
 
     FixSessionSettings_t *
+    FixSessionSettings_new()
+    {
+        try
+        {
+            return (FixSessionSettings_t *)(new FIX::SessionSettings());
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
+    }
+
+    FixSessionSettings_t *
     FixSessionSettings_fromPath(const char *configPath)
     {
         try

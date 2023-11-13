@@ -27,6 +27,7 @@ extern "C"
         void (*fromApp)(const void *data, const FixMessage_t *msg, const FixSessionID_t *session);
     } FixApplicationCallbacks_t;
 
+    FixSessionSettings_t *FixSessionSettings_new();
     FixSessionSettings_t *FixSessionSettings_fromPath(const char *configPath);
     void FixSessionSettings_delete(FixSessionSettings_t *obj);
 

@@ -6,6 +6,13 @@ use crate::QuickFixError;
 pub struct SessionSettings(pub(crate) quickfix_ffi::FixSessionSettings_t);
 
 impl SessionSettings {
+    pub fn try_new() -> Result<Self, QuickFixError> {
+        match unsafe { quickfix_ffi::FixSessionSettings_new() } {
+            Some(val) => Ok(Self(val)),
+            None => Err(QuickFixError::InvalidFunctionReturn),
+        }
+    }
+
     pub fn try_from_path<P: AsRef<Path>>(path: P) -> Result<Self, QuickFixError> {
         let safe_path = path
             .as_ref()

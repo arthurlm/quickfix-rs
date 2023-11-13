@@ -6,7 +6,8 @@ fn test_session_settings() {
         SessionSettings::try_from_path("invalid_file.ini").unwrap_err(),
         QuickFixError::InvalidFunctionReturn
     );
-    let _settings = SessionSettings::try_from_path("../example/settings.ini").unwrap();
+    let _settings1 = SessionSettings::try_new().unwrap();
+    let _settings2 = SessionSettings::try_from_path("../example/settings.ini").unwrap();
 }
 
 #[test]

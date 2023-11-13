@@ -45,6 +45,7 @@ pub struct FixApplicationCallbacks_t {
 
 #[link(name = "quickfixbind")]
 extern "C" {
+    pub fn FixSessionSettings_new() -> Option<FixSessionSettings_t>;
     pub fn FixSessionSettings_fromPath(
         configPath: *const ffi::c_char,
     ) -> Option<FixSessionSettings_t>;
