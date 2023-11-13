@@ -31,5 +31,5 @@ Run rust full binding example:
 Following package must be install to build the library:
 
 - `cmake`
-- a C++ compiler
+- a C++ compiler (with C++17 support)
 - `rustup` / `rustc` / `cargo` (obviously 😉)
