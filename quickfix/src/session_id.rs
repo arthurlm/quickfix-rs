@@ -1,14 +1,14 @@
 use std::{ffi::CString, fmt};
 
 use quickfix_ffi::{
-    FixSessionID_delete, FixSessionID_getBeginString, FixSessionID_getSenderCompID,
-    FixSessionID_getSessionQualifier, FixSessionID_getTargetCompID, FixSessionID_isFIXT,
-    FixSessionID_toString,
+    FixSessionID_copy, FixSessionID_delete, FixSessionID_getBeginString,
+    FixSessionID_getSenderCompID, FixSessionID_getSessionQualifier, FixSessionID_getTargetCompID,
+    FixSessionID_isFIXT, FixSessionID_new, FixSessionID_t, FixSessionID_toString,
 };
 
 use crate::{utils::read_checked_cstr, QuickFixError};
 
-pub struct SessionId(pub(crate) quickfix_ffi::FixSessionID_t);
+pub struct SessionId(pub(crate) FixSessionID_t);
 
 impl SessionId {
     pub fn try_new(
@@ -23,7 +23,7 @@ impl SessionId {
         let ffi_session_qualifier = CString::new(session_qualifier)?;
 
         match unsafe {
-            quickfix_ffi::FixSessionID_new(
+            FixSessionID_new(
                 ffi_begin_string.as_ptr(),
                 ffi_sender_comp_id.as_ptr(),
                 ffi_target_comp_id.as_ptr(),
@@ -33,6 +33,10 @@ impl SessionId {
             Some(val) => Ok(Self(val)),
             None => Err(QuickFixError::InvalidFunctionReturn),
         }
+    }
+
+    pub fn try_clone(&self) -> Option<Self> {
+        unsafe { FixSessionID_copy(self.0) }.map(Self)
     }
 
     pub fn get_begin_string(&self) -> Option<String> {
@@ -63,6 +67,12 @@ impl SessionId {
     }
 }
 
+impl Clone for SessionId {
+    fn clone(&self) -> Self {
+        self.try_clone().expect("Fail to copy SessionID")
+    }
+}
+
 impl fmt::Debug for SessionId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_tuple("SessionId").field(&self.as_string()).finish()
@@ -72,5 +82,19 @@ impl fmt::Debug for SessionId {
 impl Drop for SessionId {
     fn drop(&mut self) {
         unsafe { FixSessionID_delete(self.0) }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_clone_have_distinct_ptr() {
+        let session1 = SessionId::try_new("FIX.4.1", "FOO", "BAR", "").unwrap();
+
+        let session2 = session1.clone();
+        assert_ne!(session1.0, session2.0);
+        assert_eq!(session1.as_string(), session2.as_string());
     }
 }

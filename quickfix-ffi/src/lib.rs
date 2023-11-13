@@ -19,7 +19,7 @@ pub struct FixFileLogFactory_t(NonNull<ffi::c_void>);
 #[repr(transparent)]
 pub struct FixApplication_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixSessionID_t(NonNull<ffi::c_void>);
 
@@ -90,6 +90,7 @@ extern "C" {
         targetCompID: *const ffi::c_char,
         sessionQualifier: *const ffi::c_char,
     ) -> Option<FixSessionID_t>;
+    pub fn FixSessionID_copy(src: FixSessionID_t) -> Option<FixSessionID_t>;
     pub fn FixSessionID_getBeginString(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
     pub fn FixSessionID_getSenderCompID(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
     pub fn FixSessionID_getTargetCompID(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;

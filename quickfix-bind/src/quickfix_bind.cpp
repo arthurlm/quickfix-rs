@@ -345,6 +345,22 @@ extern "C"
         }
     }
 
+    FixSessionID_t *
+    FixSessionID_copy(const FixSessionID_t *src)
+    {
+        RETURN_VAL_IF_NULL(src, NULL);
+
+        auto fix_obj = (FIX::SessionID *)(src);
+        try
+        {
+            return (FixSessionID_t *)(new FIX::SessionID(*fix_obj));
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
+    }
+
     const char *FixSessionID_getBeginString(const FixSessionID_t *session)
     {
         RETURN_VAL_IF_NULL(session, NULL);

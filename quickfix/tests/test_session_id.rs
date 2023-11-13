@@ -18,3 +18,16 @@ fn test_fixt() {
     assert!(!session1.is_fixt());
     assert!(session2.is_fixt());
 }
+
+#[test]
+fn test_clone() {
+    let session1 = SessionId::try_new("FIX.4.1", "FOO", "BAR", "").unwrap();
+    assert_eq!(session1.as_string(), "FIX.4.1:FOO->BAR");
+
+    let session2 = session1.clone();
+    assert_eq!(session2.as_string(), "FIX.4.1:FOO->BAR");
+
+    // Test do not crash after drop
+    drop(session1);
+    assert_eq!(session2.as_string(), "FIX.4.1:FOO->BAR");
+}
