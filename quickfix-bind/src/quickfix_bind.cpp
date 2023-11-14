@@ -36,6 +36,29 @@
         return NULL;                                 \
     }
 
+#define SAFE_CXX_CALL(_TYPE_, _OBJ_, _METHOD_) \
+    try                                        \
+    {                                          \
+        auto fix_obj = (_TYPE_ *)(_OBJ_);      \
+        fix_obj->_METHOD_;                     \
+        return 0;                              \
+    }                                          \
+    catch (std::exception & ex)                \
+    {                                          \
+        return ERRNO_EXCEPTION;                \
+    }
+
+#define RETURN_CXX_BOOL_CALL(_TYPE_, _OBJ_, _METHOD_) \
+    try                                               \
+    {                                                 \
+        auto fix_obj = (_TYPE_ *)(_OBJ_);             \
+        return fix_obj->_METHOD_ ? 1 : 0;             \
+    }                                                 \
+    catch (std::exception & ex)                       \
+    {                                                 \
+        return ERRNO_EXCEPTION;                       \
+    }
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -231,94 +254,37 @@ extern "C"
     int8_t FixSocketAcceptor_start(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-
-        auto fix_obj = (FIX::SocketAcceptor *)(obj);
-        try
-        {
-            fix_obj->start();
-        }
-        catch (std::exception &ex)
-        {
-            return ERRNO_EXCEPTION;
-        }
-        return 0;
+        SAFE_CXX_CALL(FIX::SocketAcceptor, obj, start());
     }
 
     int8_t FixSocketAcceptor_block(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-
-        auto fix_obj = (FIX::SocketAcceptor *)(obj);
-        try
-        {
-            fix_obj->block();
-        }
-        catch (std::exception &ex)
-        {
-            return ERRNO_EXCEPTION;
-        }
-        return 0;
+        SAFE_CXX_CALL(FIX::SocketAcceptor, obj, block());
     }
 
     int8_t FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-
-        auto fix_obj = (FIX::SocketAcceptor *)(obj);
-        try
-        {
-            return fix_obj->poll() ? 1 : 0;
-        }
-        catch (std::exception &ex)
-        {
-            return ERRNO_EXCEPTION;
-        }
+        RETURN_CXX_BOOL_CALL(FIX::SocketAcceptor, obj, poll());
     }
 
     int8_t FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-
-        auto fix_obj = (FIX::SocketAcceptor *)(obj);
-        try
-        {
-            fix_obj->stop();
-        }
-        catch (std::exception &ex)
-        {
-            return ERRNO_EXCEPTION;
-        }
-        return 0;
+        SAFE_CXX_CALL(FIX::SocketAcceptor, obj, stop());
     }
 
     int8_t FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-
-        auto fix_obj = (FIX::SocketAcceptor *)(obj);
-        try
-        {
-            return fix_obj->isLoggedOn() ? 1 : 0;
-        }
-        catch (std::exception &ex)
-        {
-            return ERRNO_EXCEPTION;
-        }
+        RETURN_CXX_BOOL_CALL(FIX::SocketAcceptor, obj, isLoggedOn());
     }
 
     int8_t FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-
-        auto fix_obj = (FIX::SocketAcceptor *)(obj);
-        try
-        {
-            return fix_obj->isStopped() ? 1 : 0;
-        }
-        catch (std::exception &ex)
-        {
-            return ERRNO_EXCEPTION;
-        }
+        RETURN_CXX_BOOL_CALL(FIX::SocketAcceptor, obj, isStopped());
     }
 
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj)
@@ -388,16 +354,7 @@ extern "C"
     int8_t FixSessionID_isFIXT(const FixSessionID_t *session)
     {
         RETURN_VAL_IF_NULL(session, ERRNO_INVAL);
-
-        auto fix_obj = (FIX::SessionID *)(session);
-        try
-        {
-            return fix_obj->isFIXT() ? 1 : 0;
-        }
-        catch (std::exception &e)
-        {
-            return ERRNO_EXCEPTION;
-        }
+        RETURN_CXX_BOOL_CALL(FIX::SessionID, session, isFIXT());
     }
 
     const char *FixSessionID_toString(const FixSessionID *session)
@@ -453,17 +410,7 @@ extern "C"
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
-
-        auto fix_obj = (FIX::Message *)(obj);
-        try
-        {
-            fix_obj->setField(tag, value);
-        }
-        catch (std::exception &ex)
-        {
-            return ERRNO_EXCEPTION;
-        }
-        return 0;
+        SAFE_CXX_CALL(FIX::Message, obj, setField(tag, value));
     }
 
     const char *
@@ -486,17 +433,7 @@ extern "C"
     FixMessage_removeField(const FixMessage_t *obj, int32_t tag)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-
-        auto fix_obj = (FIX::Message *)(obj);
-        try
-        {
-            fix_obj->removeField(tag);
-        }
-        catch (std::exception &ex)
-        {
-            return ERRNO_EXCEPTION;
-        }
-        return 0;
+        SAFE_CXX_CALL(FIX::Message, obj, removeField(tag));
     }
 
     int8_t
