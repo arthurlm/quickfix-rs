@@ -6,3 +6,6 @@ edition = "2021"
 [dependencies]
 quickfix-ffi = { path = "../quickfix-ffi" }
 thiserror = "1.0.50"
+
+[dev-dependencies]
+colored = "2.0.4"
