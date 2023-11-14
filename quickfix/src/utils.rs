@@ -18,7 +18,7 @@ pub fn read_checked_cstr(val: NonNull<ffi::c_char>) -> String {
 }
 
 #[inline(always)]
-pub fn ffi_code_to_result(code: ffi::c_int) -> Result<(), QuickFixError> {
+pub fn ffi_code_to_result(code: i8) -> Result<(), QuickFixError> {
     match code {
         0 => Ok(()),
         code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
@@ -26,7 +26,7 @@ pub fn ffi_code_to_result(code: ffi::c_int) -> Result<(), QuickFixError> {
 }
 
 #[inline(always)]
-pub fn ffi_code_to_bool(code: ffi::c_int) -> Result<bool, QuickFixError> {
+pub fn ffi_code_to_bool(code: i8) -> Result<bool, QuickFixError> {
     match code {
         1 => Ok(true),
         0 => Ok(false),

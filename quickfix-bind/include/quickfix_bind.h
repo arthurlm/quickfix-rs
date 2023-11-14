@@ -46,12 +46,12 @@ extern "C"
     void FixApplication_delete(FixApplication_t *obj);
 
     FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory);
-    int FixSocketAcceptor_start(const FixSocketAcceptor_t *obj);
-    int FixSocketAcceptor_block(const FixSocketAcceptor_t *obj);
-    int FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj);
-    int FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj);
-    int FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj);
-    int FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj);
+    int8_t FixSocketAcceptor_start(const FixSocketAcceptor_t *obj);
+    int8_t FixSocketAcceptor_block(const FixSocketAcceptor_t *obj);
+    int8_t FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj);
+    int8_t FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj);
+    int8_t FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj);
+    int8_t FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj);
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj);
 
     FixSessionID_t *FixSessionID_new(const char *beginString, const char *senderCompID, const char *targetCompID, const char *sessionQualifier);
@@ -65,10 +65,10 @@ extern "C"
     void FixSessionID_delete(FixSessionID_t *session);
 
     FixMessage_t *FixMessage_new();
-    int FixMessage_setField(const FixMessage_t *obj, int tag, const char *value);
-    const char *FixMessage_getField(const FixMessage_t *obj, int tag);
-    int FixMessage_removeField(const FixMessage_t *obj, int tag);
-    int FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length);
+    int8_t FixMessage_setField(const FixMessage_t *obj, int32_t tag, const char *value);
+    const char *FixMessage_getField(const FixMessage_t *obj, int32_t tag);
+    int8_t FixMessage_removeField(const FixMessage_t *obj, int32_t tag);
+    int8_t FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length);
     void FixMessage_delete(FixMessage_t *obj);
 
 #ifdef __cplusplus

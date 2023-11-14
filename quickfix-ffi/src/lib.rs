@@ -3,6 +3,8 @@
 
 use std::{ffi, ptr::NonNull};
 
+pub type NullableCStr = Option<NonNull<ffi::c_char>>;
+
 #[derive(Debug, Clone, Copy)]
 #[repr(transparent)]
 pub struct FixSessionSettings_t(NonNull<ffi::c_void>);
@@ -71,17 +73,17 @@ extern "C" {
         logFactory: FixFileLogFactory_t,
     ) -> Option<FixSocketAcceptor_t>;
     #[must_use]
-    pub fn FixSocketAcceptor_start(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    pub fn FixSocketAcceptor_start(obj: FixSocketAcceptor_t) -> i8;
     #[must_use]
-    pub fn FixSocketAcceptor_block(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    pub fn FixSocketAcceptor_block(obj: FixSocketAcceptor_t) -> i8;
     #[must_use]
-    pub fn FixSocketAcceptor_poll(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    pub fn FixSocketAcceptor_poll(obj: FixSocketAcceptor_t) -> i8;
     #[must_use]
-    pub fn FixSocketAcceptor_stop(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    pub fn FixSocketAcceptor_stop(obj: FixSocketAcceptor_t) -> i8;
     #[must_use]
-    pub fn FixSocketAcceptor_isLoggedOn(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    pub fn FixSocketAcceptor_isLoggedOn(obj: FixSocketAcceptor_t) -> i8;
     #[must_use]
-    pub fn FixSocketAcceptor_isStopped(obj: FixSocketAcceptor_t) -> ffi::c_int;
+    pub fn FixSocketAcceptor_isStopped(obj: FixSocketAcceptor_t) -> i8;
     pub fn FixSocketAcceptor_delete(obj: FixSocketAcceptor_t);
 
     pub fn FixSessionID_new(
@@ -91,30 +93,26 @@ extern "C" {
         sessionQualifier: *const ffi::c_char,
     ) -> Option<FixSessionID_t>;
     pub fn FixSessionID_copy(src: FixSessionID_t) -> Option<FixSessionID_t>;
-    pub fn FixSessionID_getBeginString(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
-    pub fn FixSessionID_getSenderCompID(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
-    pub fn FixSessionID_getTargetCompID(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
-    pub fn FixSessionID_getSessionQualifier(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
+    pub fn FixSessionID_getBeginString(obj: FixSessionID_t) -> NullableCStr;
+    pub fn FixSessionID_getSenderCompID(obj: FixSessionID_t) -> NullableCStr;
+    pub fn FixSessionID_getTargetCompID(obj: FixSessionID_t) -> NullableCStr;
+    pub fn FixSessionID_getSessionQualifier(obj: FixSessionID_t) -> NullableCStr;
     pub fn FixSessionID_isFIXT(obj: FixSessionID_t) -> i8;
-    pub fn FixSessionID_toString(obj: FixSessionID_t) -> Option<NonNull<ffi::c_char>>;
+    pub fn FixSessionID_toString(obj: FixSessionID_t) -> NullableCStr;
     pub fn FixSessionID_delete(obj: FixSessionID_t);
 
     pub fn FixMessage_new() -> Option<FixMessage_t>;
     #[must_use]
-    pub fn FixMessage_setField(
-        obj: FixMessage_t,
-        tag: ffi::c_int,
-        value: *const ffi::c_char,
-    ) -> ffi::c_int;
+    pub fn FixMessage_setField(obj: FixMessage_t, tag: i32, value: *const ffi::c_char) -> i8;
     #[must_use]
-    pub fn FixMessage_getField(obj: FixMessage_t, tag: ffi::c_int) -> Option<NonNull<ffi::c_char>>;
+    pub fn FixMessage_getField(obj: FixMessage_t, tag: i32) -> NullableCStr;
     #[must_use]
-    pub fn FixMessage_removeField(obj: FixMessage_t, tag: ffi::c_int) -> ffi::c_int;
+    pub fn FixMessage_removeField(obj: FixMessage_t, tag: i32) -> i8;
     #[must_use]
     pub fn FixMessage_toBuffer(
         obj: FixMessage_t,
         buffer: *mut ffi::c_char,
         length: ffi::c_long,
-    ) -> ffi::c_int;
+    ) -> i8;
     pub fn FixMessage_delete(obj: FixMessage_t);
 }

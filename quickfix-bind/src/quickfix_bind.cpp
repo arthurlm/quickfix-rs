@@ -228,7 +228,7 @@ extern "C"
         }
     }
 
-    int FixSocketAcceptor_start(const FixSocketAcceptor_t *obj)
+    int8_t FixSocketAcceptor_start(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
 
@@ -244,7 +244,7 @@ extern "C"
         return 0;
     }
 
-    int FixSocketAcceptor_block(const FixSocketAcceptor_t *obj)
+    int8_t FixSocketAcceptor_block(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
 
@@ -260,7 +260,7 @@ extern "C"
         return 0;
     }
 
-    int FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj)
+    int8_t FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
 
@@ -275,7 +275,7 @@ extern "C"
         }
     }
 
-    int FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj)
+    int8_t FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
 
@@ -291,7 +291,7 @@ extern "C"
         return 0;
     }
 
-    int FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj)
+    int8_t FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
 
@@ -306,7 +306,7 @@ extern "C"
         }
     }
 
-    int FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj)
+    int8_t FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
 
@@ -434,8 +434,8 @@ extern "C"
         }
     }
 
-    int
-    FixMessage_setField(const FixMessage_t *obj, int tag, const char *value)
+    int8_t
+    FixMessage_setField(const FixMessage_t *obj, int32_t tag, const char *value)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
@@ -453,7 +453,7 @@ extern "C"
     }
 
     const char *
-    FixMessage_getField(const FixMessage_t *obj, int tag)
+    FixMessage_getField(const FixMessage_t *obj, int32_t tag)
     {
         RETURN_VAL_IF_NULL(obj, NULL);
 
@@ -468,8 +468,8 @@ extern "C"
         }
     }
 
-    int
-    FixMessage_removeField(const FixMessage_t *obj, int tag)
+    int8_t
+    FixMessage_removeField(const FixMessage_t *obj, int32_t tag)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
 
@@ -485,7 +485,7 @@ extern "C"
         return 0;
     }
 
-    int
+    int8_t
     FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length)
     {
         if (length == 0)
