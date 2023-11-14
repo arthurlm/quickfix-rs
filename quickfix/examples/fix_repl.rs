@@ -30,34 +30,36 @@ fn main() {
 
     match connect_mode.as_str() {
         "initiator" => {
-            let mut connection_handler =
+            let connection_handler =
                 SocketInitiator::try_new(&settings, &app, &store_factory, &log_factory)
                     .expect("Fail to build connection handler");
 
-            server_loop(&mut connection_handler);
+            server_loop(connection_handler);
         }
         "acceptor" => {
-            let mut connection_handler =
+            let connection_handler =
                 SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)
                     .expect("Fail to build connection handler");
 
-            server_loop(&mut connection_handler);
+            server_loop(connection_handler);
         }
         _ => {
             eprintln!("Invalid connection mode");
             exit(1);
         }
     }
+
+    println!(">> All cleared. Bye !");
 }
 
-fn server_loop<C: ConnectionHandler>(connection_handler: &mut C) {
+fn server_loop<C: ConnectionHandler>(mut connection_handler: C) {
     println!(">> connection handler START");
     connection_handler
         .start()
         .expect("Fail to start connection handler");
 
     let mut shell = FixShell::new();
-    shell.repl(connection_handler);
+    shell.repl(&mut connection_handler);
 
     println!(">> connection handler STOP");
     connection_handler
