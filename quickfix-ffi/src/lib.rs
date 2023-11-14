@@ -34,6 +34,10 @@ pub struct FixMessage_t(NonNull<ffi::c_void>);
 pub struct FixSocketAcceptor_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy)]
+#[repr(transparent)]
+pub struct FixSocketInitiator_t(NonNull<ffi::c_void>);
+
+#[derive(Debug, Clone, Copy)]
 #[repr(C)]
 pub struct FixApplicationCallbacks_t {
     pub onCreate: extern "C" fn(*const ffi::c_void, FixSessionID_t),
@@ -85,6 +89,26 @@ extern "C" {
     #[must_use]
     pub fn FixSocketAcceptor_isStopped(obj: FixSocketAcceptor_t) -> i8;
     pub fn FixSocketAcceptor_delete(obj: FixSocketAcceptor_t);
+
+    pub fn FixSocketInitiator_new(
+        application: FixApplication_t,
+        storeFactory: FixFileStoreFactory_t,
+        settings: FixSessionSettings_t,
+        logFactory: FixFileLogFactory_t,
+    ) -> Option<FixSocketInitiator_t>;
+    #[must_use]
+    pub fn FixSocketInitiator_start(obj: FixSocketInitiator_t) -> i8;
+    #[must_use]
+    pub fn FixSocketInitiator_block(obj: FixSocketInitiator_t) -> i8;
+    #[must_use]
+    pub fn FixSocketInitiator_poll(obj: FixSocketInitiator_t) -> i8;
+    #[must_use]
+    pub fn FixSocketInitiator_stop(obj: FixSocketInitiator_t) -> i8;
+    #[must_use]
+    pub fn FixSocketInitiator_isLoggedOn(obj: FixSocketInitiator_t) -> i8;
+    #[must_use]
+    pub fn FixSocketInitiator_isStopped(obj: FixSocketInitiator_t) -> i8;
+    pub fn FixSocketInitiator_delete(obj: FixSocketInitiator_t);
 
     pub fn FixSessionID_new(
         beginString: *const ffi::c_char,

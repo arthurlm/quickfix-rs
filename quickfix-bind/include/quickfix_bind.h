@@ -18,6 +18,7 @@ extern "C"
     typedef struct FixFileLogFactory FixFileLogFactory_t;
     typedef struct FixApplication FixApplication_t;
     typedef struct FixSocketAcceptor FixSocketAcceptor_t;
+    typedef struct FixSocketInitiator FixSocketInitiator_t;
     typedef struct FixSessionID FixSessionID_t;
     typedef struct FixMessage FixMessage_t;
 
@@ -53,6 +54,15 @@ extern "C"
     int8_t FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj);
     int8_t FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj);
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj);
+
+    FixSocketInitiator_t *FixSocketInitiator_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory);
+    int8_t FixSocketInitiator_start(const FixSocketInitiator_t *obj);
+    int8_t FixSocketInitiator_block(const FixSocketInitiator_t *obj);
+    int8_t FixSocketInitiator_poll(const FixSocketInitiator_t *obj);
+    int8_t FixSocketInitiator_stop(const FixSocketInitiator_t *obj);
+    int8_t FixSocketInitiator_isLoggedOn(const FixSocketInitiator_t *obj);
+    int8_t FixSocketInitiator_isStopped(const FixSocketInitiator_t *obj);
+    void FixSocketInitiator_delete(FixSocketInitiator_t *obj);
 
     FixSessionID_t *FixSessionID_new(const char *beginString, const char *senderCompID, const char *targetCompID, const char *sessionQualifier);
     FixSessionID_t *FixSessionID_copy(const FixSessionID_t *src);

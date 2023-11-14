@@ -6,6 +6,7 @@ mod message;
 mod session_id;
 mod session_settings;
 mod socket_acceptor;
+mod socket_initiator;
 
 mod utils;
 
@@ -17,3 +18,4 @@ pub use message::Message;
 pub use session_id::SessionId;
 pub use session_settings::SessionSettings;
 pub use socket_acceptor::SocketAcceptor;
+pub use socket_initiator::SocketInitiator;

@@ -5,6 +5,7 @@
 #include <quickfix/FileStore.h>
 #include <quickfix/FileLog.h>
 #include <quickfix/SocketAcceptor.h>
+#include <quickfix/SocketInitiator.h>
 #include <quickfix/Session.h>
 #include <quickfix/SessionID.h>
 #include <quickfix/SessionSettings.h>
@@ -229,7 +230,8 @@ extern "C"
         DELETE_OBJ(ApplicationBind, obj);
     }
 
-    FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory)
+    FixSocketAcceptor_t *
+    FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory)
     {
         RETURN_VAL_IF_NULL(application, NULL);
         RETURN_VAL_IF_NULL(storeFactory, NULL);
@@ -251,46 +253,125 @@ extern "C"
         }
     }
 
-    int8_t FixSocketAcceptor_start(const FixSocketAcceptor_t *obj)
+    int8_t
+    FixSocketAcceptor_start(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         SAFE_CXX_CALL(FIX::SocketAcceptor, obj, start());
     }
 
-    int8_t FixSocketAcceptor_block(const FixSocketAcceptor_t *obj)
+    int8_t
+    FixSocketAcceptor_block(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         SAFE_CXX_CALL(FIX::SocketAcceptor, obj, block());
     }
 
-    int8_t FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj)
+    int8_t
+    FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         RETURN_CXX_BOOL_CALL(FIX::SocketAcceptor, obj, poll());
     }
 
-    int8_t FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj)
+    int8_t
+    FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         SAFE_CXX_CALL(FIX::SocketAcceptor, obj, stop());
     }
 
-    int8_t FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj)
+    int8_t
+    FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         RETURN_CXX_BOOL_CALL(FIX::SocketAcceptor, obj, isLoggedOn());
     }
 
-    int8_t FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj)
+    int8_t
+    FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         RETURN_CXX_BOOL_CALL(FIX::SocketAcceptor, obj, isStopped());
     }
 
-    void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj)
+    void
+    FixSocketAcceptor_delete(FixSocketAcceptor_t *obj)
     {
         RETURN_IF_NULL(obj);
         DELETE_OBJ(FIX::SocketAcceptor, obj);
+    }
+
+    FixSocketInitiator_t *
+    FixSocketInitiator_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory)
+    {
+        RETURN_VAL_IF_NULL(application, NULL);
+        RETURN_VAL_IF_NULL(storeFactory, NULL);
+        RETURN_VAL_IF_NULL(logFactory, NULL);
+        RETURN_VAL_IF_NULL(settings, NULL);
+
+        auto fix_application = (ApplicationBind *)(application);
+        auto fix_store_factory = (FIX::FileStoreFactory *)(storeFactory);
+        auto fix_log_factory = (FIX::FileLogFactory *)(logFactory);
+        auto fix_settings = (FIX::SessionSettings *)(settings);
+
+        try
+        {
+            return (FixSocketInitiator_t *)(new FIX::SocketInitiator(*fix_application, *fix_store_factory, *fix_settings, *fix_log_factory));
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
+    }
+
+    int8_t
+    FixSocketInitiator_start(const FixSocketInitiator_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        SAFE_CXX_CALL(FIX::SocketInitiator, obj, start());
+    }
+
+    int8_t
+    FixSocketInitiator_block(const FixSocketInitiator_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        SAFE_CXX_CALL(FIX::SocketInitiator, obj, block());
+    }
+
+    int8_t
+    FixSocketInitiator_poll(const FixSocketInitiator_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_CXX_BOOL_CALL(FIX::SocketInitiator, obj, poll());
+    }
+
+    int8_t
+    FixSocketInitiator_stop(const FixSocketInitiator_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        SAFE_CXX_CALL(FIX::SocketInitiator, obj, stop());
+    }
+
+    int8_t
+    FixSocketInitiator_isLoggedOn(const FixSocketInitiator_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_CXX_BOOL_CALL(FIX::SocketInitiator, obj, isLoggedOn());
+    }
+
+    int8_t
+    FixSocketInitiator_isStopped(const FixSocketInitiator_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_CXX_BOOL_CALL(FIX::SocketInitiator, obj, isStopped());
+    }
+
+    void
+    FixSocketInitiator_delete(FixSocketInitiator_t *obj)
+    {
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::SocketInitiator, obj);
     }
 
     FixSessionID_t *
