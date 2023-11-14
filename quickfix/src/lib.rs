@@ -19,3 +19,12 @@ pub use session_id::SessionId;
 pub use session_settings::SessionSettings;
 pub use socket_acceptor::SocketAcceptor;
 pub use socket_initiator::SocketInitiator;
+
+pub trait ConnectionHandler {
+    fn start(&mut self) -> Result<(), QuickFixError>;
+    fn block(&mut self) -> Result<(), QuickFixError>;
+    fn poll(&mut self) -> Result<bool, QuickFixError>;
+    fn stop(&mut self) -> Result<(), QuickFixError>;
+    fn is_logged_on(&self) -> Result<bool, QuickFixError>;
+    fn is_stopped(&self) -> Result<bool, QuickFixError>;
+}

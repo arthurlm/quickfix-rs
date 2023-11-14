@@ -8,8 +8,8 @@ use quickfix_ffi::{
 
 use crate::{
     utils::{ffi_code_to_bool, ffi_code_to_result},
-    Application, ApplicationCallback, FileLogFactory, FileStoreFactory, QuickFixError,
-    SessionSettings,
+    Application, ApplicationCallback, ConnectionHandler, FileLogFactory, FileStoreFactory,
+    QuickFixError, SessionSettings,
 };
 
 #[derive(Debug)]
@@ -35,28 +35,30 @@ impl<'a, C: ApplicationCallback> SocketAcceptor<'a, C> {
             None => Err(QuickFixError::InvalidFunctionReturn),
         }
     }
+}
 
-    pub fn start(&mut self) -> Result<(), QuickFixError> {
+impl<C: ApplicationCallback> ConnectionHandler for SocketAcceptor<'_, C> {
+    fn start(&mut self) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixSocketAcceptor_start(self.inner) })
     }
 
-    pub fn block(&mut self) -> Result<(), QuickFixError> {
+    fn block(&mut self) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixSocketAcceptor_block(self.inner) })
     }
 
-    pub fn poll(&mut self) -> Result<bool, QuickFixError> {
+    fn poll(&mut self) -> Result<bool, QuickFixError> {
         ffi_code_to_bool(unsafe { FixSocketAcceptor_poll(self.inner) })
     }
 
-    pub fn stop(&mut self) -> Result<(), QuickFixError> {
+    fn stop(&mut self) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixSocketAcceptor_stop(self.inner) })
     }
 
-    pub fn is_logged_on(&self) -> Result<bool, QuickFixError> {
+    fn is_logged_on(&self) -> Result<bool, QuickFixError> {
         ffi_code_to_bool(unsafe { FixSocketAcceptor_isLoggedOn(self.inner) })
     }
 
-    pub fn is_stopped(&self) -> Result<bool, QuickFixError> {
+    fn is_stopped(&self) -> Result<bool, QuickFixError> {
         ffi_code_to_bool(unsafe { FixSocketAcceptor_isStopped(self.inner) })
     }
 }
