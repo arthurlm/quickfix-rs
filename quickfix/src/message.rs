@@ -1,8 +1,8 @@
 use std::{ffi::CString, fmt};
 
 use quickfix_ffi::{
-    FixMessage_delete, FixMessage_getField, FixMessage_new, FixMessage_removeField,
-    FixMessage_setField, FixMessage_toBuffer,
+    FixMessage_delete, FixMessage_fromString, FixMessage_getField, FixMessage_new,
+    FixMessage_removeField, FixMessage_setField, FixMessage_toBuffer,
 };
 
 use crate::{
@@ -14,10 +14,16 @@ pub struct Message(pub(crate) quickfix_ffi::FixMessage_t);
 
 impl Message {
     pub fn try_new() -> Result<Self, QuickFixError> {
-        match unsafe { FixMessage_new() } {
-            Some(val) => Ok(Self(val)),
-            None => Err(QuickFixError::InvalidFunctionReturn),
-        }
+        unsafe { FixMessage_new() }
+            .map(Self)
+            .ok_or(QuickFixError::InvalidFunctionReturn)
+    }
+
+    pub fn try_from_text(text: &str) -> Result<Self, QuickFixError> {
+        let ffi_text = CString::new(text)?;
+        unsafe { FixMessage_fromString(ffi_text.as_ptr()) }
+            .map(Self)
+            .ok_or(QuickFixError::InvalidFunctionReturn)
     }
 
     pub fn set_field(&mut self, tag: i32, value: &str) -> Result<(), QuickFixError> {

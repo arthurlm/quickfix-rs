@@ -65,6 +65,7 @@ extern "C"
     void FixSessionID_delete(FixSessionID_t *session);
 
     FixMessage_t *FixMessage_new();
+    FixMessage_t *FixMessage_fromString(const char *text);
     int8_t FixMessage_setField(const FixMessage_t *obj, int32_t tag, const char *value);
     const char *FixMessage_getField(const FixMessage_t *obj, int32_t tag);
     int8_t FixMessage_removeField(const FixMessage_t *obj, int32_t tag);

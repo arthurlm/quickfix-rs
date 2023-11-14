@@ -7,6 +7,36 @@ fn test_read_empy_message() {
 }
 
 #[test]
+fn test_from_text() {
+    // Check compute len + checksum
+    {
+        let msg = Message::try_from_text("").unwrap();
+        assert_eq!(msg.as_string().as_deref(), Ok("9=0\u{1}10=167\u{1}"));
+    }
+    // Check recompute len + checksum
+    {
+        let msg = Message::try_from_text("9=0\u{1}10=000\u{1}").unwrap();
+        assert_eq!(msg.as_string().as_deref(), Ok("9=0\u{1}10=167\u{1}"));
+    }
+    // Check compute len + checksum
+    {
+        let msg = Message::try_from_text("42=foo\u{1}56=bar\u{1}").unwrap();
+        assert_eq!(
+            msg.as_string().as_deref(),
+            Ok("9=14\u{1}56=bar\u{1}42=foo\u{1}10=162\u{1}")
+        );
+    }
+    // Check recompute len + checksum
+    {
+        let msg = Message::try_from_text("9=14\u{1}56=bar\u{1}42=foo\u{1}10=162\u{1}").unwrap();
+        assert_eq!(
+            msg.as_string().as_deref(),
+            Ok("9=14\u{1}56=bar\u{1}42=foo\u{1}10=162\u{1}")
+        );
+    }
+}
+
+#[test]
 fn test_set_field() {
     let mut msg = Message::try_new().unwrap();
     msg.set_field(42, "foo").unwrap();

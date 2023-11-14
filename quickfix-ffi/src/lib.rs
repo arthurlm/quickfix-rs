@@ -102,6 +102,7 @@ extern "C" {
     pub fn FixSessionID_delete(obj: FixSessionID_t);
 
     pub fn FixMessage_new() -> Option<FixMessage_t>;
+    pub fn FixMessage_fromString(text: *const ffi::c_char) -> Option<FixMessage_t>;
     #[must_use]
     pub fn FixMessage_setField(obj: FixMessage_t, tag: i32, value: *const ffi::c_char) -> i8;
     #[must_use]

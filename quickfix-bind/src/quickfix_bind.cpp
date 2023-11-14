@@ -434,6 +434,20 @@ extern "C"
         }
     }
 
+    FixMessage_t *
+    FixMessage_fromString(const char *text)
+    {
+        RETURN_VAL_IF_NULL(text, NULL);
+        try
+        {
+            return (FixMessage_t *)(new FIX::Message(text, /* validate = */ false));
+        }
+        catch (std::exception &ex)
+        {
+            return NULL;
+        }
+    }
+
     int8_t
     FixMessage_setField(const FixMessage_t *obj, int32_t tag, const char *value)
     {
