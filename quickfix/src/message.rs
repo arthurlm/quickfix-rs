@@ -7,7 +7,7 @@ use quickfix_ffi::{
 
 use crate::{
     utils::{ffi_code_to_result, read_buffer_to_string, read_checked_cstr},
-    QuickFixError,
+    FieldMap, QuickFixError,
 };
 
 pub struct Message(pub(crate) quickfix_ffi::FixMessage_t);
@@ -26,19 +26,6 @@ impl Message {
             .ok_or(QuickFixError::InvalidFunctionReturn)
     }
 
-    pub fn set_field(&mut self, tag: i32, value: &str) -> Result<(), QuickFixError> {
-        let ffi_value = CString::new(value)?;
-        ffi_code_to_result(unsafe { FixMessage_setField(self.0, tag, ffi_value.as_ptr()) })
-    }
-
-    pub fn get_field(&self, tag: i32) -> Option<String> {
-        unsafe { FixMessage_getField(self.0, tag) }.map(read_checked_cstr)
-    }
-
-    pub fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
-        ffi_code_to_result(unsafe { FixMessage_removeField(self.0, tag) })
-    }
-
     pub fn as_string(&self) -> Result<String, QuickFixError> {
         self.as_string_with_len(4096 /* 1 page */)
     }
@@ -50,6 +37,21 @@ impl Message {
             0 => Ok(read_buffer_to_string(&buffer)),
             code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
         }
+    }
+}
+
+impl FieldMap for Message {
+    fn get_field(&self, tag: i32) -> Option<String> {
+        unsafe { FixMessage_getField(self.0, tag) }.map(read_checked_cstr)
+    }
+
+    fn set_field(&mut self, tag: i32, value: &str) -> Result<(), QuickFixError> {
+        let ffi_value = CString::new(value)?;
+        ffi_code_to_result(unsafe { FixMessage_setField(self.0, tag, ffi_value.as_ptr()) })
+    }
+
+    fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
+        ffi_code_to_result(unsafe { FixMessage_removeField(self.0, tag) })
     }
 }
 

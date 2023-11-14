@@ -28,3 +28,9 @@ pub trait ConnectionHandler {
     fn is_logged_on(&self) -> Result<bool, QuickFixError>;
     fn is_stopped(&self) -> Result<bool, QuickFixError>;
 }
+
+pub trait FieldMap {
+    fn get_field(&self, tag: i32) -> Option<String>;
+    fn set_field(&mut self, tag: i32, value: &str) -> Result<(), QuickFixError>;
+    fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError>;
+}

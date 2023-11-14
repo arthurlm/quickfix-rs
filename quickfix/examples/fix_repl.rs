@@ -7,8 +7,8 @@ use std::{
 
 use colored::Colorize;
 use quickfix::{
-    Application, ApplicationCallback, ConnectionHandler, FileLogFactory, FileStoreFactory, Message,
-    SessionId, SessionSettings, SocketAcceptor, SocketInitiator,
+    Application, ApplicationCallback, ConnectionHandler, FieldMap, FileLogFactory,
+    FileStoreFactory, Message, SessionId, SessionSettings, SocketAcceptor, SocketInitiator,
 };
 
 fn main() {
