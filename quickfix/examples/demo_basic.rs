@@ -30,7 +30,6 @@ fn main() {
     println!(">> Acceptor START");
     acceptor.start().expect("Fail to start acceptor");
 
-    println!(">> Type 'help', 'quit' for more information.");
     let mut shell = FixShell::new();
     shell.repl(&mut acceptor);
 
@@ -137,7 +136,7 @@ impl FixShell<'_> {
 
     fn wait_user_input(&mut self) -> io::Result<()> {
         let mut stdout = stdout().lock();
-        write!(stdout, "quickfix> ")?;
+        write!(stdout, "FIX> ")?;
         stdout.flush()?;
 
         self.last_command.clear();
@@ -147,6 +146,8 @@ impl FixShell<'_> {
     }
 
     fn repl<C: ApplicationCallback>(&mut self, acceptor: &mut SocketAcceptor<'_, C>) {
+        println!(">> Type 'help' or '?' for more information, 'quit' or 'q' to exit.");
+
         loop {
             self.wait_user_input().expect("I/O error");
 
@@ -158,13 +159,14 @@ impl FixShell<'_> {
             // Handle other commands
             match self.last_command.trim() {
                 "quit" | "q" => break,
-                "help" => {
+                "help" | "?" => {
                     println!("Available commands:");
-                    println!("- status: Print Socket acceptor status");
-                    println!("- start:  Start socket acceptor");
-                    println!("- block:  Block socket acceptor");
-                    println!("- poll:   Poll socket acceptor");
-                    println!("- stop:   Stop socket acceptor");
+                    println!("- status              : Print Socket acceptor status");
+                    println!("- start               : Start socket acceptor");
+                    println!("- block               : Block socket acceptor");
+                    println!("- poll                : Poll socket acceptor");
+                    println!("- stop                : Stop socket acceptor");
+                    println!("- msg K1=V1 K2=V2 ... : Create new FIX message");
                 }
                 "status" => {
                     println!(
@@ -186,8 +188,22 @@ impl FixShell<'_> {
                     println!("RESULT: {:?}", acceptor.poll());
                 }
                 "" => {}
-                _ => {
-                    eprintln!("UNKNOWN COMMAND: {}", self.last_command)
+                cmd if cmd.starts_with("msg ") => {
+                    let mut msg = Message::try_new().expect("Fail to create FIX message");
+
+                    for token in cmd.split_whitespace() {
+                        let mut token_iter = token.trim().splitn(2, '=');
+                        let fix_tag: i32 = token_iter.next().unwrap_or("0").parse().unwrap_or(0);
+                        let fix_val = token_iter.next().unwrap_or("N/A");
+
+                        msg.set_field(fix_tag, fix_val)
+                            .expect("Fail to set FIX value");
+                    }
+
+                    println!("Message: {msg:?}");
+                }
+                cmd => {
+                    eprintln!("UNKNOWN COMMAND: {cmd}")
                 }
             };
         }
