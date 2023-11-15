@@ -5,19 +5,19 @@ use std::{ffi, ptr::NonNull};
 
 pub type NullableCStr = Option<NonNull<ffi::c_char>>;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixSessionSettings_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixFileStoreFactory_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixFileLogFactory_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixApplication_t(NonNull<ffi::c_void>);
 
@@ -25,31 +25,31 @@ pub struct FixApplication_t(NonNull<ffi::c_void>);
 #[repr(transparent)]
 pub struct FixSessionID_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixMessage_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixSocketAcceptor_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixSocketInitiator_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixHeader_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixTrailer_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixGroup_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(C)]
 pub struct FixApplicationCallbacks_t {
     pub onCreate: extern "C" fn(*const ffi::c_void, FixSessionID_t),
