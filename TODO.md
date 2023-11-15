@@ -5,5 +5,7 @@
 - [x] Add CI.
 - [x] Doc.
 - [x] Explain about design.
+- [ ] Add more tests
+- [x] Add minimal binding example
 - [ ] Add basic capabilities for order sending / receiving.
 - [ ] Make PR to explain idea behind the crate.
