@@ -1,16 +1,20 @@
-use std::{ffi::CString, fmt};
+use std::{ffi::CString, fmt, mem::ManuallyDrop};
 
 use quickfix_ffi::{
-    FixMessage_delete, FixMessage_fromString, FixMessage_getField, FixMessage_new,
-    FixMessage_removeField, FixMessage_setField, FixMessage_toBuffer,
+    FixMessage_delete, FixMessage_fromString, FixMessage_getField, FixMessage_getGroupRef,
+    FixMessage_getHeaderRef, FixMessage_getTrailerRef, FixMessage_new, FixMessage_removeField,
+    FixMessage_setField, FixMessage_t, FixMessage_toBuffer,
 };
 
 use crate::{
+    group::Group,
+    header::Header,
+    trailer::Trailer,
     utils::{ffi_code_to_result, read_buffer_to_string, read_checked_cstr},
     FieldMap, QuickFixError,
 };
 
-pub struct Message(pub(crate) quickfix_ffi::FixMessage_t);
+pub struct Message(pub(crate) FixMessage_t);
 
 impl Message {
     pub fn try_new() -> Result<Self, QuickFixError> {
@@ -36,6 +40,78 @@ impl Message {
         match unsafe { FixMessage_toBuffer(self.0, buffer_ptr, max_len as i64) } {
             0 => Ok(read_buffer_to_string(&buffer)),
             code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+        }
+    }
+
+    pub fn with_header<T, F>(&self, f: F) -> Result<T, QuickFixError>
+    where
+        F: FnOnce(&Header) -> T,
+    {
+        if let Some(ptr) = unsafe { FixMessage_getHeaderRef(self.0) } {
+            let obj = ManuallyDrop::new(Header(ptr));
+            Ok(f(&obj))
+        } else {
+            Err(QuickFixError::InvalidFunctionReturn)
+        }
+    }
+
+    pub fn with_header_mut<T, F>(&mut self, f: F) -> Result<T, QuickFixError>
+    where
+        F: FnOnce(&mut Header) -> T,
+    {
+        if let Some(ptr) = unsafe { FixMessage_getHeaderRef(self.0) } {
+            let mut obj = ManuallyDrop::new(Header(ptr));
+            Ok(f(&mut obj))
+        } else {
+            Err(QuickFixError::InvalidFunctionReturn)
+        }
+    }
+
+    pub fn with_trailer<T, F>(&self, f: F) -> Result<T, QuickFixError>
+    where
+        F: FnOnce(&Trailer) -> T,
+    {
+        if let Some(ptr) = unsafe { FixMessage_getTrailerRef(self.0) } {
+            let obj = ManuallyDrop::new(Trailer(ptr));
+            Ok(f(&obj))
+        } else {
+            Err(QuickFixError::InvalidFunctionReturn)
+        }
+    }
+
+    pub fn with_trailer_mut<T, F>(&mut self, f: F) -> Result<T, QuickFixError>
+    where
+        F: FnOnce(&mut Trailer) -> T,
+    {
+        if let Some(ptr) = unsafe { FixMessage_getTrailerRef(self.0) } {
+            let mut obj = ManuallyDrop::new(Trailer(ptr));
+            Ok(f(&mut obj))
+        } else {
+            Err(QuickFixError::InvalidFunctionReturn)
+        }
+    }
+
+    pub fn with_group<T, F>(&self, index: i32, tag: i32, f: F) -> Result<T, QuickFixError>
+    where
+        F: FnOnce(&Group) -> T,
+    {
+        if let Some(ptr) = unsafe { FixMessage_getGroupRef(self.0, index, tag) } {
+            let obj = ManuallyDrop::new(Group(ptr));
+            Ok(f(&obj))
+        } else {
+            Err(QuickFixError::InvalidFunctionReturn)
+        }
+    }
+
+    pub fn with_group_mut<T, F>(&mut self, index: i32, tag: i32, f: F) -> Result<T, QuickFixError>
+    where
+        F: FnOnce(&mut Group) -> T,
+    {
+        if let Some(ptr) = unsafe { FixMessage_getGroupRef(self.0, index, tag) } {
+            let mut obj = ManuallyDrop::new(Group(ptr));
+            Ok(f(&mut obj))
+        } else {
+            Err(QuickFixError::InvalidFunctionReturn)
         }
     }
 }

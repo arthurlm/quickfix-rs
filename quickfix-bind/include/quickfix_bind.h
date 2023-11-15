@@ -21,6 +21,9 @@ extern "C"
     typedef struct FixSocketInitiator FixSocketInitiator_t;
     typedef struct FixSessionID FixSessionID_t;
     typedef struct FixMessage FixMessage_t;
+    typedef struct FixHeader FixHeader_t;
+    typedef struct FixTrailer FixTrailer_t;
+    typedef struct FixGroup FixGroup_t;
 
     typedef struct FixApplicationCallbacks
     {
@@ -81,6 +84,21 @@ extern "C"
     int8_t FixMessage_removeField(const FixMessage_t *obj, int32_t tag);
     int8_t FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length);
     void FixMessage_delete(FixMessage_t *obj);
+
+    FixHeader_t *FixMessage_getHeaderRef(const FixMessage_t *obj);
+    const char *FixHeader_getField(const FixHeader_t *obj, int32_t tag);
+    int8_t FixHeader_setField(const FixHeader_t *obj, int32_t tag, const char *value);
+    int8_t FixHeader_removeField(const FixHeader_t *obj, int32_t tag);
+
+    FixTrailer_t *FixMessage_getTrailerRef(const FixMessage_t *obj);
+    const char *FixTrailer_getField(const FixTrailer_t *obj, int32_t tag);
+    int8_t FixTrailer_setField(const FixTrailer_t *obj, int32_t tag, const char *value);
+    int8_t FixTrailer_removeField(const FixTrailer_t *obj, int32_t tag);
+
+    FixGroup_t *FixMessage_getGroupRef(const FixMessage_t *obj, int32_t num, int32_t tag);
+    const char *FixGroup_getField(const FixGroup_t *obj, int32_t tag);
+    int8_t FixGroup_setField(const FixGroup_t *obj, int32_t tag, const char *value);
+    int8_t FixGroup_removeField(const FixGroup_t *obj, int32_t tag);
 
 #ifdef __cplusplus
 }

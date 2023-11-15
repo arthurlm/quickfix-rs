@@ -11,6 +11,7 @@
 #include <quickfix/SessionSettings.h>
 #include <quickfix/Application.h>
 #include <quickfix/Message.h>
+#include <quickfix/Group.h>
 
 #define RETURN_IF_NULL(_OBJ_) \
     if ((_OBJ_) == nullptr)   \
@@ -488,6 +489,111 @@ extern "C"
     {
         RETURN_IF_NULL(obj);
         DELETE_OBJ(FIX::Message, obj);
+    }
+
+    FixHeader_t *
+    FixMessage_getHeaderRef(const FixMessage_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, NULL);
+        CATCH_OR_RETURN_NULL({
+            auto fix_obj = (FIX::Message *)(obj);
+            return (FixHeader_t *)(&fix_obj->getHeader());
+        });
+    }
+
+    const char *
+    FixHeader_getField(const FixHeader_t *obj, int32_t tag)
+    {
+        RETURN_VAL_IF_NULL(obj, NULL);
+        CATCH_OR_RETURN_NULL({
+            auto fix_obj = (FIX::Header *)(obj);
+            return fix_obj->getField(tag).c_str();
+        });
+    }
+
+    int8_t
+    FixHeader_setField(const FixHeader_t *obj, int32_t tag, const char *value)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+        SAFE_CXX_CALL(FIX::Header, obj, setField(tag, value));
+    }
+
+    int8_t
+    FixHeader_removeField(const FixHeader_t *obj, int32_t tag)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        SAFE_CXX_CALL(FIX::Header, obj, removeField(tag));
+    }
+
+    FixTrailer_t *
+    FixMessage_getTrailerRef(const FixMessage_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, NULL);
+        CATCH_OR_RETURN_NULL({
+            auto fix_obj = (FIX::Message *)(obj);
+            return (FixTrailer_t *)(&fix_obj->getTrailer());
+        });
+    }
+
+    const char *
+    FixTrailer_getField(const FixTrailer_t *obj, int32_t tag)
+    {
+        RETURN_VAL_IF_NULL(obj, NULL);
+        CATCH_OR_RETURN_NULL({
+            auto fix_obj = (FIX::Trailer *)(obj);
+            return fix_obj->getField(tag).c_str();
+        });
+    }
+
+    int8_t
+    FixTrailer_setField(const FixTrailer_t *obj, int32_t tag, const char *value)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+        SAFE_CXX_CALL(FIX::Trailer, obj, setField(tag, value));
+    }
+
+    int8_t
+    FixTrailer_removeField(const FixTrailer_t *obj, int32_t tag)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        SAFE_CXX_CALL(FIX::Trailer, obj, removeField(tag));
+    }
+
+    FixGroup_t *
+    FixMessage_getGroupRef(const FixMessage_t *obj, int32_t num, int32_t tag)
+    {
+        RETURN_VAL_IF_NULL(obj, NULL);
+        CATCH_OR_RETURN_NULL({
+            auto fix_obj = (FIX::Message *)(obj);
+            return (FixGroup_t *)(fix_obj->getGroupPtr(num, tag));
+        });
+    }
+
+    const char *
+    FixGroup_getField(const FixGroup_t *obj, int32_t tag)
+    {
+        RETURN_VAL_IF_NULL(obj, NULL);
+        CATCH_OR_RETURN_NULL({
+            auto fix_obj = (FIX::Group *)(obj);
+            return fix_obj->getField(tag).c_str();
+        });
+    }
+
+    int8_t
+    FixGroup_setField(const FixGroup_t *obj, int32_t tag, const char *value)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+        SAFE_CXX_CALL(FIX::Group, obj, setField(tag, value));
+    }
+
+    int8_t
+    FixGroup_removeField(const FixGroup_t *obj, int32_t tag)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        SAFE_CXX_CALL(FIX::Group, obj, removeField(tag));
     }
 
 #ifdef __cplusplus

@@ -38,6 +38,18 @@ pub struct FixSocketAcceptor_t(NonNull<ffi::c_void>);
 pub struct FixSocketInitiator_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy)]
+#[repr(transparent)]
+pub struct FixHeader_t(NonNull<ffi::c_void>);
+
+#[derive(Debug, Clone, Copy)]
+#[repr(transparent)]
+pub struct FixTrailer_t(NonNull<ffi::c_void>);
+
+#[derive(Debug, Clone, Copy)]
+#[repr(transparent)]
+pub struct FixGroup_t(NonNull<ffi::c_void>);
+
+#[derive(Debug, Clone, Copy)]
 #[repr(C)]
 pub struct FixApplicationCallbacks_t {
     pub onCreate: extern "C" fn(*const ffi::c_void, FixSessionID_t),
@@ -140,4 +152,19 @@ extern "C" {
         length: ffi::c_long,
     ) -> i8;
     pub fn FixMessage_delete(obj: FixMessage_t);
+
+    pub fn FixMessage_getHeaderRef(obj: FixMessage_t) -> Option<FixHeader_t>;
+    pub fn FixHeader_getField(obj: FixHeader_t, tag: i32) -> NullableCStr;
+    pub fn FixHeader_setField(obj: FixHeader_t, tag: i32, value: *const ffi::c_char) -> i8;
+    pub fn FixHeader_removeField(obj: FixHeader_t, tag: i32) -> i8;
+
+    pub fn FixMessage_getTrailerRef(obj: FixMessage_t) -> Option<FixTrailer_t>;
+    pub fn FixTrailer_getField(obj: FixTrailer_t, tag: i32) -> NullableCStr;
+    pub fn FixTrailer_setField(obj: FixTrailer_t, tag: i32, value: *const ffi::c_char) -> i8;
+    pub fn FixTrailer_removeField(obj: FixTrailer_t, tag: i32) -> i8;
+
+    pub fn FixMessage_getGroupRef(obj: FixMessage_t, num: i32, tag: i32) -> Option<FixGroup_t>;
+    pub fn FixGroup_getField(obj: FixGroup_t, tag: i32) -> NullableCStr;
+    pub fn FixGroup_setField(obj: FixGroup_t, tag: i32, value: *const ffi::c_char) -> i8;
+    pub fn FixGroup_removeField(obj: FixGroup_t, tag: i32) -> i8;
 }

@@ -2,11 +2,14 @@ mod application;
 mod error;
 mod file_log_factory;
 mod file_store_factory;
+mod group;
+mod header;
 mod message;
 mod session_id;
 mod session_settings;
 mod socket_acceptor;
 mod socket_initiator;
+mod trailer;
 
 mod utils;
 
