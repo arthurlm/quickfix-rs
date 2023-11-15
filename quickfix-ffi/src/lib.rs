@@ -181,4 +181,6 @@ extern "C" {
     pub fn FixGroup_getField(obj: FixGroup_t, tag: i32) -> NullableCStr;
     pub fn FixGroup_setField(obj: FixGroup_t, tag: i32, value: *const ffi::c_char) -> i8;
     pub fn FixGroup_removeField(obj: FixGroup_t, tag: i32) -> i8;
+
+    pub fn FixSession_sendToTarget(msg: FixMessage_t, session_id: FixSessionID_t) -> i8;
 }

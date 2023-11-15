@@ -636,6 +636,21 @@ extern "C"
         SAFE_CXX_CALL(FIX::Group, obj, removeField(tag));
     }
 
+    int8_t
+    FixSession_sendToTarget(const FixMessage_t *msg, const FixSessionID_t *session_id)
+    {
+        RETURN_VAL_IF_NULL(msg, NULL);
+        RETURN_VAL_IF_NULL(session_id, NULL);
+
+        auto fix_msg = (FIX::Message *)(msg);
+        auto fix_session_id = (FIX::SessionID *)(session_id);
+
+        CATCH_OR_RETURN_ERRNO({
+            FIX::Session::sendToTarget(*fix_msg, *fix_session_id);
+            return 0;
+        });
+    }
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

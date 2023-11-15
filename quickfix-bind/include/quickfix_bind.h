@@ -108,6 +108,8 @@ extern "C"
     int8_t FixGroup_setField(const FixGroup_t *obj, int32_t tag, const char *value);
     int8_t FixGroup_removeField(const FixGroup_t *obj, int32_t tag);
 
+    int8_t FixSession_sendToTarget(const FixMessage_t *msg, const FixSessionID_t *session_id);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
