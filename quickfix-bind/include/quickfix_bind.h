@@ -76,8 +76,8 @@ extern "C"
 
     FixMessage_t *FixMessage_new();
     FixMessage_t *FixMessage_fromString(const char *text);
-    int8_t FixMessage_setField(const FixMessage_t *obj, int32_t tag, const char *value);
     const char *FixMessage_getField(const FixMessage_t *obj, int32_t tag);
+    int8_t FixMessage_setField(const FixMessage_t *obj, int32_t tag, const char *value);
     int8_t FixMessage_removeField(const FixMessage_t *obj, int32_t tag);
     int8_t FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length);
     void FixMessage_delete(FixMessage_t *obj);

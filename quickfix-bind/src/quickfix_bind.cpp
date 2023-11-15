@@ -60,79 +60,79 @@
         return ERRNO_EXCEPTION;                       \
     }
 
+class ApplicationBind : public FIX::Application
+{
+private:
+    const FixApplicationCallbacks_t *callbacks;
+    const void *data;
+
+public:
+    ApplicationBind(const void *data, const FixApplicationCallbacks_t *callbacks)
+        : callbacks(callbacks), data(data)
+    {
+    }
+
+    ApplicationBind(const ApplicationBind &) = delete;
+    ApplicationBind &operator=(const ApplicationBind &) = delete;
+
+    virtual ~ApplicationBind()
+    {
+    }
+
+    void onCreate(const FIX::SessionID &session) override
+    {
+        RETURN_IF_NULL(callbacks);
+        RETURN_IF_NULL(callbacks->onCreate);
+        callbacks->onCreate(data, (FixSessionID_t *)(&session));
+    }
+
+    void onLogon(const FIX::SessionID &session) override
+    {
+        RETURN_IF_NULL(callbacks);
+        RETURN_IF_NULL(callbacks->onLogon);
+        callbacks->onLogon(data, (FixSessionID_t *)(&session));
+    }
+
+    void onLogout(const FIX::SessionID &session) override
+    {
+        RETURN_IF_NULL(callbacks);
+        RETURN_IF_NULL(callbacks->onLogout);
+        callbacks->onLogout(data, (FixSessionID_t *)(&session));
+    }
+
+    void toAdmin(FIX::Message &msg, const FIX::SessionID &session) override
+    {
+        RETURN_IF_NULL(callbacks);
+        RETURN_IF_NULL(callbacks->toAdmin);
+        callbacks->toAdmin(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+    }
+
+    void toApp(FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::DoNotSend) override
+    {
+        RETURN_IF_NULL(callbacks);
+        RETURN_IF_NULL(callbacks->toApp);
+        callbacks->toApp(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+    }
+
+    void fromAdmin(const FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) override
+    {
+        RETURN_IF_NULL(callbacks);
+        RETURN_IF_NULL(callbacks->fromAdmin);
+        callbacks->fromAdmin(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+    }
+
+    void fromApp(const FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) override
+    {
+        RETURN_IF_NULL(callbacks);
+        RETURN_IF_NULL(callbacks->fromApp);
+        callbacks->fromApp(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+    }
+};
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-    class ApplicationBind : public FIX::Application
-    {
-    private:
-        const FixApplicationCallbacks_t *callbacks;
-        const void *data;
-
-    public:
-        ApplicationBind(const void *data, const FixApplicationCallbacks_t *callbacks)
-            : callbacks(callbacks), data(data)
-        {
-        }
-
-        ApplicationBind(const ApplicationBind &) = delete;
-        ApplicationBind &operator=(const ApplicationBind &) = delete;
-
-        virtual ~ApplicationBind()
-        {
-        }
-
-        void onCreate(const FIX::SessionID &session) override
-        {
-            RETURN_IF_NULL(callbacks);
-            RETURN_IF_NULL(callbacks->onCreate);
-            callbacks->onCreate(data, (FixSessionID_t *)(&session));
-        }
-
-        void onLogon(const FIX::SessionID &session) override
-        {
-            RETURN_IF_NULL(callbacks);
-            RETURN_IF_NULL(callbacks->onLogon);
-            callbacks->onLogon(data, (FixSessionID_t *)(&session));
-        }
-
-        void onLogout(const FIX::SessionID &session) override
-        {
-            RETURN_IF_NULL(callbacks);
-            RETURN_IF_NULL(callbacks->onLogout);
-            callbacks->onLogout(data, (FixSessionID_t *)(&session));
-        }
-
-        void toAdmin(FIX::Message &msg, const FIX::SessionID &session) override
-        {
-            RETURN_IF_NULL(callbacks);
-            RETURN_IF_NULL(callbacks->toAdmin);
-            callbacks->toAdmin(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
-        }
-
-        void toApp(FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::DoNotSend) override
-        {
-            RETURN_IF_NULL(callbacks);
-            RETURN_IF_NULL(callbacks->toApp);
-            callbacks->toApp(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
-        }
-
-        void fromAdmin(const FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) override
-        {
-            RETURN_IF_NULL(callbacks);
-            RETURN_IF_NULL(callbacks->fromAdmin);
-            callbacks->fromAdmin(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
-        }
-
-        void fromApp(const FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) override
-        {
-            RETURN_IF_NULL(callbacks);
-            RETURN_IF_NULL(callbacks->fromApp);
-            callbacks->fromApp(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
-        }
-    };
 
     FixSessionSettings_t *
     FixSessionSettings_new()
@@ -160,7 +160,8 @@ extern "C"
         }
     }
 
-    void FixSessionSettings_delete(FixSessionSettings_t *obj)
+    void
+    FixSessionSettings_delete(FixSessionSettings_t *obj)
     {
         RETURN_IF_NULL(obj);
         DELETE_OBJ(FIX::SessionSettings, obj);
@@ -182,7 +183,8 @@ extern "C"
         }
     }
 
-    void FixFileStoreFactory_delete(FixFileStoreFactory_t *obj)
+    void
+    FixFileStoreFactory_delete(FixFileStoreFactory_t *obj)
     {
         RETURN_IF_NULL(obj);
         DELETE_OBJ(FIX::FileStoreFactory, obj);
@@ -204,13 +206,15 @@ extern "C"
         }
     }
 
-    void FixFileLogFactory_delete(FixFileLogFactory_t *obj)
+    void
+    FixFileLogFactory_delete(FixFileLogFactory_t *obj)
     {
         RETURN_IF_NULL(obj);
         DELETE_OBJ(FIX::FileLogFactory, obj);
     }
 
-    FixApplication_t *FixApplication_new(const void *data, const FixApplicationCallbacks_t *callbacks)
+    FixApplication_t *
+    FixApplication_new(const void *data, const FixApplicationCallbacks_t *callbacks)
     {
         RETURN_VAL_IF_NULL(callbacks, NULL);
 
@@ -224,7 +228,8 @@ extern "C"
         }
     }
 
-    void FixApplication_delete(FixApplication_t *obj)
+    void
+    FixApplication_delete(FixApplication_t *obj)
     {
         RETURN_IF_NULL(obj);
         DELETE_OBJ(ApplicationBind, obj);
@@ -408,37 +413,43 @@ extern "C"
         }
     }
 
-    const char *FixSessionID_getBeginString(const FixSessionID_t *session)
+    const char *
+    FixSessionID_getBeginString(const FixSessionID_t *session)
     {
         RETURN_VAL_IF_NULL(session, NULL);
         RETURN_CXX_TO_C_STR(FIX::SessionID, session, getBeginString().getString())
     }
 
-    const char *FixSessionID_getSenderCompID(const FixSessionID_t *session)
+    const char *
+    FixSessionID_getSenderCompID(const FixSessionID_t *session)
     {
         RETURN_VAL_IF_NULL(session, NULL);
         RETURN_CXX_TO_C_STR(FIX::SessionID, session, getSenderCompID().getString())
     }
 
-    const char *FixSessionID_getTargetCompID(const FixSessionID_t *session)
+    const char *
+    FixSessionID_getTargetCompID(const FixSessionID_t *session)
     {
         RETURN_VAL_IF_NULL(session, NULL);
         RETURN_CXX_TO_C_STR(FIX::SessionID, session, getTargetCompID().getString())
     }
 
-    const char *FixSessionID_getSessionQualifier(const FixSessionID_t *session)
+    const char *
+    FixSessionID_getSessionQualifier(const FixSessionID_t *session)
     {
         RETURN_VAL_IF_NULL(session, NULL);
         RETURN_CXX_TO_C_STR(FIX::SessionID, session, getSessionQualifier())
     }
 
-    int8_t FixSessionID_isFIXT(const FixSessionID_t *session)
+    int8_t
+    FixSessionID_isFIXT(const FixSessionID_t *session)
     {
         RETURN_VAL_IF_NULL(session, ERRNO_INVAL);
         RETURN_CXX_BOOL_CALL(FIX::SessionID, session, isFIXT());
     }
 
-    const char *FixSessionID_toString(const FixSessionID *session)
+    const char *
+    FixSessionID_toString(const FixSessionID *session)
     {
         RETURN_VAL_IF_NULL(session, NULL);
 
@@ -453,7 +464,8 @@ extern "C"
         }
     }
 
-    void FixSessionID_delete(FixSessionID_t *session)
+    void
+    FixSessionID_delete(FixSessionID_t *session)
     {
         RETURN_IF_NULL(session);
         DELETE_OBJ(FIX::SessionID, session);
@@ -486,14 +498,6 @@ extern "C"
         }
     }
 
-    int8_t
-    FixMessage_setField(const FixMessage_t *obj, int32_t tag, const char *value)
-    {
-        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-        RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
-        SAFE_CXX_CALL(FIX::Message, obj, setField(tag, value));
-    }
-
     const char *
     FixMessage_getField(const FixMessage_t *obj, int32_t tag)
     {
@@ -508,6 +512,14 @@ extern "C"
         {
             return NULL;
         }
+    }
+
+    int8_t
+    FixMessage_setField(const FixMessage_t *obj, int32_t tag, const char *value)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+        SAFE_CXX_CALL(FIX::Message, obj, setField(tag, value));
     }
 
     int8_t
@@ -545,7 +557,8 @@ extern "C"
         return 0;
     }
 
-    void FixMessage_delete(FixMessage_t *obj)
+    void
+    FixMessage_delete(FixMessage_t *obj)
     {
         RETURN_IF_NULL(obj);
         DELETE_OBJ(FIX::Message, obj);
