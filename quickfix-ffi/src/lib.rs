@@ -11,6 +11,10 @@ pub struct FixSessionSettings_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
+pub struct FixDataDictionary_t(NonNull<ffi::c_void>);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
 pub struct FixFileStoreFactory_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -68,6 +72,12 @@ extern "C" {
         configPath: *const ffi::c_char,
     ) -> Option<FixSessionSettings_t>;
     pub fn FixSessionSettings_delete(obj: FixSessionSettings_t);
+
+    pub fn FixDataDictionary_new() -> Option<FixDataDictionary_t>;
+    pub fn FixDataDictionary_fromPath(
+        configPath: *const ffi::c_char,
+    ) -> Option<FixDataDictionary_t>;
+    pub fn FixDataDictionary_delete(obj: FixDataDictionary_t);
 
     pub fn FixFileStoreFactory_new(settings: FixSessionSettings_t)
         -> Option<FixFileStoreFactory_t>;

@@ -1,4 +1,5 @@
 mod application;
+mod data_dictionary;
 mod error;
 mod file_log_factory;
 mod file_store_factory;
@@ -14,6 +15,7 @@ mod trailer;
 mod utils;
 
 pub use application::{Application, ApplicationCallback};
+pub use data_dictionary::DataDictionary;
 pub use error::QuickFixError;
 pub use file_log_factory::FileLogFactory;
 pub use file_store_factory::FileStoreFactory;

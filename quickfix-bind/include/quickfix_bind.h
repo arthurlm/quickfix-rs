@@ -14,6 +14,7 @@ extern "C"
 #endif
 
     typedef struct FixSessionSettings FixSessionSettings_t;
+    typedef struct FixDataDictionary FixDataDictionary_t;
     typedef struct FixFileStoreFactory FixFileStoreFactory_t;
     typedef struct FixFileLogFactory FixFileLogFactory_t;
     typedef struct FixApplication FixApplication_t;
@@ -39,6 +40,10 @@ extern "C"
     FixSessionSettings_t *FixSessionSettings_new();
     FixSessionSettings_t *FixSessionSettings_fromPath(const char *configPath);
     void FixSessionSettings_delete(FixSessionSettings_t *obj);
+
+    FixDataDictionary_t *FixDataDictionary_new();
+    FixDataDictionary_t *FixDataDictionary_fromPath(const char *configPath);
+    void FixDataDictionary_delete(FixDataDictionary_t *obj);
 
     FixFileStoreFactory_t *FixFileStoreFactory_new(const FixSessionSettings_t *settings);
     void FixFileStoreFactory_delete(FixFileStoreFactory_t *obj);

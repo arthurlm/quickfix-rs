@@ -12,6 +12,7 @@
 #include <quickfix/Application.h>
 #include <quickfix/Message.h>
 #include <quickfix/Group.h>
+#include <quickfix/DataDictionary.h>
 
 #define RETURN_IF_NULL(_OBJ_) \
     if ((_OBJ_) == nullptr)   \
@@ -157,6 +158,29 @@ extern "C"
     {
         RETURN_IF_NULL(obj);
         DELETE_OBJ(FIX::SessionSettings, obj);
+    }
+
+    FixDataDictionary_t *
+    FixDataDictionary_new()
+    {
+        CATCH_OR_RETURN_NULL({
+            return (FixDataDictionary_t *)(new FIX::DataDictionary());
+        });
+    }
+
+    FixDataDictionary_t *
+    FixDataDictionary_fromPath(const char *configPath)
+    {
+        CATCH_OR_RETURN_NULL({
+            return (FixDataDictionary_t *)(new FIX::DataDictionary(configPath));
+        });
+    }
+
+    void
+    FixDataDictionary_delete(FixDataDictionary_t *obj)
+    {
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::DataDictionary, obj);
     }
 
     FixFileStoreFactory_t *
