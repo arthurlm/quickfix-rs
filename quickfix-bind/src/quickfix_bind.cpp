@@ -458,6 +458,18 @@ extern "C"
         });
     }
 
+    FixMessage_t *
+    FixMessage_fromStringAndDictionary(const char *text, const FixDataDictionary_t *dictionary)
+    {
+        RETURN_VAL_IF_NULL(text, NULL);
+        RETURN_VAL_IF_NULL(dictionary, NULL);
+
+        auto fix_dictionary = (const FIX::DataDictionary *)(dictionary);
+        CATCH_OR_RETURN_NULL({
+            return (FixMessage_t *)(new FIX::Message(text, *fix_dictionary, /* validate = */ true));
+        });
+    }
+
     const char *
     FixMessage_getField(const FixMessage_t *obj, int32_t tag)
     {

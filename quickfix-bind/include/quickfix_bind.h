@@ -84,6 +84,7 @@ extern "C"
 
     FixMessage_t *FixMessage_new();
     FixMessage_t *FixMessage_fromString(const char *text);
+    FixMessage_t *FixMessage_fromStringAndDictionary(const char *text, const FixDataDictionary_t *dictionary);
     const char *FixMessage_getField(const FixMessage_t *obj, int32_t tag);
     int8_t FixMessage_setField(const FixMessage_t *obj, int32_t tag, const char *value);
     int8_t FixMessage_removeField(const FixMessage_t *obj, int32_t tag);

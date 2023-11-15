@@ -2,10 +2,10 @@ use std::{ffi::CString, path::Path};
 
 use quickfix_ffi::{
     FixDataDictionary_delete, FixDataDictionary_fromPath, FixDataDictionary_new,
-    FixDataDictionary_t,
+    FixDataDictionary_t, FixMessage_fromStringAndDictionary,
 };
 
-use crate::QuickFixError;
+use crate::{Message, QuickFixError};
 
 #[derive(Debug)]
 pub struct DataDictionary(pub(crate) FixDataDictionary_t);
@@ -26,6 +26,13 @@ impl DataDictionary {
 
         unsafe { FixDataDictionary_fromPath(ffi_path.as_ptr()) }
             .map(Self)
+            .ok_or(QuickFixError::InvalidFunctionReturn)
+    }
+
+    pub fn try_build_message(&self, text: &str) -> Result<Message, QuickFixError> {
+        let ffi_text = CString::new(text)?;
+        unsafe { FixMessage_fromStringAndDictionary(ffi_text.as_ptr(), self.0) }
+            .map(Message)
             .ok_or(QuickFixError::InvalidFunctionReturn)
     }
 }
