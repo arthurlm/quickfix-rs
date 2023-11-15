@@ -20,6 +20,22 @@
     if ((_OBJ_) == nullptr)              \
         return (_VAL_);
 
+#define CATCH_OR_RETURN(_VAL_, _XXX_) \
+    try                               \
+    {                                 \
+        _XXX_                         \
+    }                                 \
+    catch (std::exception & e)        \
+    {                                 \
+        return (_VAL_);               \
+    }
+
+#define CATCH_OR_RETURN_NULL(_XXX_) \
+    CATCH_OR_RETURN(NULL, _XXX_)
+
+#define CATCH_OR_RETURN_ERRNO(_XXX_) \
+    CATCH_OR_RETURN(ERRNO_EXCEPTION, _XXX_)
+
 #define DELETE_OBJ(_TYPE_, _OBJ_)         \
     {                                     \
         auto fix_obj = (_TYPE_ *)(_OBJ_); \
@@ -27,38 +43,23 @@
     }
 
 #define RETURN_CXX_TO_C_STR(_TYPE_, _OBJ_, _METHOD_) \
-    try                                              \
-    {                                                \
+    CATCH_OR_RETURN_NULL({                           \
         auto fix_obj = (_TYPE_ *)((_OBJ_));          \
         return fix_obj->_METHOD_.c_str();            \
-    }                                                \
-    catch (std::exception & e)                       \
-    {                                                \
-        return NULL;                                 \
-    }
+    })
 
 #define SAFE_CXX_CALL(_TYPE_, _OBJ_, _METHOD_) \
-    try                                        \
-    {                                          \
+    CATCH_OR_RETURN_ERRNO({                    \
         auto fix_obj = (_TYPE_ *)(_OBJ_);      \
         fix_obj->_METHOD_;                     \
         return 0;                              \
-    }                                          \
-    catch (std::exception & ex)                \
-    {                                          \
-        return ERRNO_EXCEPTION;                \
-    }
+    })
 
 #define RETURN_CXX_BOOL_CALL(_TYPE_, _OBJ_, _METHOD_) \
-    try                                               \
-    {                                                 \
+    CATCH_OR_RETURN_ERRNO({                           \
         auto fix_obj = (_TYPE_ *)(_OBJ_);             \
         return fix_obj->_METHOD_ ? 1 : 0;             \
-    }                                                 \
-    catch (std::exception & ex)                       \
-    {                                                 \
-        return ERRNO_EXCEPTION;                       \
-    }
+    })
 
 class ApplicationBind : public FIX::Application
 {
@@ -137,27 +138,17 @@ extern "C"
     FixSessionSettings_t *
     FixSessionSettings_new()
     {
-        try
-        {
+        CATCH_OR_RETURN_NULL({
             return (FixSessionSettings_t *)(new FIX::SessionSettings());
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     FixSessionSettings_t *
     FixSessionSettings_fromPath(const char *configPath)
     {
-        try
-        {
+        CATCH_OR_RETURN_NULL({
             return (FixSessionSettings_t *)(new FIX::SessionSettings(configPath));
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     void
@@ -171,16 +162,10 @@ extern "C"
     FixFileStoreFactory_new(const FixSessionSettings_t *settings)
     {
         RETURN_VAL_IF_NULL(settings, NULL);
-
-        auto fix_settings = (FIX::SessionSettings *)(settings);
-        try
-        {
+        CATCH_OR_RETURN_NULL({
+            auto fix_settings = (FIX::SessionSettings *)(settings);
             return (FixFileStoreFactory_t *)(new FIX::FileStoreFactory(*fix_settings));
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     void
@@ -194,16 +179,10 @@ extern "C"
     FixFileLogFactory_new(const FixSessionSettings_t *settings)
     {
         RETURN_VAL_IF_NULL(settings, NULL);
-
-        auto fix_settings = (FIX::SessionSettings *)(settings);
-        try
-        {
+        CATCH_OR_RETURN_NULL({
+            auto fix_settings = (FIX::SessionSettings *)(settings);
             return (FixFileLogFactory_t *)(new FIX::FileLogFactory(*fix_settings));
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     void
@@ -217,15 +196,9 @@ extern "C"
     FixApplication_new(const void *data, const FixApplicationCallbacks_t *callbacks)
     {
         RETURN_VAL_IF_NULL(callbacks, NULL);
-
-        try
-        {
+        CATCH_OR_RETURN_NULL({
             return (FixApplication_t *)(new ApplicationBind(data, callbacks));
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     void
@@ -248,14 +221,9 @@ extern "C"
         auto fix_log_factory = (FIX::FileLogFactory *)(logFactory);
         auto fix_settings = (FIX::SessionSettings *)(settings);
 
-        try
-        {
+        CATCH_OR_RETURN_NULL({
             return (FixSocketAcceptor_t *)(new FIX::SocketAcceptor(*fix_application, *fix_store_factory, *fix_settings, *fix_log_factory));
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     int8_t
@@ -320,14 +288,9 @@ extern "C"
         auto fix_log_factory = (FIX::FileLogFactory *)(logFactory);
         auto fix_settings = (FIX::SessionSettings *)(settings);
 
-        try
-        {
+        CATCH_OR_RETURN_NULL({
             return (FixSocketInitiator_t *)(new FIX::SocketInitiator(*fix_application, *fix_store_factory, *fix_settings, *fix_log_factory));
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     int8_t
@@ -386,31 +349,19 @@ extern "C"
         RETURN_VAL_IF_NULL(senderCompID, NULL);
         RETURN_VAL_IF_NULL(targetCompID, NULL);
         RETURN_VAL_IF_NULL(sessionQualifier, NULL);
-
-        try
-        {
+        CATCH_OR_RETURN_NULL({
             return (FixSessionID_t *)(new FIX::SessionID(beginString, senderCompID, targetCompID, sessionQualifier));
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     FixSessionID_t *
     FixSessionID_copy(const FixSessionID_t *src)
     {
         RETURN_VAL_IF_NULL(src, NULL);
-
-        auto fix_obj = (FIX::SessionID *)(src);
-        try
-        {
+        CATCH_OR_RETURN_NULL({
+            auto fix_obj = (FIX::SessionID *)(src);
             return (FixSessionID_t *)(new FIX::SessionID(*fix_obj));
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     const char *
@@ -452,16 +403,10 @@ extern "C"
     FixSessionID_toString(const FixSessionID *session)
     {
         RETURN_VAL_IF_NULL(session, NULL);
-
-        auto fix_obj = (FIX::SessionID *)(session);
-        try
-        {
+        CATCH_OR_RETURN_NULL({
+            auto fix_obj = (FIX::SessionID *)(session);
             return fix_obj->toStringFrozen().c_str();
-        }
-        catch (std::exception &e)
-        {
-            return NULL;
-        }
+        });
     }
 
     void
@@ -474,44 +419,28 @@ extern "C"
     FixMessage_t *
     FixMessage_new()
     {
-        try
-        {
+        CATCH_OR_RETURN_NULL({
             return (FixMessage_t *)(new FIX::Message());
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     FixMessage_t *
     FixMessage_fromString(const char *text)
     {
         RETURN_VAL_IF_NULL(text, NULL);
-        try
-        {
+        CATCH_OR_RETURN_NULL({
             return (FixMessage_t *)(new FIX::Message(text, /* validate = */ false));
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     const char *
     FixMessage_getField(const FixMessage_t *obj, int32_t tag)
     {
         RETURN_VAL_IF_NULL(obj, NULL);
-
-        auto fix_obj = (FIX::Message *)(obj);
-        try
-        {
+        CATCH_OR_RETURN_NULL({
+            auto fix_obj = (FIX::Message *)(obj);
             return fix_obj->getField(tag).c_str();
-        }
-        catch (std::exception &ex)
-        {
-            return NULL;
-        }
+        });
     }
 
     int8_t
@@ -538,9 +467,9 @@ extern "C"
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         RETURN_VAL_IF_NULL(buffer, ERRNO_INVAL);
 
-        auto fix_obj = (FIX::Message *)(obj);
-        try
-        {
+        CATCH_OR_RETURN_ERRNO({
+            auto fix_obj = (FIX::Message *)(obj);
+
             auto repr = fix_obj->toString();
             if (length <= repr.length())
             {
@@ -549,12 +478,9 @@ extern "C"
 
             strncpy(buffer, repr.c_str(), length);
             buffer[repr.length()] = '\0';
-        }
-        catch (std::exception &ex)
-        {
-            return ERRNO_EXCEPTION;
-        }
-        return 0;
+
+            return 0;
+        });
     }
 
     void
