@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#define PRINT_QUICKFIX_ERR 0
+
 #define ERRNO_INVAL -1
 #define ERRNO_EXCEPTION -2
 #define ERRNO_BUFFER_TO_SMALL -3

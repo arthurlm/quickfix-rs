@@ -22,14 +22,18 @@
     if ((_OBJ_) == nullptr)              \
         return (_VAL_);
 
-#define CATCH_OR_RETURN(_VAL_, _XXX_) \
-    try                               \
-    {                                 \
-        _XXX_                         \
-    }                                 \
-    catch (std::exception & e)        \
-    {                                 \
-        return (_VAL_);               \
+#define CATCH_OR_RETURN(_VAL_, _XXX_)                                   \
+    try                                                                 \
+    {                                                                   \
+        _XXX_                                                           \
+    }                                                                   \
+    catch (std::exception & e)                                          \
+    {                                                                   \
+        if (PRINT_QUICKFIX_ERR)                                         \
+        {                                                               \
+            std::cout << "[ERROR: QUICKFIX] " << e.what() << std::endl; \
+        }                                                               \
+        return (_VAL_);                                                 \
     }
 
 #define CATCH_OR_RETURN_NULL(_XXX_) \
