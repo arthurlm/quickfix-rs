@@ -51,6 +51,7 @@ cargo r --example demo_basic_ffi -- example/settings.ini
 Run rust full binding example:
 
 ```sh
+cargo r --example fix_getting_started -- example/server.ini
 cargo r --example fix_repl -- acceptor example/server.ini
 cargo r --example fix_repl -- initiator example/client.ini
 ```
