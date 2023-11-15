@@ -41,6 +41,11 @@ quickfix (lang: rust)
 
 ```
 
+About C++ to C binding library:
+
+- `.cpp` file is made of multiple macros to try making it as short as possible.
+- `.h` contains less possible macro to make it easier to compare with rust code.
+
 ## Other project inspiration
 
 - [rust-rdkafka](https://github.com/fede1024/rust-rdkafka): for how to build C library using cmake and link to rust project.
