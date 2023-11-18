@@ -29,7 +29,7 @@
     }                                                                   \
     catch (std::exception & e)                                          \
     {                                                                   \
-        if (PRINT_QUICKFIX_ERR)                                         \
+        if (PRINT_QUICKFIX_EX_STDOUT)                                   \
         {                                                               \
             std::cout << "[ERROR: QUICKFIX] " << e.what() << std::endl; \
         }                                                               \

@@ -9,3 +9,7 @@ thiserror = "1.0.50"
 
 [dev-dependencies]
 colored = "2.0.4"
+
+[features]
+default = []
+print-ex = ["quickfix-ffi/print-ex"]

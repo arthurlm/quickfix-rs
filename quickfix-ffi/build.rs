@@ -24,11 +24,19 @@ fn main() {
     // Build quickfix C bind also as a static library.
     env::set_var("CMAKE_LIBRARY_PATH", [quickfix_lib_path].join(";"));
 
-    let quickfix_bind_dst = Config::new("..")
+    let mut config = Config::new("..");
+    config
         .cflag(format!("-I{quickfix_include_path}"))
         .cxxflag(format!("-I{quickfix_include_path}"))
-        .define("QUICKFIX_BIND_EXAMPLES", "OFF")
-        .build();
+        .define("QUICKFIX_BIND_EXAMPLES", "OFF");
+
+    // Enable optional features
+    if env::var("CARGO_FEATURE_PRINT_EX").is_ok() {
+        config.define("WITH_PRINT_EX_STDOUT", "ON");
+    }
+
+    // Trigger build
+    let quickfix_bind_dst = config.build();
 
     // Configure rustc.
     println!(

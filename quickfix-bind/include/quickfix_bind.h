@@ -4,7 +4,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define PRINT_QUICKFIX_ERR 0
+#ifndef PRINT_QUICKFIX_EX_STDOUT
+#define PRINT_QUICKFIX_EX_STDOUT 0
+#endif // PRINT_QUICKFIX_EX_STDOUT
 
 #define ERRNO_INVAL -1
 #define ERRNO_EXCEPTION -2
