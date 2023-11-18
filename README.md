@@ -1,6 +1,6 @@
 # Quick fix binding for Rust
 
-This project is a WIP to bind [quickfix library](https://github.com/quickfix/quickfix) and rust project.
+This project is an **unofficial** binding between [quickfix library](https://github.com/quickfix/quickfix) and rust project.
 
 ## What is it, what it is not ?
 
@@ -11,6 +11,11 @@ Target is just to have minimal features to create small and safe applications li
 
 - some program that can send order / receive messages to adjust strategy from.
 - basic router with no smart order router capabilities.
+
+## Is it ready for production ?
+
+Yes. But keep in mind that not every feature of the original FIX library are available.
+If some of your needs are missing: PR / feedbacks are welcomed 😉!
 
 ## How does it work ?
 
