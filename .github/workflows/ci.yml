@@ -20,6 +20,8 @@ jobs:
   
     - name: Build
       run: cargo build --verbose
+    - name: Run tests no default features
+      run: cargo test --no-default-features
     - name: Run tests
       run: cargo test
 

@@ -1,6 +1,4 @@
-use quickfix::{
-    FileStoreFactory, LogFactory, QuickFixError, RustLogger, SessionSettings, StdLogger,
-};
+use quickfix::{FileStoreFactory, LogFactory, QuickFixError, SessionSettings, StdLogger};
 
 #[test]
 fn test_session_settings() {
@@ -13,10 +11,17 @@ fn test_session_settings() {
 }
 
 #[test]
-fn test_file_log_factory() {
-    let _file_log_factory = LogFactory::try_new(&RustLogger).unwrap();
+fn test_log_factory() {
     let _file_log_factory = LogFactory::try_new(&StdLogger::Stdout).unwrap();
     let _file_log_factory = LogFactory::try_new(&StdLogger::Stderr).unwrap();
+}
+
+#[test]
+#[cfg(feature = "log")]
+fn test_extra_log_factory() {
+    use quickfix::RustLogger;
+
+    let _file_log_factory = LogFactory::try_new(&RustLogger).unwrap();
 }
 
 #[test]

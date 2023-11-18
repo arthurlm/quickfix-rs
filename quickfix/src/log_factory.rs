@@ -116,8 +116,10 @@ impl LogCallback for StdLogger {
     }
 }
 
+#[cfg(feature = "log")]
 pub struct RustLogger;
 
+#[cfg(feature = "log")]
 impl LogCallback for RustLogger {
     fn on_incoming(&self, session_id: Option<&SessionId>, msg: &str) {
         log::info!("FIX: Incoming: {session_id:?}: {msg}");

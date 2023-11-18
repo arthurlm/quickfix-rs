@@ -21,7 +21,7 @@ pub use error::QuickFixError;
 pub use file_store_factory::FileStoreFactory;
 pub use group::Group;
 pub use header::Header;
-pub use log_factory::{LogCallback, LogFactory, RustLogger, StdLogger};
+pub use log_factory::{LogCallback, LogFactory, StdLogger};
 pub use message::Message;
 pub use session::send_to_target;
 pub use session_id::SessionId;
@@ -29,6 +29,9 @@ pub use session_settings::SessionSettings;
 pub use socket_acceptor::SocketAcceptor;
 pub use socket_initiator::SocketInitiator;
 pub use trailer::Trailer;
+
+#[cfg(feature = "log")]
+pub use log_factory::RustLogger;
 
 pub trait ConnectionHandler {
     fn start(&mut self) -> Result<(), QuickFixError>;
