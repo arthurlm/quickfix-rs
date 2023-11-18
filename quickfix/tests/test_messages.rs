@@ -114,6 +114,29 @@ fn test_get_header() {
 }
 
 #[test]
+fn test_copy_header() {
+    let mut msg = Message::try_new().unwrap();
+    msg.with_header_mut(|x| x.set_field(5000, "hello"))
+        .unwrap()
+        .unwrap();
+
+    // Check val
+    let cpy = msg.clone_header().unwrap();
+    assert_eq!(cpy.get_field(5000).as_deref(), Some("hello"));
+
+    // Update val and check diffs
+    msg.with_header_mut(|x| x.set_field(5000, "world"))
+        .unwrap()
+        .unwrap();
+
+    assert_eq!(
+        msg.with_header(|x| x.get_field(5000)).unwrap().as_deref(),
+        Some("world")
+    );
+    assert_eq!(cpy.get_field(5000).as_deref(), Some("hello"));
+}
+
+#[test]
 fn test_get_trailer() {
     let mut msg = Message::try_new().unwrap();
     msg.set_field(40000, "foo").unwrap();
@@ -136,4 +159,27 @@ fn test_get_trailer() {
         msg.as_string().as_deref(),
         Ok("9=20\u{1}40000=foo\u{1}50001=bar\u{1}10=184\u{1}")
     )
+}
+
+#[test]
+fn test_copy_trailer() {
+    let mut msg = Message::try_new().unwrap();
+    msg.with_trailer_mut(|x| x.set_field(5000, "hello"))
+        .unwrap()
+        .unwrap();
+
+    // Check val
+    let cpy = msg.clone_trailer().unwrap();
+    assert_eq!(cpy.get_field(5000).as_deref(), Some("hello"));
+
+    // Update val and check diffs
+    msg.with_trailer_mut(|x| x.set_field(5000, "world"))
+        .unwrap()
+        .unwrap();
+
+    assert_eq!(
+        msg.with_trailer(|x| x.get_field(5000)).unwrap().as_deref(),
+        Some("world")
+    );
+    assert_eq!(cpy.get_field(5000).as_deref(), Some("hello"));
 }

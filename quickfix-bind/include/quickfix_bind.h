@@ -93,20 +93,26 @@ extern "C"
     int8_t FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length);
     void FixMessage_delete(FixMessage_t *obj);
 
+    FixHeader_t *FixMessage_copyHeader(const FixMessage_t *obj);
     FixHeader_t *FixMessage_getHeaderRef(const FixMessage_t *obj);
     const char *FixHeader_getField(const FixHeader_t *obj, int32_t tag);
     int8_t FixHeader_setField(const FixHeader_t *obj, int32_t tag, const char *value);
     int8_t FixHeader_removeField(const FixHeader_t *obj, int32_t tag);
+    void FixHeader_delete(FixHeader_t *obj);
 
+    FixTrailer_t *FixMessage_copyTrailer(const FixMessage_t *obj);
     FixTrailer_t *FixMessage_getTrailerRef(const FixMessage_t *obj);
     const char *FixTrailer_getField(const FixTrailer_t *obj, int32_t tag);
     int8_t FixTrailer_setField(const FixTrailer_t *obj, int32_t tag, const char *value);
     int8_t FixTrailer_removeField(const FixTrailer_t *obj, int32_t tag);
+    void FixTrailer_delete(FixTrailer_t *obj);
 
+    FixGroup_t *FixMessage_copyGroup(const FixMessage_t *obj, int32_t num, int32_t tag);
     FixGroup_t *FixMessage_getGroupRef(const FixMessage_t *obj, int32_t num, int32_t tag);
     const char *FixGroup_getField(const FixGroup_t *obj, int32_t tag);
     int8_t FixGroup_setField(const FixGroup_t *obj, int32_t tag, const char *value);
     int8_t FixGroup_removeField(const FixGroup_t *obj, int32_t tag);
+    void FixGroup_delete(FixGroup_t *obj);
 
     int8_t FixSession_sendToTarget(const FixMessage_t *msg, const FixSessionID_t *session_id);
 

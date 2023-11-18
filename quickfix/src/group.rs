@@ -1,6 +1,8 @@
 use std::ffi::CString;
 
-use quickfix_ffi::{FixGroup_getField, FixGroup_removeField, FixGroup_setField, FixGroup_t};
+use quickfix_ffi::{
+    FixGroup_delete, FixGroup_getField, FixGroup_removeField, FixGroup_setField, FixGroup_t,
+};
 
 use crate::{
     utils::{ffi_code_to_result, read_checked_cstr},
@@ -22,5 +24,11 @@ impl FieldMap for Group {
 
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixGroup_removeField(self.0, tag) })
+    }
+}
+
+impl Drop for Group {
+    fn drop(&mut self) {
+        unsafe { FixGroup_delete(self.0) }
     }
 }

@@ -1,9 +1,10 @@
 use std::{ffi::CString, fmt, mem::ManuallyDrop};
 
 use quickfix_ffi::{
-    FixMessage_delete, FixMessage_fromString, FixMessage_getField, FixMessage_getGroupRef,
-    FixMessage_getHeaderRef, FixMessage_getTrailerRef, FixMessage_new, FixMessage_removeField,
-    FixMessage_setField, FixMessage_t, FixMessage_toBuffer,
+    FixMessage_copyGroup, FixMessage_copyHeader, FixMessage_copyTrailer, FixMessage_delete,
+    FixMessage_fromString, FixMessage_getField, FixMessage_getGroupRef, FixMessage_getHeaderRef,
+    FixMessage_getTrailerRef, FixMessage_new, FixMessage_removeField, FixMessage_setField,
+    FixMessage_t, FixMessage_toBuffer,
 };
 
 use crate::{
@@ -43,6 +44,12 @@ impl Message {
         }
     }
 
+    pub fn clone_header(&self) -> Result<Header, QuickFixError> {
+        unsafe { FixMessage_copyHeader(self.0) }
+            .map(Header)
+            .ok_or(QuickFixError::InvalidFunctionReturn)
+    }
+
     pub fn with_header<T, F>(&self, f: F) -> Result<T, QuickFixError>
     where
         F: FnOnce(&Header) -> T,
@@ -67,6 +74,12 @@ impl Message {
         }
     }
 
+    pub fn clone_trailer(&self) -> Result<Trailer, QuickFixError> {
+        unsafe { FixMessage_copyTrailer(self.0) }
+            .map(Trailer)
+            .ok_or(QuickFixError::InvalidFunctionReturn)
+    }
+
     pub fn with_trailer<T, F>(&self, f: F) -> Result<T, QuickFixError>
     where
         F: FnOnce(&Trailer) -> T,
@@ -89,6 +102,12 @@ impl Message {
         } else {
             Err(QuickFixError::InvalidFunctionReturn)
         }
+    }
+
+    pub fn clone_group(&self, index: i32, tag: i32) -> Result<Group, QuickFixError> {
+        unsafe { FixMessage_copyGroup(self.0, index, tag) }
+            .map(Group)
+            .ok_or(QuickFixError::InvalidFunctionReturn)
     }
 
     pub fn with_group<T, F>(&self, index: i32, tag: i32, f: F) -> Result<T, QuickFixError>

@@ -1,7 +1,8 @@
 use std::ffi::CString;
 
 use quickfix_ffi::{
-    FixTrailer_getField, FixTrailer_removeField, FixTrailer_setField, FixTrailer_t,
+    FixTrailer_delete, FixTrailer_getField, FixTrailer_removeField, FixTrailer_setField,
+    FixTrailer_t,
 };
 
 use crate::{
@@ -24,5 +25,11 @@ impl FieldMap for Trailer {
 
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixTrailer_removeField(self.0, tag) })
+    }
+}
+
+impl Drop for Trailer {
+    fn drop(&mut self) {
+        unsafe { FixTrailer_delete(self.0) }
     }
 }

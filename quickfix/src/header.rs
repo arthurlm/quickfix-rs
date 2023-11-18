@@ -1,6 +1,8 @@
 use std::ffi::CString;
 
-use quickfix_ffi::{FixHeader_getField, FixHeader_removeField, FixHeader_setField, FixHeader_t};
+use quickfix_ffi::{
+    FixHeader_delete, FixHeader_getField, FixHeader_removeField, FixHeader_setField, FixHeader_t,
+};
 
 use crate::{
     utils::{ffi_code_to_result, read_checked_cstr},
@@ -22,5 +24,11 @@ impl FieldMap for Header {
 
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixHeader_removeField(self.0, tag) })
+    }
+}
+
+impl Drop for Header {
+    fn drop(&mut self) {
+        unsafe { FixHeader_delete(self.0) }
     }
 }

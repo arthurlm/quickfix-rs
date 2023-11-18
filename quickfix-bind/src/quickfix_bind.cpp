@@ -532,11 +532,21 @@ extern "C"
     }
 
     FixHeader_t *
+    FixMessage_copyHeader(const FixMessage_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, NULL);
+        auto fix_obj = (FIX::Message *)(obj);
+        CATCH_OR_RETURN_NULL({
+            return (FixHeader_t *)(new FIX::Header(fix_obj->getHeader()));
+        });
+    }
+
+    FixHeader_t *
     FixMessage_getHeaderRef(const FixMessage_t *obj)
     {
         RETURN_VAL_IF_NULL(obj, NULL);
+        auto fix_obj = (FIX::Message *)(obj);
         CATCH_OR_RETURN_NULL({
-            auto fix_obj = (FIX::Message *)(obj);
             return (FixHeader_t *)(&fix_obj->getHeader());
         });
     }
@@ -545,8 +555,8 @@ extern "C"
     FixHeader_getField(const FixHeader_t *obj, int32_t tag)
     {
         RETURN_VAL_IF_NULL(obj, NULL);
+        auto fix_obj = (FIX::Header *)(obj);
         CATCH_OR_RETURN_NULL({
-            auto fix_obj = (FIX::Header *)(obj);
             return fix_obj->getField(tag).c_str();
         });
     }
@@ -564,6 +574,23 @@ extern "C"
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         SAFE_CXX_CALL(FIX::Header, obj, removeField(tag));
+    }
+
+    void
+    FixHeader_delete(FixHeader_t *obj)
+    {
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::Header, obj);
+    }
+
+    FixTrailer_t *
+    FixMessage_copyTrailer(const FixMessage_t *obj)
+    {
+        RETURN_VAL_IF_NULL(obj, NULL);
+        auto fix_obj = (FIX::Message *)(obj);
+        CATCH_OR_RETURN_NULL({
+            return (FixTrailer_t *)(new FIX::Trailer(fix_obj->getTrailer()));
+        });
     }
 
     FixTrailer_t *
@@ -601,6 +628,24 @@ extern "C"
         SAFE_CXX_CALL(FIX::Trailer, obj, removeField(tag));
     }
 
+    void
+    FixTrailer_delete(FixTrailer_t *obj)
+    {
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::Trailer, obj);
+    }
+
+    FixGroup_t *
+    FixMessage_copyGroup(const FixMessage_t *obj, int32_t num, int32_t tag)
+    {
+        RETURN_VAL_IF_NULL(obj, NULL);
+        auto fix_obj = (FIX::Message *)(obj);
+        CATCH_OR_RETURN_NULL({
+            auto src_group = (FIX::Group *)(fix_obj->getGroupPtr(num, tag));
+            return (FixGroup_t *)(new FIX::Group(*src_group));
+        });
+    }
+
     FixGroup_t *
     FixMessage_getGroupRef(const FixMessage_t *obj, int32_t num, int32_t tag)
     {
@@ -634,6 +679,13 @@ extern "C"
     {
         RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
         SAFE_CXX_CALL(FIX::Group, obj, removeField(tag));
+    }
+
+    void
+    FixGroup_delete(FixGroup_t *obj)
+    {
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::Group, obj);
     }
 
     int8_t
