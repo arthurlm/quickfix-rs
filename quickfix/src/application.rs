@@ -25,6 +25,18 @@ impl<'a, C> Application<'a, C>
 where
     C: ApplicationCallback + 'static,
 {
+    pub fn try_new(callbacks: &'a C) -> Result<Self, QuickFixError> {
+        match unsafe {
+            FixApplication_new(
+                callbacks as *const C as *const ffi::c_void,
+                &Self::CALLBACKS,
+            )
+        } {
+            Some(fix_application) => Ok(Self(fix_application, PhantomData)),
+            None => Err(QuickFixError::InvalidFunctionReturn),
+        }
+    }
+
     const CALLBACKS: FixApplicationCallbacks_t = FixApplicationCallbacks_t {
         onCreate: Self::on_create,
         onLogon: Self::on_logon,
@@ -34,18 +46,6 @@ where
         fromAdmin: Self::from_admin,
         fromApp: Self::from_app,
     };
-
-    pub fn try_new(callbacks: &'a C) -> Result<Self, QuickFixError> {
-        match unsafe {
-            FixApplication_new(
-                callbacks as *const C as *const ffi::c_void,
-                &Self::CALLBACKS,
-            )
-        } {
-            Some(fix_application) => Ok(Self(fix_application, PhantomData)),
-            None => todo!(),
-        }
-    }
 
     extern "C" fn on_create(data: *const ffi::c_void, session: FixSessionID_t) {
         let this = unsafe { &*(data as *const C) };
