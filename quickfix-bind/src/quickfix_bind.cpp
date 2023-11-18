@@ -2,8 +2,8 @@
 
 #include <exception>
 
+#include <quickfix/Log.h>
 #include <quickfix/FileStore.h>
-#include <quickfix/FileLog.h>
 #include <quickfix/SocketAcceptor.h>
 #include <quickfix/SocketInitiator.h>
 #include <quickfix/Session.h>
@@ -136,6 +136,93 @@ public:
     }
 };
 
+class ExternalLog : public FIX::Log
+{
+private:
+    const void *data;
+    const FixSessionID_t *sessionId;
+    const FixLogCallbacks_t *callbacks;
+
+public:
+    ExternalLog(const void *data, const FixSessionID_t *sessionId, const FixLogCallbacks_t *callbacks)
+        : data(data),
+          sessionId(sessionId),
+          callbacks(callbacks)
+    {
+    }
+
+    ExternalLog(const ExternalLog &) = delete;
+    ExternalLog &operator=(const ExternalLog &) = delete;
+
+    virtual ~ExternalLog()
+    {
+        auto fixSessionId = (FIX::SessionID *)(sessionId);
+        if (fixSessionId)
+        {
+            delete fixSessionId;
+        }
+    }
+
+    void clear() override {}
+    void backup() override {}
+
+    void onIncoming(const std::string &msg) override
+    {
+        RETURN_IF_NULL(callbacks);
+        RETURN_IF_NULL(callbacks->onIncoming);
+        callbacks->onIncoming(data, sessionId, msg.c_str());
+    }
+
+    void onOutgoing(const std::string &msg) override
+    {
+        RETURN_IF_NULL(callbacks);
+        RETURN_IF_NULL(callbacks->onOutgoing);
+        callbacks->onOutgoing(data, sessionId, msg.c_str());
+    }
+
+    void onEvent(const std::string &msg) override
+    {
+        RETURN_IF_NULL(callbacks);
+        RETURN_IF_NULL(callbacks->onEvent);
+        callbacks->onEvent(data, sessionId, msg.c_str());
+    }
+};
+
+class ExternalLogFactory : public FIX::LogFactory
+{
+private:
+    const void *data;
+    const FixLogCallbacks_t *callbacks;
+
+public:
+    ExternalLogFactory(const void *data, const FixLogCallbacks_t *callbacks)
+        : data(data),
+          callbacks(callbacks)
+    {
+    }
+
+    ExternalLogFactory(const ExternalLogFactory &) = delete;
+    ExternalLogFactory &operator=(const ExternalLogFactory &) = delete;
+
+    virtual ~ExternalLogFactory() {}
+
+    FIX::Log *create() override
+    {
+        return new ExternalLog(data, NULL, callbacks);
+    }
+
+    FIX::Log *create(const FIX::SessionID &sessionId) override
+    {
+        auto sessionIdCopy = new FIX::SessionID(sessionId);
+        return new ExternalLog(data, (FixSessionID_t *)sessionIdCopy, callbacks);
+    }
+
+    void destroy(FIX::Log *log) override
+    {
+        delete log;
+    }
+};
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -204,21 +291,19 @@ extern "C"
         DELETE_OBJ(FIX::FileStoreFactory, obj);
     }
 
-    FixFileLogFactory_t *
-    FixFileLogFactory_new(const FixSessionSettings_t *settings)
+    FixLogFactory_t *
+    FixLogFactory_new(const void *data, const FixLogCallbacks_t *callbacks)
     {
-        RETURN_VAL_IF_NULL(settings, NULL);
         CATCH_OR_RETURN_NULL({
-            auto fix_settings = (FIX::SessionSettings *)(settings);
-            return (FixFileLogFactory_t *)(new FIX::FileLogFactory(*fix_settings));
+            return (FixLogFactory_t *)(new ExternalLogFactory(data, callbacks));
         });
     }
 
     void
-    FixFileLogFactory_delete(FixFileLogFactory_t *obj)
+    FixLogFactory_delete(FixLogFactory_t *obj)
     {
         RETURN_IF_NULL(obj);
-        DELETE_OBJ(FIX::FileLogFactory, obj);
+        DELETE_OBJ(ExternalLogFactory, obj);
     }
 
     FixApplication_t *
@@ -238,7 +323,7 @@ extern "C"
     }
 
     FixSocketAcceptor_t *
-    FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory)
+    FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixLogFactory_t *logFactory)
     {
         RETURN_VAL_IF_NULL(application, NULL);
         RETURN_VAL_IF_NULL(storeFactory, NULL);
@@ -247,7 +332,7 @@ extern "C"
 
         auto fix_application = (ApplicationBind *)(application);
         auto fix_store_factory = (FIX::FileStoreFactory *)(storeFactory);
-        auto fix_log_factory = (FIX::FileLogFactory *)(logFactory);
+        auto fix_log_factory = (ExternalLogFactory *)(logFactory);
         auto fix_settings = (FIX::SessionSettings *)(settings);
 
         CATCH_OR_RETURN_NULL({
@@ -305,7 +390,7 @@ extern "C"
     }
 
     FixSocketInitiator_t *
-    FixSocketInitiator_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory)
+    FixSocketInitiator_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixLogFactory_t *logFactory)
     {
         RETURN_VAL_IF_NULL(application, NULL);
         RETURN_VAL_IF_NULL(storeFactory, NULL);
@@ -314,7 +399,7 @@ extern "C"
 
         auto fix_application = (ApplicationBind *)(application);
         auto fix_store_factory = (FIX::FileStoreFactory *)(storeFactory);
-        auto fix_log_factory = (FIX::FileLogFactory *)(logFactory);
+        auto fix_log_factory = (ExternalLogFactory *)(logFactory);
         auto fix_settings = (FIX::SessionSettings *)(settings);
 
         CATCH_OR_RETURN_NULL({
@@ -691,8 +776,8 @@ extern "C"
     int8_t
     FixSession_sendToTarget(const FixMessage_t *msg, const FixSessionID_t *session_id)
     {
-        RETURN_VAL_IF_NULL(msg, NULL);
-        RETURN_VAL_IF_NULL(session_id, NULL);
+        RETURN_VAL_IF_NULL(msg, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(session_id, ERRNO_INVAL);
 
         auto fix_msg = (FIX::Message *)(msg);
         auto fix_session_id = (FIX::SessionID *)(session_id);

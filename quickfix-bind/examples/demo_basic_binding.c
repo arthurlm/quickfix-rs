@@ -39,6 +39,37 @@ static void customFromApp(const void *data, const FixMessage_t *msg, const FixSe
     printf("customFromApp: %p %p %p\n", data, msg, session);
 }
 
+static const FixApplicationCallbacks_t APP_CALLBACKS = {
+    .onCreate = customOnCreate,
+    .onLogon = customOnLogon,
+    .onLogout = customOnLogout,
+    .toAdmin = customToAdmin,
+    .toApp = customToApp,
+    .fromAdmin = customFromAdmin,
+    .fromApp = customFromApp,
+};
+
+static void customOnIncoming(const void *data, const FixSessionID_t *sessionId, const char *msg)
+{
+    printf("customOnIncoming: %p %p: %s\n", data, sessionId, msg);
+}
+
+static void customOnOutgoing(const void *data, const FixSessionID_t *sessionId, const char *msg)
+{
+    printf("customOnOutgoing: %p %p: %s\n", data, sessionId, msg);
+}
+
+static void customOnEvent(const void *data, const FixSessionID_t *sessionId, const char *msg)
+{
+    printf("customOnEvent: %p %p: %s\n", data, sessionId, msg);
+}
+
+static const FixLogCallbacks_t LOG_CALLBACKS = {
+    .onIncoming = customOnIncoming,
+    .onOutgoing = customOnOutgoing,
+    .onEvent = customOnEvent,
+};
+
 int main(int argc, char **argv)
 {
     if (argc != 2)
@@ -47,21 +78,11 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-    const FixApplicationCallbacks_t callbacks = {
-        .onCreate = customOnCreate,
-        .onLogon = customOnLogon,
-        .onLogout = customOnLogout,
-        .toAdmin = customToAdmin,
-        .toApp = customToApp,
-        .fromAdmin = customFromAdmin,
-        .fromApp = customFromApp,
-    };
-
     printf(">> Creating resources\n");
     FixSessionSettings_t *settings = FixSessionSettings_fromPath(argv[1]);
     FixFileStoreFactory_t *storeFactory = FixFileStoreFactory_new(settings);
-    FixFileLogFactory_t *logFactory = FixFileLogFactory_new(settings);
-    FixApplication_t *application = FixApplication_new((void *)0xBEEF, &callbacks);
+    FixLogFactory_t *logFactory = FixLogFactory_new((void *)0xFEED, &LOG_CALLBACKS);
+    FixApplication_t *application = FixApplication_new((void *)0xBEEF, &APP_CALLBACKS);
     FixSocketAcceptor_t *acceptor = FixSocketAcceptor_new(application, storeFactory, settings, logFactory);
 
     printf(">> Acceptor START\n");
@@ -78,7 +99,7 @@ int main(int argc, char **argv)
     printf(">> Cleaning resources\n");
     FixSocketAcceptor_delete(acceptor);
     FixApplication_delete(application);
-    FixFileLogFactory_delete(logFactory);
+    FixLogFactory_delete(logFactory);
     FixFileStoreFactory_delete(storeFactory);
     FixSessionSettings_delete(settings);
 

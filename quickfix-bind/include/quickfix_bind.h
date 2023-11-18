@@ -20,7 +20,7 @@ extern "C"
     typedef struct FixSessionSettings FixSessionSettings_t;
     typedef struct FixDataDictionary FixDataDictionary_t;
     typedef struct FixFileStoreFactory FixFileStoreFactory_t;
-    typedef struct FixFileLogFactory FixFileLogFactory_t;
+    typedef struct FixLogFactory FixLogFactory_t;
     typedef struct FixApplication FixApplication_t;
     typedef struct FixSocketAcceptor FixSocketAcceptor_t;
     typedef struct FixSocketInitiator FixSocketInitiator_t;
@@ -41,6 +41,13 @@ extern "C"
         void (*fromApp)(const void *data, const FixMessage_t *msg, const FixSessionID_t *session);
     } FixApplicationCallbacks_t;
 
+    typedef struct FixLogCallbacks
+    {
+        void (*onIncoming)(const void *data, const FixSessionID_t *sessionId, const char *msg);
+        void (*onOutgoing)(const void *data, const FixSessionID_t *sessionId, const char *msg);
+        void (*onEvent)(const void *data, const FixSessionID_t *sessionId, const char *msg);
+    } FixLogCallbacks_t;
+
     FixSessionSettings_t *FixSessionSettings_new();
     FixSessionSettings_t *FixSessionSettings_fromPath(const char *configPath);
     void FixSessionSettings_delete(FixSessionSettings_t *obj);
@@ -52,13 +59,13 @@ extern "C"
     FixFileStoreFactory_t *FixFileStoreFactory_new(const FixSessionSettings_t *settings);
     void FixFileStoreFactory_delete(FixFileStoreFactory_t *obj);
 
-    FixFileLogFactory_t *FixFileLogFactory_new(const FixSessionSettings_t *settings);
-    void FixFileLogFactory_delete(FixFileLogFactory_t *obj);
+    FixLogFactory_t *FixLogFactory_new(const void *data, const FixLogCallbacks_t *callbacks);
+    void FixLogFactory_delete(FixLogFactory_t *obj);
 
     FixApplication_t *FixApplication_new(const void *data, const FixApplicationCallbacks_t *callbacks);
     void FixApplication_delete(FixApplication_t *obj);
 
-    FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory);
+    FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixLogFactory_t *logFactory);
     int8_t FixSocketAcceptor_start(const FixSocketAcceptor_t *obj);
     int8_t FixSocketAcceptor_block(const FixSocketAcceptor_t *obj);
     int8_t FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj);
@@ -67,7 +74,7 @@ extern "C"
     int8_t FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj);
     void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj);
 
-    FixSocketInitiator_t *FixSocketInitiator_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixFileLogFactory_t *logFactory);
+    FixSocketInitiator_t *FixSocketInitiator_new(const FixApplication_t *application, const FixFileStoreFactory_t *storeFactory, const FixSessionSettings_t *settings, const FixLogFactory_t *logFactory);
     int8_t FixSocketInitiator_start(const FixSocketInitiator_t *obj);
     int8_t FixSocketInitiator_block(const FixSocketInitiator_t *obj);
     int8_t FixSocketInitiator_poll(const FixSocketInitiator_t *obj);

@@ -1,8 +1,8 @@
 use std::{env, process::exit};
 
 use quickfix::{
-    Application, ConnectionHandler, FileLogFactory, FileStoreFactory, SessionSettings,
-    SocketAcceptor, SocketInitiator,
+    Application, ConnectionHandler, FileStoreFactory, LogFactory, SessionSettings, SocketAcceptor,
+    SocketInitiator, StdLogger,
 };
 
 use crate::{command_exec::FixShell, fix_app::MyApplication};
@@ -24,7 +24,7 @@ fn main() {
     println!(">> Creating resources");
     let settings = SessionSettings::try_from_path(config_file).expect("Fail to load settings");
     let store_factory = FileStoreFactory::try_new(&settings).expect("Fail to build store factory");
-    let log_factory = FileLogFactory::try_new(&settings).expect("Fail to build log factory");
+    let log_factory = LogFactory::try_new(&StdLogger::Stdout).expect("Fail to build log factory");
     let callbacks = MyApplication::new();
     let app = Application::try_new(&callbacks).expect("Fail to init app");
 

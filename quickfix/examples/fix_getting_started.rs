@@ -5,8 +5,8 @@ use std::{
 };
 
 use quickfix::{
-    Application, ApplicationCallback, ConnectionHandler, FileLogFactory, FileStoreFactory,
-    SessionId, SessionSettings, SocketAcceptor,
+    Application, ApplicationCallback, ConnectionHandler, FileStoreFactory, LogFactory, SessionId,
+    SessionSettings, SocketAcceptor, StdLogger,
 };
 
 #[derive(Default)]
@@ -30,7 +30,7 @@ fn main() {
     println!(">> Creating resources");
     let settings = SessionSettings::try_from_path(config_file).expect("Fail to load settings");
     let store_factory = FileStoreFactory::try_new(&settings).expect("Fail to build store factory");
-    let log_factory = FileLogFactory::try_new(&settings).expect("Fail to build log factory");
+    let log_factory = LogFactory::try_new(&StdLogger::Stdout).expect("Fail to build log factory");
     let callbacks = MyApplication;
     let app = Application::try_new(&callbacks).expect("Fail to init app");
 

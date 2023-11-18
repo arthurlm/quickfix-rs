@@ -19,7 +19,7 @@ pub struct FixFileStoreFactory_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
-pub struct FixFileLogFactory_t(NonNull<ffi::c_void>);
+pub struct FixLogFactory_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
@@ -65,6 +65,26 @@ pub struct FixApplicationCallbacks_t {
     pub fromApp: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t),
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
+pub struct FixLogCallbacks_t {
+    pub onIncoming: extern "C" fn(
+        data: *const ffi::c_void,
+        sessionId: Option<FixSessionID_t>,
+        msg: NullableCStr,
+    ),
+    pub onOutgoing: extern "C" fn(
+        data: *const ffi::c_void,
+        sessionId: Option<FixSessionID_t>,
+        msg: NullableCStr,
+    ),
+    pub onEvent: extern "C" fn(
+        data: *const ffi::c_void,
+        sessionId: Option<FixSessionID_t>,
+        msg: NullableCStr,
+    ),
+}
+
 #[link(name = "quickfixbind")]
 extern "C" {
     pub fn FixSessionSettings_new() -> Option<FixSessionSettings_t>;
@@ -83,8 +103,11 @@ extern "C" {
         -> Option<FixFileStoreFactory_t>;
     pub fn FixFileStoreFactory_delete(obj: FixFileStoreFactory_t);
 
-    pub fn FixFileLogFactory_new(settings: FixSessionSettings_t) -> Option<FixFileLogFactory_t>;
-    pub fn FixFileLogFactory_delete(obj: FixFileLogFactory_t);
+    pub fn FixLogFactory_new(
+        data: *const ffi::c_void,
+        callbacks: *const FixLogCallbacks_t,
+    ) -> Option<FixLogFactory_t>;
+    pub fn FixLogFactory_delete(obj: FixLogFactory_t);
 
     pub fn FixApplication_new(
         data: *const ffi::c_void,
@@ -96,7 +119,7 @@ extern "C" {
         application: FixApplication_t,
         storeFactory: FixFileStoreFactory_t,
         settings: FixSessionSettings_t,
-        logFactory: FixFileLogFactory_t,
+        logFactory: FixLogFactory_t,
     ) -> Option<FixSocketAcceptor_t>;
     #[must_use]
     pub fn FixSocketAcceptor_start(obj: FixSocketAcceptor_t) -> i8;
@@ -116,7 +139,7 @@ extern "C" {
         application: FixApplication_t,
         storeFactory: FixFileStoreFactory_t,
         settings: FixSessionSettings_t,
-        logFactory: FixFileLogFactory_t,
+        logFactory: FixLogFactory_t,
     ) -> Option<FixSocketInitiator_t>;
     #[must_use]
     pub fn FixSocketInitiator_start(obj: FixSocketInitiator_t) -> i8;

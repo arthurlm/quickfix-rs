@@ -8,36 +8,50 @@ use quickfix_ffi::{
 
 use crate::{
     utils::{ffi_code_to_bool, ffi_code_to_result},
-    Application, ApplicationCallback, ConnectionHandler, FileLogFactory, FileStoreFactory,
+    Application, ApplicationCallback, ConnectionHandler, FileStoreFactory, LogCallback, LogFactory,
     QuickFixError, SessionSettings,
 };
 
 #[derive(Debug)]
-pub struct SocketAcceptor<'a, C: ApplicationCallback> {
+pub struct SocketAcceptor<'a, A, L>
+where
+    A: ApplicationCallback,
+    L: LogCallback,
+{
     pub(crate) inner: FixSocketAcceptor_t,
-    phantom: PhantomData<&'a C>,
+    phantom1: PhantomData<&'a A>,
+    phantom2: PhantomData<&'a L>,
 }
 
-impl<'a, C: ApplicationCallback> SocketAcceptor<'a, C> {
+impl<'a, A, L> SocketAcceptor<'a, A, L>
+where
+    A: ApplicationCallback,
+    L: LogCallback,
+{
     pub fn try_new(
         settings: &SessionSettings,
-        application: &'a Application<C>,
+        application: &'a Application<A>,
         store_factory: &'a FileStoreFactory,
-        log_factory: &'a FileLogFactory,
+        log_factory: &'a LogFactory<L>,
     ) -> Result<Self, QuickFixError> {
         match unsafe {
             FixSocketAcceptor_new(application.0, store_factory.0, settings.0, log_factory.0)
         } {
             Some(inner) => Ok(Self {
                 inner,
-                phantom: PhantomData,
+                phantom1: PhantomData,
+                phantom2: PhantomData,
             }),
             None => Err(QuickFixError::InvalidFunctionReturn),
         }
     }
 }
 
-impl<C: ApplicationCallback> ConnectionHandler for SocketAcceptor<'_, C> {
+impl<A, L> ConnectionHandler for SocketAcceptor<'_, A, L>
+where
+    A: ApplicationCallback,
+    L: LogCallback,
+{
     fn start(&mut self) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixSocketAcceptor_start(self.inner) })
     }
@@ -63,7 +77,11 @@ impl<C: ApplicationCallback> ConnectionHandler for SocketAcceptor<'_, C> {
     }
 }
 
-impl<C: ApplicationCallback> Drop for SocketAcceptor<'_, C> {
+impl<A, L> Drop for SocketAcceptor<'_, A, L>
+where
+    A: ApplicationCallback,
+    L: LogCallback,
+{
     fn drop(&mut self) {
         unsafe { FixSocketAcceptor_delete(self.inner) }
     }
