@@ -15,7 +15,7 @@ Target is just to have minimal features to create small and safe applications li
 ## Is it ready for production ?
 
 Yes. But keep in mind that not every feature of the original FIX library are available.
-If some of your needs are missing: PR / feedbacks are welcomed 😉!
+If some of your needs are missing: PR / feedbacks are welcomed 😁!
 
 ## How does it work ?
 
