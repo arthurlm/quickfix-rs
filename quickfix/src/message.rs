@@ -152,7 +152,10 @@ impl FieldMap for Message {
 
 impl fmt::Debug for Message {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_tuple("Message").field(&self.as_string()).finish()
+        let content = self.as_string();
+        f.debug_tuple("Message")
+            .field(&content.as_deref().unwrap_or("Invalid msg text"))
+            .finish()
     }
 }
 
