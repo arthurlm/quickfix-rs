@@ -19,8 +19,8 @@ where
     L: LogCallback,
 {
     pub(crate) inner: FixSocketAcceptor_t,
-    phantom1: PhantomData<&'a A>,
-    phantom2: PhantomData<&'a L>,
+    phantom_application: PhantomData<&'a A>,
+    phantom_log_factory: PhantomData<&'a L>,
 }
 
 impl<'a, A, L> SocketAcceptor<'a, A, L>
@@ -39,8 +39,8 @@ where
         } {
             Some(inner) => Ok(Self {
                 inner,
-                phantom1: PhantomData,
-                phantom2: PhantomData,
+                phantom_application: PhantomData,
+                phantom_log_factory: PhantomData,
             }),
             None => Err(QuickFixError::InvalidFunctionReturn),
         }
