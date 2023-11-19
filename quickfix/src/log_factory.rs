@@ -97,7 +97,7 @@ impl StdLogger {
     fn print(&self, text: &str) {
         let _ = match self {
             StdLogger::Stdout => writeln!(io::stdout(), "{text}"),
-            StdLogger::Stderr => writeln!(io::stdout(), "{text}"),
+            StdLogger::Stderr => writeln!(io::stderr(), "{text}"),
         };
     }
 }
