@@ -7,7 +7,7 @@ fn test_session_settings() {
         QuickFixError::NullFunctionReturn
     );
     let _settings1 = SessionSettings::try_new().unwrap();
-    let _settings2 = SessionSettings::try_from_path("../example/settings.ini").unwrap();
+    let _settings2 = SessionSettings::try_from_path("../configs/settings.ini").unwrap();
 }
 
 #[test]
@@ -26,6 +26,6 @@ fn test_extra_log_factory() {
 
 #[test]
 fn test_file_store_factory() {
-    let settings = SessionSettings::try_from_path("../example/settings.ini").unwrap();
+    let settings = SessionSettings::try_from_path("../configs/settings.ini").unwrap();
     let _file_store_factory = FileStoreFactory::try_new(&settings).unwrap();
 }
