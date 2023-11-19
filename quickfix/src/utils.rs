@@ -3,6 +3,8 @@ use std::{
     ptr::NonNull,
 };
 
+use quickfix_ffi::NullableCStr;
+
 use crate::QuickFixError;
 
 #[inline(always)]
@@ -15,6 +17,13 @@ pub fn read_buffer_to_string(buffer: &[u8]) -> String {
 pub fn read_checked_cstr(val: NonNull<ffi::c_char>) -> String {
     let cstr = unsafe { CStr::from_ptr(val.as_ptr()) };
     String::from_utf8_lossy(cstr.to_bytes()).to_string()
+}
+
+#[inline(always)]
+pub unsafe fn from_ffi_str<'a>(ptr: NullableCStr) -> Option<&'a str> {
+    let safe_ptr = ptr?;
+    let cstr = CStr::from_ptr(safe_ptr.as_ptr());
+    cstr.to_str().ok()
 }
 
 #[inline(always)]

@@ -10,7 +10,7 @@ use quickfix_ffi::{
     NullableCStr,
 };
 
-use crate::{utils::read_checked_cstr, QuickFixError, SessionId};
+use crate::{utils::from_ffi_str, QuickFixError, SessionId};
 
 /// Log event that can occurs in quickfix library.
 ///
@@ -59,11 +59,10 @@ where
         session_id_ptr: Option<FixSessionID_t>,
         msg_ptr: NullableCStr,
     ) {
-        let Some(msg_ptr) = msg_ptr else { return };
         let this = unsafe { &*(data as *const C) };
-        let msg = read_checked_cstr(msg_ptr);
         let session_id = session_id_ptr.map(|ptr| ManuallyDrop::new(SessionId(ptr)));
-        this.on_incoming(session_id.as_deref(), &msg);
+        let msg = unsafe { from_ffi_str(msg_ptr) }.unwrap_or("invalid log received");
+        this.on_incoming(session_id.as_deref(), msg);
     }
 
     extern "C" fn on_outgoing(
@@ -71,11 +70,10 @@ where
         session_id_ptr: Option<FixSessionID_t>,
         msg_ptr: NullableCStr,
     ) {
-        let Some(msg_ptr) = msg_ptr else { return };
         let this = unsafe { &*(data as *const C) };
-        let msg = read_checked_cstr(msg_ptr);
         let session_id = session_id_ptr.map(|ptr| ManuallyDrop::new(SessionId(ptr)));
-        this.on_outgoing(session_id.as_deref(), &msg);
+        let msg = unsafe { from_ffi_str(msg_ptr) }.unwrap_or("invalid log received");
+        this.on_outgoing(session_id.as_deref(), msg);
     }
 
     extern "C" fn on_event(
@@ -83,11 +81,10 @@ where
         session_id_ptr: Option<FixSessionID_t>,
         msg_ptr: NullableCStr,
     ) {
-        let Some(msg_ptr) = msg_ptr else { return };
         let this = unsafe { &*(data as *const C) };
-        let msg = read_checked_cstr(msg_ptr);
         let session_id = session_id_ptr.map(|ptr| ManuallyDrop::new(SessionId(ptr)));
-        this.on_event(session_id.as_deref(), &msg);
+        let msg = unsafe { from_ffi_str(msg_ptr) }.unwrap_or("invalid log received");
+        this.on_event(session_id.as_deref(), msg);
     }
 }
 
