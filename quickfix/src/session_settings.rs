@@ -7,16 +7,19 @@ use quickfix_ffi::{
 
 use crate::QuickFixError;
 
+/// Container for setting dictionaries mapped to sessions.
 #[derive(Debug)]
 pub struct SessionSettings(pub(crate) FixSessionSettings_t);
 
 impl SessionSettings {
+    /// Try to create new empty struct.
     pub fn try_new() -> Result<Self, QuickFixError> {
         unsafe { FixSessionSettings_new() }
             .map(Self)
-            .ok_or(QuickFixError::InvalidFunctionReturn)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 
+    /// Try to load struct data from Path.
     pub fn try_from_path<P: AsRef<Path>>(path: P) -> Result<Self, QuickFixError> {
         let safe_path = path
             .as_ref()
@@ -26,7 +29,7 @@ impl SessionSettings {
 
         unsafe { FixSessionSettings_fromPath(ffi_path.as_ptr()) }
             .map(Self)
-            .ok_or(QuickFixError::InvalidFunctionReturn)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 }
 

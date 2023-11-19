@@ -15,26 +15,31 @@ use crate::{
     FieldMap, QuickFixError,
 };
 
+/// Base class for all FIX messages.
 pub struct Message(pub(crate) FixMessage_t);
 
 impl Message {
+    /// Try create new empty struct.
     pub fn try_new() -> Result<Self, QuickFixError> {
         unsafe { FixMessage_new() }
             .map(Self)
-            .ok_or(QuickFixError::InvalidFunctionReturn)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 
+    /// Try create new struct from raw text message.
     pub fn try_from_text(text: &str) -> Result<Self, QuickFixError> {
         let ffi_text = CString::new(text)?;
         unsafe { FixMessage_fromString(ffi_text.as_ptr()) }
             .map(Self)
-            .ok_or(QuickFixError::InvalidFunctionReturn)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 
+    /// Try reading underlying struct buffer as a string of 1 page size.
     pub fn as_string(&self) -> Result<String, QuickFixError> {
         self.as_string_with_len(4096 /* 1 page */)
     }
 
+    /// Try reading underlying struct buffer with a custom buffer size.
     pub fn as_string_with_len(&self, max_len: usize) -> Result<String, QuickFixError> {
         let mut buffer = vec![0_u8; max_len];
         let buffer_ptr = buffer.as_mut_ptr() as *mut i8;
@@ -44,12 +49,14 @@ impl Message {
         }
     }
 
+    /// Clone struct header part.
     pub fn clone_header(&self) -> Result<Header, QuickFixError> {
         unsafe { FixMessage_copyHeader(self.0) }
             .map(Header)
-            .ok_or(QuickFixError::InvalidFunctionReturn)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 
+    /// Read struct header part.
     pub fn with_header<T, F>(&self, f: F) -> Result<T, QuickFixError>
     where
         F: FnOnce(&Header) -> T,
@@ -58,10 +65,11 @@ impl Message {
             let obj = ManuallyDrop::new(Header(ptr));
             Ok(f(&obj))
         } else {
-            Err(QuickFixError::InvalidFunctionReturn)
+            Err(QuickFixError::NullFunctionReturn)
         }
     }
 
+    /// Read or write struct header part.
     pub fn with_header_mut<T, F>(&mut self, f: F) -> Result<T, QuickFixError>
     where
         F: FnOnce(&mut Header) -> T,
@@ -70,16 +78,18 @@ impl Message {
             let mut obj = ManuallyDrop::new(Header(ptr));
             Ok(f(&mut obj))
         } else {
-            Err(QuickFixError::InvalidFunctionReturn)
+            Err(QuickFixError::NullFunctionReturn)
         }
     }
 
+    /// Clone struct trailer part.
     pub fn clone_trailer(&self) -> Result<Trailer, QuickFixError> {
         unsafe { FixMessage_copyTrailer(self.0) }
             .map(Trailer)
-            .ok_or(QuickFixError::InvalidFunctionReturn)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 
+    /// Read struct trailer part.
     pub fn with_trailer<T, F>(&self, f: F) -> Result<T, QuickFixError>
     where
         F: FnOnce(&Trailer) -> T,
@@ -88,10 +98,11 @@ impl Message {
             let obj = ManuallyDrop::new(Trailer(ptr));
             Ok(f(&obj))
         } else {
-            Err(QuickFixError::InvalidFunctionReturn)
+            Err(QuickFixError::NullFunctionReturn)
         }
     }
 
+    /// Read or write struct trailer part.
     pub fn with_trailer_mut<T, F>(&mut self, f: F) -> Result<T, QuickFixError>
     where
         F: FnOnce(&mut Trailer) -> T,
@@ -100,16 +111,18 @@ impl Message {
             let mut obj = ManuallyDrop::new(Trailer(ptr));
             Ok(f(&mut obj))
         } else {
-            Err(QuickFixError::InvalidFunctionReturn)
+            Err(QuickFixError::NullFunctionReturn)
         }
     }
 
+    /// Clone struct group part for a given tag and group index.
     pub fn clone_group(&self, index: i32, tag: i32) -> Result<Group, QuickFixError> {
         unsafe { FixMessage_copyGroup(self.0, index, tag) }
             .map(Group)
-            .ok_or(QuickFixError::InvalidFunctionReturn)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 
+    /// Read struct group part for a given tag and group index.
     pub fn with_group<T, F>(&self, index: i32, tag: i32, f: F) -> Result<T, QuickFixError>
     where
         F: FnOnce(&Group) -> T,
@@ -118,10 +131,11 @@ impl Message {
             let obj = ManuallyDrop::new(Group(ptr));
             Ok(f(&obj))
         } else {
-            Err(QuickFixError::InvalidFunctionReturn)
+            Err(QuickFixError::NullFunctionReturn)
         }
     }
 
+    /// Read or write struct group part for a given tag and group index.
     pub fn with_group_mut<T, F>(&mut self, index: i32, tag: i32, f: F) -> Result<T, QuickFixError>
     where
         F: FnOnce(&mut Group) -> T,
@@ -130,7 +144,7 @@ impl Message {
             let mut obj = ManuallyDrop::new(Group(ptr));
             Ok(f(&mut obj))
         } else {
-            Err(QuickFixError::InvalidFunctionReturn)
+            Err(QuickFixError::NullFunctionReturn)
         }
     }
 }

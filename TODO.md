@@ -8,5 +8,5 @@
 - [ ] Add more tests
 - [x] Add minimal binding example
 - [ ] Make REPL nicer and add screenshot in README when it looks good.
-- [ ] Add basic capabilities for order sending / receiving.
-- [ ] Make PR to explain idea behind the crate.
+- [x] Add basic capabilities for order sending / receiving.
+- [x] Make PR to explain idea behind the crate.

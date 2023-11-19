@@ -9,6 +9,7 @@ use crate::{
     FieldMap, QuickFixError,
 };
 
+/// Header part of a FIX message.
 #[derive(Debug)]
 pub struct Header(pub(crate) FixHeader_t);
 

@@ -9,7 +9,7 @@ fn test_create_and_drop() {
 fn test_open_invalid_data_dictionary() {
     assert_eq!(
         DataDictionary::try_from_path("/invalid/path").unwrap_err(),
-        QuickFixError::InvalidFunctionReturn
+        QuickFixError::NullFunctionReturn
     );
 }
 

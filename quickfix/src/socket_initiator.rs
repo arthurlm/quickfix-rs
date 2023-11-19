@@ -12,6 +12,7 @@ use crate::{
     QuickFixError, SessionSettings,
 };
 
+/// Socket implementation of establishing connections handler.
 #[derive(Debug)]
 pub struct SocketInitiator<'a, A, L>
 where
@@ -28,6 +29,7 @@ where
     A: ApplicationCallback,
     L: LogCallback,
 {
+    /// Try create new struct from its mandatory components.
     pub fn try_new(
         settings: &SessionSettings,
         application: &'a Application<A>,
@@ -42,7 +44,7 @@ where
                 phantom_application: PhantomData,
                 phantom_log_factory: PhantomData,
             }),
-            None => Err(QuickFixError::InvalidFunctionReturn),
+            None => Err(QuickFixError::NullFunctionReturn),
         }
     }
 }

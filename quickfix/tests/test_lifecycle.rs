@@ -4,7 +4,7 @@ use quickfix::{FileStoreFactory, LogFactory, QuickFixError, SessionSettings, Std
 fn test_session_settings() {
     assert_eq!(
         SessionSettings::try_from_path("invalid_file.ini").unwrap_err(),
-        QuickFixError::InvalidFunctionReturn
+        QuickFixError::NullFunctionReturn
     );
     let _settings1 = SessionSettings::try_new().unwrap();
     let _settings2 = SessionSettings::try_from_path("../example/settings.ini").unwrap();

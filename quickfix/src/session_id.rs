@@ -8,9 +8,11 @@ use quickfix_ffi::{
 
 use crate::{utils::read_checked_cstr, QuickFixError};
 
+/// Unique session id consists of BeginString, SenderCompID and TargetCompID.
 pub struct SessionId(pub(crate) FixSessionID_t);
 
 impl SessionId {
+    /// Try create new struct from all its inner components.
     pub fn try_new(
         begin_string: &str,
         sender_comp_id: &str,
@@ -31,35 +33,44 @@ impl SessionId {
             )
         } {
             Some(val) => Ok(Self(val)),
-            None => Err(QuickFixError::InvalidFunctionReturn),
+            None => Err(QuickFixError::NullFunctionReturn),
         }
     }
 
+    /// Try cloning the struct.
+    ///
+    /// It may fail as the foreign function allocation fail.
     pub fn try_clone(&self) -> Option<Self> {
         unsafe { FixSessionID_copy(self.0) }.map(Self)
     }
 
+    /// Get beginning string.
     pub fn get_begin_string(&self) -> Option<String> {
         unsafe { FixSessionID_getBeginString(self.0) }.map(read_checked_cstr)
     }
 
+    /// Get sender comp ID.
     pub fn get_sender_comp_id(&self) -> Option<String> {
         unsafe { FixSessionID_getSenderCompID(self.0) }.map(read_checked_cstr)
     }
 
+    /// Get target comp ID.
     pub fn get_target_comp_id(&self) -> Option<String> {
         unsafe { FixSessionID_getTargetCompID(self.0) }.map(read_checked_cstr)
     }
 
+    /// Get optional session qualifier.
     pub fn get_session_qualifier(&self) -> Option<String> {
         unsafe { FixSessionID_getSessionQualifier(self.0) }.map(read_checked_cstr)
     }
 
+    /// Check if sessions is FIXT or not.
     pub fn is_fixt(&self) -> bool {
         let val = unsafe { FixSessionID_isFIXT(self.0) };
         val != 0
     }
 
+    /// Convert session ID to a nicely printable string.
     pub fn as_string(&self) -> String {
         unsafe { FixSessionID_toString(self.0) }
             .map(read_checked_cstr)

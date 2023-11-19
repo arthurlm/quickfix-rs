@@ -10,6 +10,7 @@ use crate::{
     FieldMap, QuickFixError,
 };
 
+/// Trailer part of a FIX message.
 #[derive(Debug)]
 pub struct Trailer(pub(crate) FixTrailer_t);
 

@@ -12,13 +12,22 @@ use quickfix_ffi::{
 
 use crate::{utils::read_checked_cstr, QuickFixError, SessionId};
 
+/// Log event that can occurs in quickfix library.
+///
+/// Each callback will be called based on session / socket lifecycle.
 #[allow(unused_variables)]
 pub trait LogCallback {
+    /// New incoming messages is available.
     fn on_incoming(&self, session_id: Option<&SessionId>, msg: &str) {}
+
+    /// New outgoing message will be sent.
     fn on_outgoing(&self, session_id: Option<&SessionId>, msg: &str) {}
+
+    /// Other FIX event has occurred.
     fn on_event(&self, session_id: Option<&SessionId>, msg: &str) {}
 }
 
+/// Logging factory.
 #[derive(Debug)]
 pub struct LogFactory<'a, C: LogCallback>(pub(crate) FixLogFactory_t, PhantomData<&'a C>);
 
@@ -26,6 +35,7 @@ impl<'a, C> LogFactory<'a, C>
 where
     C: LogCallback + 'static,
 {
+    /// Create new struct from given logger trait.
     pub fn try_new(callbacks: &'a C) -> Result<Self, QuickFixError> {
         match unsafe {
             FixLogFactory_new(
@@ -34,7 +44,7 @@ where
             )
         } {
             Some(fix_log_factory) => Ok(Self(fix_log_factory, PhantomData)),
-            None => Err(QuickFixError::InvalidFunctionReturn),
+            None => Err(QuickFixError::NullFunctionReturn),
         }
     }
 
@@ -87,9 +97,12 @@ impl<C: LogCallback> Drop for LogFactory<'_, C> {
     }
 }
 
+/// Log message to std file descriptors.
 #[derive(Debug)]
 pub enum StdLogger {
+    /// Log to stdout.
     Stdout,
+    /// Log to stderr.
     Stderr,
 }
 
@@ -116,6 +129,7 @@ impl LogCallback for StdLogger {
     }
 }
 
+/// Log message using `log` crate.
 #[cfg(feature = "log")]
 pub struct RustLogger;
 

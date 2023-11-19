@@ -7,17 +7,38 @@ use quickfix_ffi::{
 
 use crate::{Message, QuickFixError, SessionId};
 
+/// These methods notify your application about events that happen on active FIX sessions.
+///
+/// There is no guarantee how many threads will be calling these functions.
 #[allow(unused_variables)]
 pub trait ApplicationCallback {
+    /// On session created.
     fn on_create(&self, session: &SessionId) {}
+
+    /// On session logon.
     fn on_logon(&self, session: &SessionId) {}
+
+    /// On session logout.
     fn on_logout(&self, session: &SessionId) {}
+
+    /// Called before sending message to admin level.
+    ///
+    /// Message can be updated at this stage.
     fn on_msg_to_admin(&self, msg: &mut Message, session: &SessionId) {}
+
+    /// Called before sending message to application level.
+    ///
+    /// Message can be updated at this stage.
     fn on_msg_to_app(&self, msg: &mut Message, session: &SessionId) {}
+
+    /// Called after received a message from admin level.
     fn on_msg_from_admin(&self, msg: &Message, session: &SessionId) {}
+
+    /// Called after received a message from application level.
     fn on_msg_from_app(&self, msg: &Message, session: &SessionId) {}
 }
 
+/// Application callback wrapper.
 #[derive(Debug)]
 pub struct Application<'a, C: ApplicationCallback>(pub(crate) FixApplication_t, PhantomData<&'a C>);
 
@@ -25,6 +46,7 @@ impl<'a, C> Application<'a, C>
 where
     C: ApplicationCallback + 'static,
 {
+    /// Try create new struct from its underlying components.
     pub fn try_new(callbacks: &'a C) -> Result<Self, QuickFixError> {
         match unsafe {
             FixApplication_new(
@@ -33,7 +55,7 @@ where
             )
         } {
             Some(fix_application) => Ok(Self(fix_application, PhantomData)),
-            None => Err(QuickFixError::InvalidFunctionReturn),
+            None => Err(QuickFixError::NullFunctionReturn),
         }
     }
 

@@ -7,16 +7,19 @@ use quickfix_ffi::{
 
 use crate::{Message, QuickFixError};
 
+/// Represents a data dictionary for a version of FIX.
 #[derive(Debug)]
 pub struct DataDictionary(pub(crate) FixDataDictionary_t);
 
 impl DataDictionary {
+    /// Try create a new empty struct.
     pub fn try_new() -> Result<Self, QuickFixError> {
         unsafe { FixDataDictionary_new() }
             .map(Self)
-            .ok_or(QuickFixError::InvalidFunctionReturn)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 
+    /// Try to load struct data from path.
     pub fn try_from_path<P: AsRef<Path>>(path: P) -> Result<Self, QuickFixError> {
         let safe_path = path
             .as_ref()
@@ -26,14 +29,15 @@ impl DataDictionary {
 
         unsafe { FixDataDictionary_fromPath(ffi_path.as_ptr()) }
             .map(Self)
-            .ok_or(QuickFixError::InvalidFunctionReturn)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 
+    /// Create a new FIX messages using current dictionary.
     pub fn try_build_message(&self, text: &str) -> Result<Message, QuickFixError> {
         let ffi_text = CString::new(text)?;
         unsafe { FixMessage_fromStringAndDictionary(ffi_text.as_ptr(), self.0) }
             .map(Message)
-            .ok_or(QuickFixError::InvalidFunctionReturn)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 }
 

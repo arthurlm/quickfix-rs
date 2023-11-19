@@ -9,6 +9,7 @@ use crate::{
     FieldMap, QuickFixError,
 };
 
+/// Base class for all FIX repeating groups.
 #[derive(Debug)]
 pub struct Group(pub(crate) FixGroup_t);
 
