@@ -71,17 +71,17 @@ pub struct FixLogCallbacks_t {
     pub onIncoming: extern "C" fn(
         data: *const ffi::c_void,
         sessionId: Option<FixSessionID_t>,
-        msg: NullableCStr,
+        msg: *const ffi::c_char,
     ),
     pub onOutgoing: extern "C" fn(
         data: *const ffi::c_void,
         sessionId: Option<FixSessionID_t>,
-        msg: NullableCStr,
+        msg: *const ffi::c_char,
     ),
     pub onEvent: extern "C" fn(
         data: *const ffi::c_void,
         sessionId: Option<FixSessionID_t>,
-        msg: NullableCStr,
+        msg: *const ffi::c_char,
     ),
 }
 

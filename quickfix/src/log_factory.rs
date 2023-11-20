@@ -7,7 +7,6 @@ use std::{
 
 use quickfix_ffi::{
     FixLogCallbacks_t, FixLogFactory_delete, FixLogFactory_new, FixLogFactory_t, FixSessionID_t,
-    NullableCStr,
 };
 
 use crate::{utils::from_ffi_str, QuickFixError, SessionId};
@@ -57,33 +56,33 @@ where
     extern "C" fn on_incoming(
         data: *const ffi::c_void,
         session_id_ptr: Option<FixSessionID_t>,
-        msg_ptr: NullableCStr,
+        msg_ptr: *const ffi::c_char,
     ) {
         let this = unsafe { &*(data as *const C) };
         let session_id = session_id_ptr.map(|ptr| ManuallyDrop::new(SessionId(ptr)));
-        let msg = unsafe { from_ffi_str(msg_ptr) }.unwrap_or("invalid log received");
+        let msg = unsafe { from_ffi_str(msg_ptr) };
         this.on_incoming(session_id.as_deref(), msg);
     }
 
     extern "C" fn on_outgoing(
         data: *const ffi::c_void,
         session_id_ptr: Option<FixSessionID_t>,
-        msg_ptr: NullableCStr,
+        msg_ptr: *const ffi::c_char,
     ) {
         let this = unsafe { &*(data as *const C) };
         let session_id = session_id_ptr.map(|ptr| ManuallyDrop::new(SessionId(ptr)));
-        let msg = unsafe { from_ffi_str(msg_ptr) }.unwrap_or("invalid log received");
+        let msg = unsafe { from_ffi_str(msg_ptr) };
         this.on_outgoing(session_id.as_deref(), msg);
     }
 
     extern "C" fn on_event(
         data: *const ffi::c_void,
         session_id_ptr: Option<FixSessionID_t>,
-        msg_ptr: NullableCStr,
+        msg_ptr: *const ffi::c_char,
     ) {
         let this = unsafe { &*(data as *const C) };
         let session_id = session_id_ptr.map(|ptr| ManuallyDrop::new(SessionId(ptr)));
-        let msg = unsafe { from_ffi_str(msg_ptr) }.unwrap_or("invalid log received");
+        let msg = unsafe { from_ffi_str(msg_ptr) };
         this.on_event(session_id.as_deref(), msg);
     }
 }

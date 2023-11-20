@@ -3,8 +3,6 @@ use std::{
     ptr::NonNull,
 };
 
-use quickfix_ffi::NullableCStr;
-
 use crate::QuickFixError;
 
 #[inline(always)]
@@ -20,10 +18,10 @@ pub fn read_checked_cstr(val: NonNull<ffi::c_char>) -> String {
 }
 
 #[inline(always)]
-pub unsafe fn from_ffi_str<'a>(ptr: NullableCStr) -> Option<&'a str> {
-    let safe_ptr = ptr?;
-    let cstr = CStr::from_ptr(safe_ptr.as_ptr());
-    cstr.to_str().ok()
+pub unsafe fn from_ffi_str<'a>(ptr: *const ffi::c_char) -> &'a str {
+    assert!(!ptr.is_null(), "null ptr given from `c_str()`");
+    let cstr = CStr::from_ptr(ptr);
+    cstr.to_str().unwrap_or("invalid `c_str()` received")
 }
 
 #[inline(always)]
