@@ -18,6 +18,7 @@ extern "C"
 #endif
 
     typedef struct FixSessionSettings FixSessionSettings_t;
+    typedef struct FixDictionary FixDictionary_t;
     typedef struct FixDataDictionary FixDataDictionary_t;
     typedef struct FixFileStoreFactory FixFileStoreFactory_t;
     typedef struct FixLogFactory FixLogFactory_t;
@@ -51,6 +52,20 @@ extern "C"
     FixSessionSettings_t *FixSessionSettings_new();
     FixSessionSettings_t *FixSessionSettings_fromPath(const char *configPath);
     void FixSessionSettings_delete(FixSessionSettings_t *obj);
+
+    FixDictionary_t *FixDictionary_new(const char *name);
+    int8_t FixDictionary_setString(const FixDictionary_t *obj, const char *key, const char *value);
+    int8_t FixDictionary_setInt(const FixDictionary_t *obj, const char *key, int32_t value);
+    int8_t FixDictionary_setDouble(const FixDictionary_t *obj, const char *key, double value);
+    int8_t FixDictionary_setBool(const FixDictionary_t *obj, const char *key, int8_t value);
+    int8_t FixDictionary_setDay(const FixDictionary_t *obj, const char *key, int32_t value);
+    int64_t FixDictionary_getStringLen(const FixDictionary_t *obj, const char *key);
+    int8_t FixDictionary_readString(const FixDictionary_t *obj, const char *key, char *buffer, int64_t buffer_len);
+    int32_t FixDictionary_getInt(const FixDictionary_t *obj, const char *key);
+    double FixDictionary_getDouble(const FixDictionary_t *obj, const char *key);
+    int8_t FixDictionary_getBool(const FixDictionary_t *obj, const char *key);
+    int32_t FixDictionary_getDay(const FixDictionary_t *obj, const char *key);
+    void FixDictionary_delete(FixDictionary_t *obj);
 
     FixDataDictionary_t *FixDataDictionary_new();
     FixDataDictionary_t *FixDataDictionary_fromPath(const char *configPath);

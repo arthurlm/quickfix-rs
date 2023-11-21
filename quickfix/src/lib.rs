@@ -4,6 +4,8 @@
 
 mod application;
 mod data_dictionary;
+mod days;
+mod dictionary;
 mod error;
 mod file_store_factory;
 mod group;
@@ -19,8 +21,12 @@ mod trailer;
 
 mod utils;
 
+use std::ffi::CString;
+
 pub use application::{Application, ApplicationCallback};
 pub use data_dictionary::DataDictionary;
+pub use days::DayOfWeek;
+pub use dictionary::Dictionary;
 pub use error::QuickFixError;
 pub use file_store_factory::FileStoreFactory;
 pub use group::Group;
@@ -71,4 +77,13 @@ pub trait FieldMap {
 
     /// Remove a field from  collection.
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError>;
+}
+
+/// Allow reading / writing value (aka property) from an object.
+pub trait PropertyContainer<T> {
+    /// Read value from object.
+    fn ffi_get(&self, key: CString) -> Result<T, QuickFixError>;
+
+    /// Write value into object.
+    fn ffi_set(&mut self, key: CString, value: T) -> Result<(), QuickFixError>;
 }

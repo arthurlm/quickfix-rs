@@ -3,6 +3,7 @@
 #include <exception>
 
 #include <quickfix/Log.h>
+#include <quickfix/Dictionary.h>
 #include <quickfix/FileStore.h>
 #include <quickfix/SocketAcceptor.h>
 #include <quickfix/SocketInitiator.h>
@@ -249,6 +250,168 @@ extern "C"
     {
         RETURN_IF_NULL(obj);
         DELETE_OBJ(FIX::SessionSettings, obj);
+    }
+
+    FixDictionary_t *
+    FixDictionary_new(const char *name)
+    {
+        CATCH_OR_RETURN_NULL({
+            return (FixDictionary_t *)(new FIX::Dictionary(name));
+        });
+    }
+
+    int8_t
+    FixDictionary_setString(const FixDictionary_t *obj, const char *key, const char *value)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN_ERRNO({
+            fix_obj->setString(key, value);
+            return 0;
+        })
+    }
+
+    int8_t
+    FixDictionary_setInt(const FixDictionary_t *obj, const char *key, int32_t value)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN_ERRNO({
+            fix_obj->setInt(key, value);
+            return 0;
+        })
+    }
+
+    int8_t
+    FixDictionary_setDouble(const FixDictionary_t *obj, const char *key, double value)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN_ERRNO({
+            fix_obj->setDouble(key, value);
+            return 0;
+        })
+    }
+
+    int8_t
+    FixDictionary_setBool(const FixDictionary_t *obj, const char *key, int8_t value)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN_ERRNO({
+            fix_obj->setBool(key, value);
+            return 0;
+        })
+    }
+
+    int8_t
+    FixDictionary_setDay(const FixDictionary_t *obj, const char *key, int32_t value)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN_ERRNO({
+            fix_obj->setDay(key, value);
+            return 0;
+        })
+    }
+
+    int64_t
+    FixDictionary_getStringLen(const FixDictionary_t *obj, const char *key)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN_ERRNO({
+            return fix_obj->getString(key).size();
+        })
+    }
+
+    int8_t
+    FixDictionary_readString(const FixDictionary_t *obj, const char *key, char *buffer, int64_t buffer_len)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN_ERRNO({
+            auto value = fix_obj->getString(key);
+            if (buffer_len <= value.length())
+            {
+                return ERRNO_BUFFER_TO_SMALL;
+            }
+
+            strncpy(buffer, value.c_str(), buffer_len);
+            buffer[value.length()] = '\0';
+
+            return 0;
+        })
+    }
+
+    int32_t
+    FixDictionary_getInt(const FixDictionary_t *obj, const char *key)
+    {
+        RETURN_VAL_IF_NULL(obj, 0);
+        RETURN_VAL_IF_NULL(key, 0);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN(0, {
+            return fix_obj->getInt(key);
+        })
+    }
+
+    double
+    FixDictionary_getDouble(const FixDictionary_t *obj, const char *key)
+    {
+        RETURN_VAL_IF_NULL(obj, 0.0);
+        RETURN_VAL_IF_NULL(key, 0.0);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN(0.0, {
+            return fix_obj->getDouble(key);
+        })
+    }
+
+    int8_t
+    FixDictionary_getBool(const FixDictionary_t *obj, const char *key)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN_ERRNO({
+            return fix_obj->getBool(key);
+        })
+    }
+
+    int32_t
+    FixDictionary_getDay(const FixDictionary_t *obj, const char *key)
+    {
+        RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+        RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+
+        auto fix_obj = (FIX::Dictionary *)(obj);
+        CATCH_OR_RETURN_ERRNO({
+            return fix_obj->getDay(key);
+        })
+    }
+
+    void
+    FixDictionary_delete(FixDictionary_t *obj)
+    {
+        RETURN_IF_NULL(obj);
+        DELETE_OBJ(FIX::Dictionary, obj);
     }
 
     FixDataDictionary_t *

@@ -11,6 +11,10 @@ pub struct FixSessionSettings_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
+pub struct FixDictionary_t(NonNull<ffi::c_void>);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
 pub struct FixDataDictionary_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -92,6 +96,36 @@ extern "C" {
         configPath: *const ffi::c_char,
     ) -> Option<FixSessionSettings_t>;
     pub fn FixSessionSettings_delete(obj: FixSessionSettings_t);
+
+    pub fn FixDictionary_new(name: *const ffi::c_char) -> Option<FixDictionary_t>;
+    #[must_use]
+    pub fn FixDictionary_setString(
+        obj: FixDictionary_t,
+        key: *const ffi::c_char,
+        value: *const ffi::c_char,
+    ) -> i8;
+    #[must_use]
+    pub fn FixDictionary_setInt(obj: FixDictionary_t, key: *const ffi::c_char, value: i32) -> i8;
+    #[must_use]
+    pub fn FixDictionary_setDouble(obj: FixDictionary_t, key: *const ffi::c_char, value: f64)
+        -> i8;
+    #[must_use]
+    pub fn FixDictionary_setBool(obj: FixDictionary_t, key: *const ffi::c_char, value: i8) -> i8;
+    #[must_use]
+    pub fn FixDictionary_setDay(obj: FixDictionary_t, key: *const ffi::c_char, value: i32) -> i8;
+    pub fn FixDictionary_getStringLen(obj: FixDictionary_t, key: *const ffi::c_char) -> i64;
+    #[must_use]
+    pub fn FixDictionary_readString(
+        obj: FixDictionary_t,
+        key: *const ffi::c_char,
+        buffer: *mut ffi::c_char,
+        buffer_len: i64,
+    ) -> i8;
+    pub fn FixDictionary_getInt(obj: FixDictionary_t, key: *const ffi::c_char) -> i32;
+    pub fn FixDictionary_getDouble(obj: FixDictionary_t, key: *const ffi::c_char) -> f64;
+    pub fn FixDictionary_getBool(obj: FixDictionary_t, key: *const ffi::c_char) -> i8;
+    pub fn FixDictionary_getDay(obj: FixDictionary_t, key: *const ffi::c_char) -> i32;
+    pub fn FixDictionary_delete(obj: FixDictionary_t);
 
     pub fn FixDataDictionary_new() -> Option<FixDataDictionary_t>;
     pub fn FixDataDictionary_fromPath(
