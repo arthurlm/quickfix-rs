@@ -62,6 +62,7 @@ int32_t FixDictionary_getInt(const FixDictionary_t *obj, const char *key);
 double FixDictionary_getDouble(const FixDictionary_t *obj, const char *key);
 int8_t FixDictionary_getBool(const FixDictionary_t *obj, const char *key);
 int32_t FixDictionary_getDay(const FixDictionary_t *obj, const char *key);
+int8_t FixDictionary_hasKey(const FixDictionary_t *obj, const char *key);
 void FixDictionary_delete(FixDictionary_t *obj);
 
 FixDataDictionary_t *FixDataDictionary_new();

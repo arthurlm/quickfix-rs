@@ -125,6 +125,7 @@ extern "C" {
     pub fn FixDictionary_getDouble(obj: FixDictionary_t, key: *const ffi::c_char) -> f64;
     pub fn FixDictionary_getBool(obj: FixDictionary_t, key: *const ffi::c_char) -> i8;
     pub fn FixDictionary_getDay(obj: FixDictionary_t, key: *const ffi::c_char) -> i32;
+    pub fn FixDictionary_hasKey(obj: FixDictionary_t, key: *const ffi::c_char) -> i8;
     pub fn FixDictionary_delete(obj: FixDictionary_t);
 
     pub fn FixDataDictionary_new() -> Option<FixDataDictionary_t>;

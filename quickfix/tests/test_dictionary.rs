@@ -96,3 +96,12 @@ fn test_day() {
     // Test with invalid key
     assert!(dict.get::<DayOfWeek>("invalid").is_err());
 }
+
+#[test]
+fn test_contains() {
+    let mut dict = Dictionary::try_new("HELLO").unwrap();
+    assert!(!dict.contains("foo").unwrap());
+
+    dict.set("foo", "bar".to_string()).unwrap();
+    assert!(dict.contains("foo").unwrap());
+}

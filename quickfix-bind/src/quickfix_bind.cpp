@@ -321,6 +321,12 @@ int32_t FixDictionary_getDay(const FixDictionary_t *obj, const char *key) {
   CATCH_OR_RETURN_ERRNO({ return fix_obj->getDay(key); })
 }
 
+int8_t FixDictionary_hasKey(const FixDictionary_t *obj, const char *key) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+  RETURN_CXX_BOOL_CALL(FIX::Dictionary, obj, has(key));
+}
+
 void FixDictionary_delete(FixDictionary_t *obj) {
   RETURN_IF_NULL(obj);
   DELETE_OBJ(FIX::Dictionary, obj);

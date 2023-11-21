@@ -2,9 +2,9 @@ use std::ffi::{CStr, CString};
 
 use quickfix_ffi::{
     FixDictionary_delete, FixDictionary_getBool, FixDictionary_getDay, FixDictionary_getDouble,
-    FixDictionary_getInt, FixDictionary_getStringLen, FixDictionary_new, FixDictionary_readString,
-    FixDictionary_setBool, FixDictionary_setDay, FixDictionary_setDouble, FixDictionary_setInt,
-    FixDictionary_setString, FixDictionary_t,
+    FixDictionary_getInt, FixDictionary_getStringLen, FixDictionary_hasKey, FixDictionary_new,
+    FixDictionary_readString, FixDictionary_setBool, FixDictionary_setDay, FixDictionary_setDouble,
+    FixDictionary_setInt, FixDictionary_setString, FixDictionary_t,
 };
 
 use crate::{
@@ -23,6 +23,12 @@ impl Dictionary {
         unsafe { FixDictionary_new(c_name.as_ptr()) }
             .map(Self)
             .ok_or(QuickFixError::NullFunctionReturn)
+    }
+
+    /// Check if dictionary contains key.
+    pub fn contains(&self, key: &str) -> Result<bool, QuickFixError> {
+        let c_key = CString::new(key)?;
+        ffi_code_to_bool(unsafe { FixDictionary_hasKey(self.0, c_key.as_ptr()) })
     }
 
     /// Read value from dictionary for a given key.
