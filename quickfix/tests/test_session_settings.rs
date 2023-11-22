@@ -6,7 +6,7 @@ fn test_from_file() {
         SessionSettings::try_from_path("invalid_file.ini").unwrap_err(),
         QuickFixError::NullFunctionReturn
     );
-    let _settings1 = SessionSettings::try_new().unwrap();
+    let _settings1 = SessionSettings::new();
     let _settings2 = SessionSettings::try_from_path("../configs/settings.ini").unwrap();
 }
 
@@ -23,7 +23,7 @@ fn test_getter_and_setter() {
     dict_session.set("foo", 45).unwrap();
 
     // Configure settings
-    let mut settings = SessionSettings::try_new().unwrap();
+    let mut settings = SessionSettings::new();
     settings.set(None, dict_global).unwrap();
     settings
         .set(Some(session_id.clone()), dict_session)

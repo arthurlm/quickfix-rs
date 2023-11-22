@@ -19,11 +19,11 @@ use crate::{
 pub struct Message(pub(crate) FixMessage_t);
 
 impl Message {
-    /// Try create new empty struct.
-    pub fn try_new() -> Result<Self, QuickFixError> {
+    /// Create new empty struct.
+    pub fn new() -> Self {
         unsafe { FixMessage_new() }
             .map(Self)
-            .ok_or(QuickFixError::NullFunctionReturn)
+            .expect("Fail to allocate new Message")
     }
 
     /// Try create new struct from raw text message.
@@ -170,6 +170,12 @@ impl fmt::Debug for Message {
         f.debug_tuple("Message")
             .field(&content.as_deref().unwrap_or("Invalid msg text"))
             .finish()
+    }
+}
+
+impl Default for Message {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

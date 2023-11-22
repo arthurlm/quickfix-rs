@@ -2,7 +2,7 @@ use quickfix::{FieldMap, Message};
 
 #[test]
 fn test_read_empy_message() {
-    let msg = Message::try_new().unwrap();
+    let msg = Message::new();
     assert_eq!(msg.as_string().as_deref(), Ok("9=0\u{1}10=167\u{1}"));
 }
 
@@ -38,7 +38,7 @@ fn test_from_text() {
 
 #[test]
 fn test_set_field() {
-    let mut msg = Message::try_new().unwrap();
+    let mut msg = Message::new();
     msg.set_field(42, "foo").unwrap();
     msg.set_field(56, "bar").unwrap();
     assert_eq!(
@@ -49,7 +49,7 @@ fn test_set_field() {
 
 #[test]
 fn test_set_field_twice() {
-    let mut msg = Message::try_new().unwrap();
+    let mut msg = Message::new();
 
     msg.set_field(42, "foo").unwrap();
     assert_eq!(
@@ -66,7 +66,7 @@ fn test_set_field_twice() {
 
 #[test]
 fn test_get_field() {
-    let mut msg = Message::try_new().unwrap();
+    let mut msg = Message::new();
     assert_eq!(msg.get_field(42), None);
 
     msg.set_field(42, "hello world").unwrap();
@@ -75,7 +75,7 @@ fn test_get_field() {
 
 #[test]
 fn test_remove_field() {
-    let mut msg = Message::try_new().unwrap();
+    let mut msg = Message::new();
     assert_eq!(msg.get_field(42), None);
 
     msg.remove_field(42).unwrap();
@@ -90,7 +90,7 @@ fn test_remove_field() {
 
 #[test]
 fn test_get_header() {
-    let mut msg = Message::try_new().unwrap();
+    let mut msg = Message::new();
     msg.set_field(40000, "foo").unwrap();
 
     // Set some header value.
@@ -115,7 +115,7 @@ fn test_get_header() {
 
 #[test]
 fn test_copy_header() {
-    let mut msg = Message::try_new().unwrap();
+    let mut msg = Message::new();
     msg.with_header_mut(|x| x.set_field(5000, "hello"))
         .unwrap()
         .unwrap();
@@ -138,7 +138,7 @@ fn test_copy_header() {
 
 #[test]
 fn test_get_trailer() {
-    let mut msg = Message::try_new().unwrap();
+    let mut msg = Message::new();
     msg.set_field(40000, "foo").unwrap();
 
     // Set some trailer value.
@@ -163,7 +163,7 @@ fn test_get_trailer() {
 
 #[test]
 fn test_copy_trailer() {
-    let mut msg = Message::try_new().unwrap();
+    let mut msg = Message::new();
     msg.with_trailer_mut(|x| x.set_field(5000, "hello"))
         .unwrap()
         .unwrap();

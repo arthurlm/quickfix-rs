@@ -78,7 +78,7 @@ fn parse_send_to(source: &str) -> Result<(Message, SessionId), BadCommand> {
     })?;
 
     // Build message from 1st data token
-    let mut msg = Message::try_new().expect("Fail to allocate new message");
+    let mut msg = Message::new();
     for field in text_msg.split('|') {
         let mut field_tokens = field.splitn(2, '=');
 

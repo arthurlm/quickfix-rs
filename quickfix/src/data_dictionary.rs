@@ -12,11 +12,11 @@ use crate::{Message, QuickFixError};
 pub struct DataDictionary(pub(crate) FixDataDictionary_t);
 
 impl DataDictionary {
-    /// Try create a new empty struct.
-    pub fn try_new() -> Result<Self, QuickFixError> {
+    /// Create a new empty struct.
+    pub fn new() -> Self {
         unsafe { FixDataDictionary_new() }
             .map(Self)
-            .ok_or(QuickFixError::NullFunctionReturn)
+            .expect("Fail to allocate new DataDictionary")
     }
 
     /// Try to load struct data from path.
@@ -38,6 +38,12 @@ impl DataDictionary {
         unsafe { FixMessage_fromStringAndDictionary(ffi_text.as_ptr(), self.0) }
             .map(Message)
             .ok_or(QuickFixError::NullFunctionReturn)
+    }
+}
+
+impl Default for DataDictionary {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

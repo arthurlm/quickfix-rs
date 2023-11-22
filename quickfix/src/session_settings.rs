@@ -13,11 +13,11 @@ use crate::{utils::ffi_code_to_result, Dictionary, QuickFixError, SessionId};
 pub struct SessionSettings(pub(crate) FixSessionSettings_t);
 
 impl SessionSettings {
-    /// Try to create new empty struct.
-    pub fn try_new() -> Result<Self, QuickFixError> {
+    /// Create new empty struct.
+    pub fn new() -> Self {
         unsafe { FixSessionSettings_new() }
             .map(Self)
-            .ok_or(QuickFixError::NullFunctionReturn)
+            .expect("Fail to allocate new SessionSettings")
     }
 
     /// Try to load struct data from Path.
@@ -71,6 +71,12 @@ impl SessionSettings {
                 Some(session_id) => FixSessionSettings_setSession(self.0, session_id.0, value.0),
             }
         })
+    }
+}
+
+impl Default for SessionSettings {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

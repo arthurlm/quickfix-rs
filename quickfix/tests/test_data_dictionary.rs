@@ -2,7 +2,7 @@ use quickfix::{DataDictionary, QuickFixError};
 
 #[test]
 fn test_create_and_drop() {
-    DataDictionary::try_new().unwrap();
+    DataDictionary::new();
 }
 
 #[test]
