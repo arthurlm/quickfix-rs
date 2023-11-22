@@ -127,6 +127,12 @@ impl PropertyContainer<DayOfWeek> for Dictionary {
     }
 }
 
+impl Default for Dictionary {
+    fn default() -> Self {
+        Self::try_new("").expect("Fail to allocate Dictionary")
+    }
+}
+
 impl Drop for Dictionary {
     fn drop(&mut self) {
         unsafe { FixDictionary_delete(self.0) }
