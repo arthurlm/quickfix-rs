@@ -100,6 +100,23 @@ extern "C" {
         configPath: *const ffi::c_char,
     ) -> Option<FixSessionSettings_t>;
 
+    pub fn FixSessionSettings_getGlobalRef(obj: FixSessionSettings_t) -> Option<FixDictionary_t>;
+
+    pub fn FixSessionSettings_getSessionRef(
+        obj: FixSessionSettings_t,
+        id: FixSessionID_t,
+    ) -> Option<FixDictionary_t>;
+
+    #[must_use]
+    pub fn FixSessionSettings_setGlobal(obj: FixSessionSettings_t, value: FixDictionary_t) -> i8;
+
+    #[must_use]
+    pub fn FixSessionSettings_setSession(
+        obj: FixSessionSettings_t,
+        id: FixSessionID_t,
+        value: FixDictionary_t,
+    ) -> i8;
+
     pub fn FixSessionSettings_delete(obj: FixSessionSettings_t);
 
     // Dictionary

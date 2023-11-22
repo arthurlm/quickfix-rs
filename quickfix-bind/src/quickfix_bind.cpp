@@ -198,6 +198,53 @@ FixSessionSettings_t *FixSessionSettings_fromPath(const char *configPath) {
   CATCH_OR_RETURN_NULL({ return (FixSessionSettings_t *)(new FIX::SessionSettings(configPath)); });
 }
 
+FixDictionary_t *FixSessionSettings_getGlobalRef(const FixSessionSettings_t *obj) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  auto fix_obj = (FIX::SessionSettings *)(obj);
+
+  CATCH_OR_RETURN_NULL({ return (FixDictionary *)(&fix_obj->get()); });
+}
+
+FixDictionary_t *FixSessionSettings_getSessionRef(const FixSessionSettings_t *obj, const FixSessionID_t *id) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  auto fix_obj = (FIX::SessionSettings *)(obj);
+
+  RETURN_VAL_IF_NULL(id, NULL);
+  auto fix_id = (FIX::SessionID *)(id);
+
+  CATCH_OR_RETURN_NULL({ return (FixDictionary *)(&fix_obj->get(*fix_id)); });
+}
+
+int8_t FixSessionSettings_setGlobal(const FixSessionSettings_t *obj, const FixDictionary_t *value) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  auto fix_obj = (FIX::SessionSettings *)(obj);
+
+  RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+  auto fix_value = (FIX::Dictionary *)(value);
+
+  CATCH_OR_RETURN_ERRNO({
+    fix_obj->set(*fix_value);
+    return 0;
+  })
+}
+
+int8_t FixSessionSettings_setSession(const FixSessionSettings_t *obj, const FixSessionID_t *id,
+                                     const FixDictionary_t *value) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  auto fix_obj = (FIX::SessionSettings *)(obj);
+
+  RETURN_VAL_IF_NULL(id, ERRNO_INVAL);
+  auto fix_id = (FIX::SessionID *)(id);
+
+  RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+  auto fix_value = (FIX::Dictionary *)(value);
+
+  CATCH_OR_RETURN_ERRNO({
+    fix_obj->set(*fix_id, *fix_value);
+    return 0;
+  })
+}
+
 void FixSessionSettings_delete(FixSessionSettings_t *obj) {
   RETURN_IF_NULL(obj);
   DELETE_OBJ(FIX::SessionSettings, obj);

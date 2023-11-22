@@ -48,6 +48,11 @@ typedef struct FixLogCallbacks {
 
 FixSessionSettings_t *FixSessionSettings_new();
 FixSessionSettings_t *FixSessionSettings_fromPath(const char *configPath);
+FixDictionary_t *FixSessionSettings_getGlobalRef(const FixSessionSettings_t *obj);
+FixDictionary_t *FixSessionSettings_getSessionRef(const FixSessionSettings_t *obj, const FixSessionID_t *id);
+int8_t FixSessionSettings_setGlobal(const FixSessionSettings_t *obj, const FixDictionary_t *value);
+int8_t FixSessionSettings_setSession(const FixSessionSettings_t *obj, const FixSessionID_t *id,
+                                     const FixDictionary_t *value);
 void FixSessionSettings_delete(FixSessionSettings_t *obj);
 
 FixDictionary_t *FixDictionary_new(const char *name);
