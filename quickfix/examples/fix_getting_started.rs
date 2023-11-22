@@ -5,8 +5,8 @@ use std::{
 };
 
 use quickfix::{
-    Application, ApplicationCallback, ConnectionHandler, FileStoreFactory, LogFactory, SessionId,
-    SessionSettings, SocketAcceptor, StdLogger,
+    Application, ApplicationCallback, ConnectionHandler, FileStoreFactory, LogFactory,
+    QuickFixError, SessionId, SessionSettings, SocketAcceptor, StdLogger,
 };
 
 #[derive(Default)]
@@ -20,7 +20,7 @@ impl ApplicationCallback for MyApplication {
     }
 }
 
-fn main() {
+fn main() -> Result<(), QuickFixError> {
     let args: Vec<_> = env::args().collect();
     let Some(config_file) = args.get(1) else {
         eprintln!("Bad program usage: {} <config_file>", args[0]);
@@ -28,17 +28,16 @@ fn main() {
     };
 
     println!(">> Creating resources");
-    let settings = SessionSettings::try_from_path(config_file).expect("Fail to load settings");
-    let store_factory = FileStoreFactory::try_new(&settings).expect("Fail to build store factory");
-    let log_factory = LogFactory::try_new(&StdLogger::Stdout).expect("Fail to build log factory");
+    let settings = SessionSettings::try_from_path(config_file)?;
+    let store_factory = FileStoreFactory::try_new(&settings)?;
+    let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
     let callbacks = MyApplication;
-    let app = Application::try_new(&callbacks).expect("Fail to init app");
+    let app = Application::try_new(&callbacks)?;
 
-    let mut acceptor = SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)
-        .expect("Fail to build connection handler");
+    let mut acceptor = SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
 
     println!(">> connection handler START");
-    acceptor.start().expect("Fail to start connection handler");
+    acceptor.start()?;
 
     println!(">> App running, press 'q' to quit");
     let mut stdin = stdin().lock();
@@ -51,7 +50,8 @@ fn main() {
     }
 
     println!(">> connection handler STOP");
-    acceptor.stop().expect("Fail to start connection handler");
+    acceptor.stop()?;
 
     println!(">> All cleared. Bye !");
+    Ok(())
 }
