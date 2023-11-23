@@ -1,4 +1,4 @@
-#![warn(missing_docs)]
+#![warn(missing_docs, missing_debug_implementations)]
 
 /*! This project is an **unofficial** binding between [quickfix library](https://github.com/quickfix/quickfix) and rust project. */
 

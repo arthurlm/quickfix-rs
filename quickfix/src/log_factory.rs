@@ -126,6 +126,7 @@ impl LogCallback for StdLogger {
 }
 
 /// Log message using `log` crate.
+#[derive(Debug)]
 #[cfg(feature = "log")]
 pub struct RustLogger;
 
