@@ -55,6 +55,22 @@ Cons:
 - Still require an unsafe to safe rust wrapper.
 - Output code is just awful and terribly slow to compile.
 
+[Rust cxx](https://github.com/dtolnay/cxx)
+
+I have found this project after starting the project.
+However to me it still have some issue.
+
+Pro:
+
+- Better support of C++ STL than bindgen.
+- Looks more popular and supported than bindgen.
+
+Cons:
+
+- Still require manual writing of a bridge between Rust / C++ libraries.
+  So why adding a library, I could make the bridge from standard C11 and use standard Rust.
+  See more details on how it works [here](https://cxx.rs/).
+
 ## Other project inspiration
 
 - [rust-rdkafka](https://github.com/fede1024/rust-rdkafka): for how to build C library using cmake and link to rust project.
