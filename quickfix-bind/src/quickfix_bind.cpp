@@ -392,17 +392,21 @@ void FixDataDictionary_delete(FixDataDictionary_t *obj) {
   DELETE_OBJ(FIX::DataDictionary, obj);
 }
 
-FixFileStoreFactory_t *FixFileStoreFactory_new(const FixSessionSettings_t *settings) {
+FixMessageStoreFactory_t *FixFileMessageStoreFactory_new(const FixSessionSettings_t *settings) {
   RETURN_VAL_IF_NULL(settings, NULL);
   CATCH_OR_RETURN_NULL({
     auto fix_settings = (FIX::SessionSettings *)(settings);
-    return (FixFileStoreFactory_t *)(new FIX::FileStoreFactory(*fix_settings));
+    return (FixMessageStoreFactory_t *)(new FIX::FileStoreFactory(*fix_settings));
   });
 }
 
-void FixFileStoreFactory_delete(FixFileStoreFactory_t *obj) {
+FixMessageStoreFactory_t *FixMemoryMessageStoreFactory_new() {
+  CATCH_OR_RETURN_NULL({ return (FixMessageStoreFactory_t *)(new FIX::MemoryStoreFactory()); })
+}
+
+void FixMessageStoreFactory_delete(FixMessageStoreFactory_t *obj) {
   RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::FileStoreFactory, obj);
+  DELETE_OBJ(FIX::MessageStoreFactory, obj);
 }
 
 FixLogFactory_t *FixLogFactory_new(const void *data, const FixLogCallbacks_t *callbacks) {
@@ -425,7 +429,7 @@ void FixApplication_delete(FixApplication_t *obj) {
 }
 
 FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application,
-                                           const FixFileStoreFactory_t *storeFactory,
+                                           const FixMessageStoreFactory_t *storeFactory,
                                            const FixSessionSettings_t *settings, const FixLogFactory_t *logFactory) {
   RETURN_VAL_IF_NULL(application, NULL);
   RETURN_VAL_IF_NULL(storeFactory, NULL);
@@ -433,7 +437,7 @@ FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application,
   RETURN_VAL_IF_NULL(settings, NULL);
 
   auto fix_application = (ApplicationBind *)(application);
-  auto fix_store_factory = (FIX::FileStoreFactory *)(storeFactory);
+  auto fix_store_factory = (FIX::MessageStoreFactory *)(storeFactory);
   auto fix_log_factory = (ExternalLogFactory *)(logFactory);
   auto fix_settings = (FIX::SessionSettings *)(settings);
 
@@ -479,7 +483,7 @@ void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj) {
 }
 
 FixSocketInitiator_t *FixSocketInitiator_new(const FixApplication_t *application,
-                                             const FixFileStoreFactory_t *storeFactory,
+                                             const FixMessageStoreFactory_t *storeFactory,
                                              const FixSessionSettings_t *settings, const FixLogFactory_t *logFactory) {
   RETURN_VAL_IF_NULL(application, NULL);
   RETURN_VAL_IF_NULL(storeFactory, NULL);
@@ -487,7 +491,7 @@ FixSocketInitiator_t *FixSocketInitiator_new(const FixApplication_t *application
   RETURN_VAL_IF_NULL(settings, NULL);
 
   auto fix_application = (ApplicationBind *)(application);
-  auto fix_store_factory = (FIX::FileStoreFactory *)(storeFactory);
+  auto fix_store_factory = (FIX::MessageStoreFactory *)(storeFactory);
   auto fix_log_factory = (ExternalLogFactory *)(logFactory);
   auto fix_settings = (FIX::SessionSettings *)(settings);
 

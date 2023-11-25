@@ -19,7 +19,7 @@ pub struct FixDataDictionary_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
-pub struct FixFileStoreFactory_t(NonNull<ffi::c_void>);
+pub struct FixMessageStoreFactory_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
@@ -177,10 +177,13 @@ extern "C" {
 
     // Message store factory
 
-    pub fn FixFileStoreFactory_new(settings: FixSessionSettings_t)
-        -> Option<FixFileStoreFactory_t>;
+    pub fn FixFileMessageStoreFactory_new(
+        settings: FixSessionSettings_t,
+    ) -> Option<FixMessageStoreFactory_t>;
 
-    pub fn FixFileStoreFactory_delete(obj: FixFileStoreFactory_t);
+    pub fn FixMemoryMessageStoreFactory_new() -> Option<FixMessageStoreFactory_t>;
+
+    pub fn FixMessageStoreFactory_delete(obj: FixMessageStoreFactory_t);
 
     // Log factory
 
@@ -204,7 +207,7 @@ extern "C" {
 
     pub fn FixSocketAcceptor_new(
         application: FixApplication_t,
-        storeFactory: FixFileStoreFactory_t,
+        storeFactory: FixMessageStoreFactory_t,
         settings: FixSessionSettings_t,
         logFactory: FixLogFactory_t,
     ) -> Option<FixSocketAcceptor_t>;
@@ -233,7 +236,7 @@ extern "C" {
 
     pub fn FixSocketInitiator_new(
         application: FixApplication_t,
-        storeFactory: FixFileStoreFactory_t,
+        storeFactory: FixMessageStoreFactory_t,
         settings: FixSessionSettings_t,
         logFactory: FixLogFactory_t,
     ) -> Option<FixSocketInitiator_t>;

@@ -19,7 +19,7 @@ extern "C" {
 typedef struct FixSessionSettings FixSessionSettings_t;
 typedef struct FixDictionary FixDictionary_t;
 typedef struct FixDataDictionary FixDataDictionary_t;
-typedef struct FixFileStoreFactory FixFileStoreFactory_t;
+typedef struct FixMessageStoreFactory FixMessageStoreFactory_t;
 typedef struct FixLogFactory FixLogFactory_t;
 typedef struct FixApplication FixApplication_t;
 typedef struct FixSocketAcceptor FixSocketAcceptor_t;
@@ -74,8 +74,9 @@ FixDataDictionary_t *FixDataDictionary_new();
 FixDataDictionary_t *FixDataDictionary_fromPath(const char *configPath);
 void FixDataDictionary_delete(FixDataDictionary_t *obj);
 
-FixFileStoreFactory_t *FixFileStoreFactory_new(const FixSessionSettings_t *settings);
-void FixFileStoreFactory_delete(FixFileStoreFactory_t *obj);
+FixMessageStoreFactory_t *FixFileMessageStoreFactory_new(const FixSessionSettings_t *settings);
+FixMessageStoreFactory_t *FixMemoryMessageStoreFactory_new();
+void FixMessageStoreFactory_delete(FixMessageStoreFactory_t *obj);
 
 FixLogFactory_t *FixLogFactory_new(const void *data, const FixLogCallbacks_t *callbacks);
 void FixLogFactory_delete(FixLogFactory_t *obj);
@@ -84,7 +85,7 @@ FixApplication_t *FixApplication_new(const void *data, const FixApplicationCallb
 void FixApplication_delete(FixApplication_t *obj);
 
 FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application,
-                                           const FixFileStoreFactory_t *storeFactory,
+                                           const FixMessageStoreFactory_t *storeFactory,
                                            const FixSessionSettings_t *settings, const FixLogFactory_t *logFactory);
 int8_t FixSocketAcceptor_start(const FixSocketAcceptor_t *obj);
 int8_t FixSocketAcceptor_block(const FixSocketAcceptor_t *obj);
@@ -95,7 +96,7 @@ int8_t FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj);
 void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj);
 
 FixSocketInitiator_t *FixSocketInitiator_new(const FixApplication_t *application,
-                                             const FixFileStoreFactory_t *storeFactory,
+                                             const FixMessageStoreFactory_t *storeFactory,
                                              const FixSessionSettings_t *settings, const FixLogFactory_t *logFactory);
 int8_t FixSocketInitiator_start(const FixSocketInitiator_t *obj);
 int8_t FixSocketInitiator_block(const FixSocketInitiator_t *obj);

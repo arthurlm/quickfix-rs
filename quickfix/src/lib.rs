@@ -7,11 +7,11 @@ mod data_dictionary;
 mod days;
 mod dictionary;
 mod error;
-mod file_store_factory;
 mod group;
 mod header;
 mod log_factory;
 mod message;
+mod message_store_factory;
 mod session;
 mod session_id;
 mod session_settings;
@@ -28,11 +28,13 @@ pub use data_dictionary::DataDictionary;
 pub use days::DayOfWeek;
 pub use dictionary::Dictionary;
 pub use error::QuickFixError;
-pub use file_store_factory::FileStoreFactory;
 pub use group::Group;
 pub use header::Header;
 pub use log_factory::{LogCallback, LogFactory, StdLogger};
 pub use message::Message;
+pub use message_store_factory::{
+    FfiMessageStoreFactory, FileMessageStoreFactory, MemoryMessageStoreFactory,
+};
 pub use session::send_to_target;
 pub use session_id::SessionId;
 pub use session_settings::SessionSettings;

@@ -104,7 +104,8 @@ fn main() {
         println!(">> Creating resources");
         let settings =
             FixSessionSettings_fromPath(config_path.as_ptr()).expect("Fail to load settings");
-        let store_factory = FixFileStoreFactory_new(settings).expect("Fail to build store factory");
+        let store_factory =
+            FixFileMessageStoreFactory_new(settings).expect("Fail to build store factory");
         let log_factory = FixLogFactory_new(0xBEEF as *const ffi::c_void, &LOG_CALLBACKS)
             .expect("Fail to build log factory");
         let application = FixApplication_new(0xFEED as *const ffi::c_void, &APP_CALLBACKS)
@@ -130,7 +131,7 @@ fn main() {
         FixSocketAcceptor_delete(acceptor);
         FixApplication_delete(application);
         FixLogFactory_delete(log_factory);
-        FixFileStoreFactory_delete(store_factory);
+        FixMessageStoreFactory_delete(store_factory);
         FixSessionSettings_delete(settings);
     }
 }

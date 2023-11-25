@@ -57,9 +57,9 @@ What I do **not** plan to bind from this crate:
 
 7. SQL binding for `MessageStoreFactory`.
 
-    For now I am not sure what the plan is ...
-    I think target is same answer as `LogFactory` but it is not 100% clear for now.
-    Things may change in the future.
+   For now, only `FileMessageStoreFactory` and `MemoryMessageStoreFactory` are bind.
+   I will add later support of SQL message store as build option.
+   Implementing message store from rust side is a little bit tricky and I am not 100% sure of the correct way to proceed.
 
 8. Exotic operating system.
 

@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 
   printf(">> Creating resources\n");
   FixSessionSettings_t *settings = FixSessionSettings_fromPath(argv[1]);
-  FixFileStoreFactory_t *storeFactory = FixFileStoreFactory_new(settings);
+  FixMessageStoreFactory_t *storeFactory = FixFileMessageStoreFactory_new(settings);
   FixLogFactory_t *logFactory = FixLogFactory_new((void *)0xFEED, &LOG_CALLBACKS);
   FixApplication_t *application = FixApplication_new((void *)0xBEEF, &APP_CALLBACKS);
   FixSocketAcceptor_t *acceptor = FixSocketAcceptor_new(application, storeFactory, settings, logFactory);
@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
   FixSocketAcceptor_delete(acceptor);
   FixApplication_delete(application);
   FixLogFactory_delete(logFactory);
-  FixFileStoreFactory_delete(storeFactory);
+  FixMessageStoreFactory_delete(storeFactory);
   FixSessionSettings_delete(settings);
 
   return 0;

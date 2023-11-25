@@ -1,8 +1,9 @@
 use std::io::{stdin, Read};
 
 use quickfix::{
-    Application, ApplicationCallback, ConnectionHandler, Dictionary, FileStoreFactory, LogFactory,
-    QuickFixError, SessionId, SessionSettings, SocketAcceptor, StdLogger,
+    Application, ApplicationCallback, ConnectionHandler, Dictionary, LogFactory,
+    MemoryMessageStoreFactory, QuickFixError, SessionId, SessionSettings, SocketAcceptor,
+    StdLogger,
 };
 
 #[derive(Default)]
@@ -44,7 +45,7 @@ fn main() -> Result<(), QuickFixError> {
     let settings = build_settings()?;
 
     println!(">> Creating resources");
-    let store_factory = FileStoreFactory::try_new(&settings)?;
+    let store_factory = MemoryMessageStoreFactory::new();
     let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
     let callbacks = MyApplication;
     let app = Application::try_new(&callbacks)?;
