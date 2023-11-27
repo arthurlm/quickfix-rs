@@ -45,107 +45,86 @@
 
 #define CATCH_OR_RETURN_ERRNO(_XXX_) CATCH_OR_RETURN(ERRNO_EXCEPTION, _XXX_)
 
-#define DELETE_OBJ(_TYPE_, _OBJ_)                                                                                      \
-  {                                                                                                                    \
-    auto fix_obj = (_TYPE_ *)(_OBJ_);                                                                                  \
-    delete fix_obj;                                                                                                    \
-  }
+#define RETURN_CXX_TO_C_STR(_CALL_) CATCH_OR_RETURN_NULL({ return (_CALL_).c_str(); })
 
-#define RETURN_CXX_TO_C_STR(_TYPE_, _OBJ_, _METHOD_)                                                                   \
-  CATCH_OR_RETURN_NULL({                                                                                               \
-    auto fix_obj = (_TYPE_ *)((_OBJ_));                                                                                \
-    return fix_obj->_METHOD_.c_str();                                                                                  \
-  })
+#define RETURN_CXX_BOOL_CALL(_CALL_) CATCH_OR_RETURN_ERRNO({ return _CALL_ ? 1 : 0; })
 
-#define SAFE_CXX_CALL(_TYPE_, _OBJ_, _METHOD_)                                                                         \
-  CATCH_OR_RETURN_ERRNO({                                                                                              \
-    auto fix_obj = (_TYPE_ *)(_OBJ_);                                                                                  \
-    fix_obj->_METHOD_;                                                                                                 \
-    return 0;                                                                                                          \
-  })
+namespace FIX {
 
-#define RETURN_CXX_BOOL_CALL(_TYPE_, _OBJ_, _METHOD_)                                                                  \
-  CATCH_OR_RETURN_ERRNO({                                                                                              \
-    auto fix_obj = (_TYPE_ *)(_OBJ_);                                                                                  \
-    return fix_obj->_METHOD_ ? 1 : 0;                                                                                  \
-  })
-
-class ApplicationBind : public FIX::Application {
+class ApplicationBind : public Application {
 private:
-  const FixApplicationCallbacks_t *callbacks;
+  const ApplicationCallbacks *callbacks;
   const void *data;
 
 public:
-  ApplicationBind(const void *data, const FixApplicationCallbacks_t *callbacks) : callbacks(callbacks), data(data) {}
+  ApplicationBind(const void *data, const ApplicationCallbacks *callbacks) : callbacks(callbacks), data(data) {}
 
   ApplicationBind(const ApplicationBind &) = delete;
   ApplicationBind &operator=(const ApplicationBind &) = delete;
 
   virtual ~ApplicationBind() {}
 
-  void onCreate(const FIX::SessionID &session) override {
+  void onCreate(const SessionID &session) override {
     RETURN_IF_NULL(callbacks);
     RETURN_IF_NULL(callbacks->onCreate);
-    callbacks->onCreate(data, (FixSessionID_t *)(&session));
+    callbacks->onCreate(data, &session);
   }
 
-  void onLogon(const FIX::SessionID &session) override {
+  void onLogon(const SessionID &session) override {
     RETURN_IF_NULL(callbacks);
     RETURN_IF_NULL(callbacks->onLogon);
-    callbacks->onLogon(data, (FixSessionID_t *)(&session));
+    callbacks->onLogon(data, &session);
   }
 
-  void onLogout(const FIX::SessionID &session) override {
+  void onLogout(const SessionID &session) override {
     RETURN_IF_NULL(callbacks);
     RETURN_IF_NULL(callbacks->onLogout);
-    callbacks->onLogout(data, (FixSessionID_t *)(&session));
+    callbacks->onLogout(data, &session);
   }
 
-  void toAdmin(FIX::Message &msg, const FIX::SessionID &session) override {
+  void toAdmin(Message &msg, const SessionID &session) override {
     RETURN_IF_NULL(callbacks);
     RETURN_IF_NULL(callbacks->toAdmin);
-    callbacks->toAdmin(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+    callbacks->toAdmin(data, &msg, &session);
   }
 
-  void toApp(FIX::Message &msg, const FIX::SessionID &session) EXCEPT(FIX::DoNotSend) override {
+  void toApp(Message &msg, const SessionID &session) EXCEPT(DoNotSend) override {
     RETURN_IF_NULL(callbacks);
     RETURN_IF_NULL(callbacks->toApp);
-    callbacks->toApp(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+    callbacks->toApp(data, &msg, &session);
   }
 
-  void fromAdmin(const FIX::Message &msg, const FIX::SessionID &session)
-      EXCEPT(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) override {
+  void fromAdmin(const Message &msg, const SessionID &session)
+      EXCEPT(FieldNotFound, IncorrectDataFormat, IncorrectTagValue, RejectLogon) override {
     RETURN_IF_NULL(callbacks);
     RETURN_IF_NULL(callbacks->fromAdmin);
-    callbacks->fromAdmin(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+    callbacks->fromAdmin(data, &msg, &session);
   }
 
-  void fromApp(const FIX::Message &msg, const FIX::SessionID &session)
-      EXCEPT(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue,
-             FIX::UnsupportedMessageType) override {
+  void fromApp(const Message &msg, const SessionID &session)
+      EXCEPT(FieldNotFound, IncorrectDataFormat, IncorrectTagValue, UnsupportedMessageType) override {
     RETURN_IF_NULL(callbacks);
     RETURN_IF_NULL(callbacks->fromApp);
-    callbacks->fromApp(data, (FixMessage_t *)(&msg), (FixSessionID_t *)(&session));
+    callbacks->fromApp(data, &msg, &session);
   }
 };
 
-class ExternalLog : public FIX::Log {
+class ExternalLog : public Log {
 private:
   const void *data;
-  const FixSessionID_t *sessionId;
-  const FixLogCallbacks_t *callbacks;
+  const SessionID *sessionId;
+  const LogCallbacks *callbacks;
 
 public:
-  ExternalLog(const void *data, const FixSessionID_t *sessionId, const FixLogCallbacks_t *callbacks)
+  ExternalLog(const void *data, const SessionID *sessionId, const LogCallbacks *callbacks)
       : data(data), sessionId(sessionId), callbacks(callbacks) {}
 
   ExternalLog(const ExternalLog &) = delete;
   ExternalLog &operator=(const ExternalLog &) = delete;
 
   virtual ~ExternalLog() {
-    auto fixSessionId = (FIX::SessionID *)(sessionId);
-    if (fixSessionId) {
-      delete fixSessionId;
+    if (sessionId) {
+      delete sessionId;
     }
   }
 
@@ -171,168 +150,146 @@ public:
   }
 };
 
-class ExternalLogFactory : public FIX::LogFactory {
+class ExternalLogFactory : public LogFactory {
 private:
   const void *data;
-  const FixLogCallbacks_t *callbacks;
+  const LogCallbacks *callbacks;
 
 public:
-  ExternalLogFactory(const void *data, const FixLogCallbacks_t *callbacks) : data(data), callbacks(callbacks) {}
+  ExternalLogFactory(const void *data, const LogCallbacks *callbacks) : data(data), callbacks(callbacks) {}
 
   ExternalLogFactory(const ExternalLogFactory &) = delete;
   ExternalLogFactory &operator=(const ExternalLogFactory &) = delete;
 
   virtual ~ExternalLogFactory() {}
 
-  FIX::Log *create() override { return new ExternalLog(data, NULL, callbacks); }
+  Log *create() override { return new ExternalLog(data, NULL, callbacks); }
 
-  FIX::Log *create(const FIX::SessionID &sessionId) override {
-    auto sessionIdCopy = new FIX::SessionID(sessionId);
-    return new ExternalLog(data, (FixSessionID_t *)sessionIdCopy, callbacks);
+  Log *create(const SessionID &sessionId) override {
+    auto sessionIdCopy = new SessionID(sessionId);
+    return new ExternalLog(data, sessionIdCopy, callbacks);
   }
 
-  void destroy(FIX::Log *log) override { delete log; }
+  void destroy(Log *log) override { delete log; }
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-FixSessionSettings_t *FixSessionSettings_new() {
-  CATCH_OR_RETURN_NULL({ return (FixSessionSettings_t *)(new FIX::SessionSettings()); });
+SessionSettings *FixSessionSettings_new() {
+  CATCH_OR_RETURN_NULL({ return new SessionSettings(); });
 }
 
-FixSessionSettings_t *FixSessionSettings_fromPath(const char *configPath) {
-  CATCH_OR_RETURN_NULL({ return (FixSessionSettings_t *)(new FIX::SessionSettings(configPath)); });
+SessionSettings *FixSessionSettings_fromPath(const char *configPath) {
+  CATCH_OR_RETURN_NULL({ return new SessionSettings(configPath); });
 }
 
-FixDictionary_t *FixSessionSettings_getGlobalRef(const FixSessionSettings_t *obj) {
+const Dictionary *FixSessionSettings_getGlobalRef(const SessionSettings *obj) {
   RETURN_VAL_IF_NULL(obj, NULL);
-  auto fix_obj = (FIX::SessionSettings *)(obj);
-
-  CATCH_OR_RETURN_NULL({ return (FixDictionary *)(&fix_obj->get()); });
+  CATCH_OR_RETURN_NULL({ return &obj->get(); });
 }
 
-FixDictionary_t *FixSessionSettings_getSessionRef(const FixSessionSettings_t *obj, const FixSessionID_t *id) {
+const Dictionary *FixSessionSettings_getSessionRef(const SessionSettings *obj, const SessionID *id) {
   RETURN_VAL_IF_NULL(obj, NULL);
-  auto fix_obj = (FIX::SessionSettings *)(obj);
-
   RETURN_VAL_IF_NULL(id, NULL);
-  auto fix_id = (FIX::SessionID *)(id);
-
-  CATCH_OR_RETURN_NULL({ return (FixDictionary *)(&fix_obj->get(*fix_id)); });
+  CATCH_OR_RETURN_NULL({ return &obj->get(*id); });
 }
 
-int8_t FixSessionSettings_setGlobal(const FixSessionSettings_t *obj, const FixDictionary_t *value) {
+int8_t FixSessionSettings_setGlobal(SessionSettings *obj, const Dictionary *value) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  auto fix_obj = (FIX::SessionSettings *)(obj);
-
   RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
-  auto fix_value = (FIX::Dictionary *)(value);
 
   CATCH_OR_RETURN_ERRNO({
-    fix_obj->set(*fix_value);
+    obj->set(*value);
     return 0;
   })
 }
 
-int8_t FixSessionSettings_setSession(const FixSessionSettings_t *obj, const FixSessionID_t *id,
-                                     const FixDictionary_t *value) {
+int8_t FixSessionSettings_setSession(SessionSettings *obj, const SessionID *id, const Dictionary *value) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  auto fix_obj = (FIX::SessionSettings *)(obj);
-
   RETURN_VAL_IF_NULL(id, ERRNO_INVAL);
-  auto fix_id = (FIX::SessionID *)(id);
-
   RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
-  auto fix_value = (FIX::Dictionary *)(value);
 
   CATCH_OR_RETURN_ERRNO({
-    fix_obj->set(*fix_id, *fix_value);
+    obj->set(*id, *value);
     return 0;
   })
 }
 
-void FixSessionSettings_delete(FixSessionSettings_t *obj) {
+void FixSessionSettings_delete(const SessionSettings *obj) {
   RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::SessionSettings, obj);
+  delete obj;
 }
 
-FixDictionary_t *FixDictionary_new(const char *name) {
-  CATCH_OR_RETURN_NULL({ return (FixDictionary_t *)(new FIX::Dictionary(name)); });
+Dictionary *FixDictionary_new(const char *name) {
+  CATCH_OR_RETURN_NULL({ return new Dictionary(name); });
 }
 
-int8_t FixDictionary_setString(const FixDictionary_t *obj, const char *key, const char *value) {
+int8_t FixDictionary_setString(Dictionary *obj, const char *key, const char *value) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
   CATCH_OR_RETURN_ERRNO({
-    fix_obj->setString(key, value);
+    obj->setString(key, value);
     return 0;
   })
 }
 
-int8_t FixDictionary_setInt(const FixDictionary_t *obj, const char *key, int32_t value) {
+int8_t FixDictionary_setInt(Dictionary *obj, const char *key, int32_t value) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
   CATCH_OR_RETURN_ERRNO({
-    fix_obj->setInt(key, value);
+    obj->setInt(key, value);
     return 0;
   })
 }
 
-int8_t FixDictionary_setDouble(const FixDictionary_t *obj, const char *key, double value) {
+int8_t FixDictionary_setDouble(Dictionary *obj, const char *key, double value) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
   CATCH_OR_RETURN_ERRNO({
-    fix_obj->setDouble(key, value);
+    obj->setDouble(key, value);
     return 0;
   })
 }
 
-int8_t FixDictionary_setBool(const FixDictionary_t *obj, const char *key, int8_t value) {
+int8_t FixDictionary_setBool(Dictionary *obj, const char *key, int8_t value) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
   CATCH_OR_RETURN_ERRNO({
-    fix_obj->setBool(key, value);
+    obj->setBool(key, value);
     return 0;
   })
 }
 
-int8_t FixDictionary_setDay(const FixDictionary_t *obj, const char *key, int32_t value) {
+int8_t FixDictionary_setDay(Dictionary *obj, const char *key, int32_t value) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
   CATCH_OR_RETURN_ERRNO({
-    fix_obj->setDay(key, value);
+    obj->setDay(key, value);
     return 0;
   })
 }
 
-int64_t FixDictionary_getStringLen(const FixDictionary_t *obj, const char *key) {
+int64_t FixDictionary_getStringLen(const Dictionary *obj, const char *key) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
-  CATCH_OR_RETURN_ERRNO({ return fix_obj->getString(key).size(); })
+  CATCH_OR_RETURN_ERRNO({ return obj->getString(key).size(); })
 }
 
-int8_t FixDictionary_readString(const FixDictionary_t *obj, const char *key, char *buffer, int64_t buffer_len) {
+int8_t FixDictionary_readString(const Dictionary *obj, const char *key, char *buffer, int64_t buffer_len) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
   CATCH_OR_RETURN_ERRNO({
-    auto value = fix_obj->getString(key);
+    auto value = obj->getString(key);
     if (buffer_len <= value.length()) {
       return ERRNO_BUFFER_TO_SMALL;
     }
@@ -344,315 +301,301 @@ int8_t FixDictionary_readString(const FixDictionary_t *obj, const char *key, cha
   })
 }
 
-int32_t FixDictionary_getInt(const FixDictionary_t *obj, const char *key) {
+int32_t FixDictionary_getInt(const Dictionary *obj, const char *key) {
   RETURN_VAL_IF_NULL(obj, 0);
   RETURN_VAL_IF_NULL(key, 0);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
-  CATCH_OR_RETURN(0, { return fix_obj->getInt(key); })
+  CATCH_OR_RETURN(0, { return obj->getInt(key); })
 }
 
-double FixDictionary_getDouble(const FixDictionary_t *obj, const char *key) {
+double FixDictionary_getDouble(const Dictionary *obj, const char *key) {
   RETURN_VAL_IF_NULL(obj, 0.0);
   RETURN_VAL_IF_NULL(key, 0.0);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
-  CATCH_OR_RETURN(0.0, { return fix_obj->getDouble(key); })
+  CATCH_OR_RETURN(0.0, { return obj->getDouble(key); })
 }
 
-int8_t FixDictionary_getBool(const FixDictionary_t *obj, const char *key) {
+int8_t FixDictionary_getBool(const Dictionary *obj, const char *key) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
-  CATCH_OR_RETURN_ERRNO({ return fix_obj->getBool(key); })
+  CATCH_OR_RETURN_ERRNO({ return obj->getBool(key); })
 }
 
-int32_t FixDictionary_getDay(const FixDictionary_t *obj, const char *key) {
+int32_t FixDictionary_getDay(const Dictionary *obj, const char *key) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
 
-  auto fix_obj = (FIX::Dictionary *)(obj);
-  CATCH_OR_RETURN_ERRNO({ return fix_obj->getDay(key); })
+  CATCH_OR_RETURN_ERRNO({ return obj->getDay(key); })
 }
 
-int8_t FixDictionary_hasKey(const FixDictionary_t *obj, const char *key) {
+int8_t FixDictionary_hasKey(const Dictionary *obj, const char *key) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(FIX::Dictionary, obj, has(key));
+  RETURN_CXX_BOOL_CALL(obj->has(key));
 }
 
-void FixDictionary_delete(FixDictionary_t *obj) {
+void FixDictionary_delete(const Dictionary *obj) {
   RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::Dictionary, obj);
+  delete obj;
 }
 
-FixDataDictionary_t *FixDataDictionary_new() {
-  CATCH_OR_RETURN_NULL({ return (FixDataDictionary_t *)(new FIX::DataDictionary()); });
+DataDictionary *FixDataDictionary_new() {
+  CATCH_OR_RETURN_NULL({ return new DataDictionary(); });
 }
 
-FixDataDictionary_t *FixDataDictionary_fromPath(const char *configPath) {
-  CATCH_OR_RETURN_NULL({ return (FixDataDictionary_t *)(new FIX::DataDictionary(configPath)); });
+DataDictionary *FixDataDictionary_fromPath(const char *configPath) {
+  CATCH_OR_RETURN_NULL({ return new DataDictionary(configPath); });
 }
 
-void FixDataDictionary_delete(FixDataDictionary_t *obj) {
+void FixDataDictionary_delete(const DataDictionary *obj) {
   RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::DataDictionary, obj);
+  delete obj;
 }
 
-FixMessageStoreFactory_t *FixFileMessageStoreFactory_new(const FixSessionSettings_t *settings) {
+MessageStoreFactory *FixFileMessageStoreFactory_new(const SessionSettings *settings) {
   RETURN_VAL_IF_NULL(settings, NULL);
-
-  auto fix_settings = (FIX::SessionSettings *)(settings);
-  CATCH_OR_RETURN_NULL({ return (FixMessageStoreFactory_t *)(new FIX::FileStoreFactory(*fix_settings)); });
+  CATCH_OR_RETURN_NULL({ return new FileStoreFactory(*settings); });
 }
 
-FixMessageStoreFactory_t *FixMemoryMessageStoreFactory_new(){
-    CATCH_OR_RETURN_NULL({ return (FixMessageStoreFactory_t *)(new FIX::MemoryStoreFactory()); })}
+MessageStoreFactory *FixMemoryMessageStoreFactory_new() {
+  CATCH_OR_RETURN_NULL({ return new MemoryStoreFactory(); });
+}
 
 #ifdef HAVE_MYSQL
-FixMessageStoreFactory_t *FixMysqlMessageStoreFactory_new(const FixSessionSettings_t *settings) {
+MessageStoreFactory *FixMysqlMessageStoreFactory_new(const SessionSettings *settings) {
   RETURN_VAL_IF_NULL(settings, NULL);
-
-  auto fix_settings = (FIX::SessionSettings *)(settings);
-  CATCH_OR_RETURN_NULL({ return (FixMessageStoreFactory_t *)(new FIX::MySQLStoreFactory(*fix_settings)); });
+  CATCH_OR_RETURN_NULL({ return new MySQLStoreFactory(*settings); });
 }
 #endif // HAVE_MYSQL
 
 #ifdef HAVE_POSTGRESQL
-FixMessageStoreFactory_t *FixPostgresMessageStoreFactory_new(const FixSessionSettings_t *settings) {
+MessageStoreFactory *FixPostgresMessageStoreFactory_new(const SessionSettings *settings) {
   RETURN_VAL_IF_NULL(settings, NULL);
-
-  auto fix_settings = (FIX::SessionSettings *)(settings);
-  CATCH_OR_RETURN_NULL({ return (FixMessageStoreFactory_t *)(new FIX::PostgreSQLStoreFactory(*fix_settings)); });
+  CATCH_OR_RETURN_NULL({ return new PostgreSQLStoreFactory(*settings); });
 }
 #endif // HAVE_POSTGRESQL
 
-void FixMessageStoreFactory_delete(FixMessageStoreFactory_t *obj) {
+void FixMessageStoreFactory_delete(const MessageStoreFactory *obj) {
   RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::MessageStoreFactory, obj);
+  delete obj;
 }
 
-FixLogFactory_t *FixLogFactory_new(const void *data, const FixLogCallbacks_t *callbacks) {
-  CATCH_OR_RETURN_NULL({ return (FixLogFactory_t *)(new ExternalLogFactory(data, callbacks)); });
+LogFactory *FixLogFactory_new(const void *data, const LogCallbacks *callbacks) {
+  CATCH_OR_RETURN_NULL({ return new ExternalLogFactory(data, callbacks); });
 }
 
-void FixLogFactory_delete(FixLogFactory_t *obj) {
+void FixLogFactory_delete(const LogFactory *obj) {
   RETURN_IF_NULL(obj);
-  DELETE_OBJ(ExternalLogFactory, obj);
+  delete obj;
 }
 
-FixApplication_t *FixApplication_new(const void *data, const FixApplicationCallbacks_t *callbacks) {
+Application *FixApplication_new(const void *data, const ApplicationCallbacks *callbacks) {
   RETURN_VAL_IF_NULL(callbacks, NULL);
-  CATCH_OR_RETURN_NULL({ return (FixApplication_t *)(new ApplicationBind(data, callbacks)); });
+  CATCH_OR_RETURN_NULL({ return new ApplicationBind(data, callbacks); });
 }
 
-void FixApplication_delete(FixApplication_t *obj) {
+void FixApplication_delete(const Application *obj) {
   RETURN_IF_NULL(obj);
-  DELETE_OBJ(ApplicationBind, obj);
+  delete obj;
 }
 
-FixSocketAcceptor_t *FixSocketAcceptor_new(const FixApplication_t *application,
-                                           const FixMessageStoreFactory_t *storeFactory,
-                                           const FixSessionSettings_t *settings, const FixLogFactory_t *logFactory) {
+SocketAcceptor *FixSocketAcceptor_new(Application *application, MessageStoreFactory *storeFactory,
+                                      const SessionSettings *settings, LogFactory *logFactory) {
   RETURN_VAL_IF_NULL(application, NULL);
   RETURN_VAL_IF_NULL(storeFactory, NULL);
   RETURN_VAL_IF_NULL(logFactory, NULL);
   RETURN_VAL_IF_NULL(settings, NULL);
 
-  auto fix_application = (ApplicationBind *)(application);
-  auto fix_store_factory = (FIX::MessageStoreFactory *)(storeFactory);
-  auto fix_log_factory = (ExternalLogFactory *)(logFactory);
-  auto fix_settings = (FIX::SessionSettings *)(settings);
+  CATCH_OR_RETURN_NULL({ return new SocketAcceptor(*application, *storeFactory, *settings, *logFactory); });
+}
 
-  CATCH_OR_RETURN_NULL({
-    return (FixSocketAcceptor_t *)(new FIX::SocketAcceptor(*fix_application, *fix_store_factory, *fix_settings,
-                                                           *fix_log_factory));
+int8_t FixSocketAcceptor_start(SocketAcceptor *obj) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->start();
+    return 0;
   });
 }
 
-int8_t FixSocketAcceptor_start(const FixSocketAcceptor_t *obj) {
+int8_t FixSocketAcceptor_block(SocketAcceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::SocketAcceptor, obj, start());
+  CATCH_OR_RETURN_ERRNO({
+    obj->block();
+    return 0;
+  });
 }
 
-int8_t FixSocketAcceptor_block(const FixSocketAcceptor_t *obj) {
+int8_t FixSocketAcceptor_poll(SocketAcceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::SocketAcceptor, obj, block());
+  RETURN_CXX_BOOL_CALL(obj->poll());
 }
 
-int8_t FixSocketAcceptor_poll(const FixSocketAcceptor_t *obj) {
+int8_t FixSocketAcceptor_stop(SocketAcceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(FIX::SocketAcceptor, obj, poll());
+  CATCH_OR_RETURN_ERRNO({
+    obj->stop();
+    return 0;
+  });
 }
 
-int8_t FixSocketAcceptor_stop(const FixSocketAcceptor_t *obj) {
+int8_t FixSocketAcceptor_isLoggedOn(const SocketAcceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::SocketAcceptor, obj, stop());
+  RETURN_CXX_BOOL_CALL(obj->isLoggedOn());
 }
 
-int8_t FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj) {
+int8_t FixSocketAcceptor_isStopped(const SocketAcceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(FIX::SocketAcceptor, obj, isLoggedOn());
+  RETURN_CXX_BOOL_CALL(obj->isStopped());
 }
 
-int8_t FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj) {
-  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(FIX::SocketAcceptor, obj, isStopped());
-}
-
-void FixSocketAcceptor_delete(FixSocketAcceptor_t *obj) {
+void FixSocketAcceptor_delete(const SocketAcceptor *obj) {
   RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::SocketAcceptor, obj);
+  delete obj;
 }
 
-FixSocketInitiator_t *FixSocketInitiator_new(const FixApplication_t *application,
-                                             const FixMessageStoreFactory_t *storeFactory,
-                                             const FixSessionSettings_t *settings, const FixLogFactory_t *logFactory) {
+SocketInitiator *FixSocketInitiator_new(Application *application, MessageStoreFactory *storeFactory,
+                                        const SessionSettings *settings, LogFactory *logFactory) {
   RETURN_VAL_IF_NULL(application, NULL);
   RETURN_VAL_IF_NULL(storeFactory, NULL);
   RETURN_VAL_IF_NULL(logFactory, NULL);
   RETURN_VAL_IF_NULL(settings, NULL);
 
-  auto fix_application = (ApplicationBind *)(application);
-  auto fix_store_factory = (FIX::MessageStoreFactory *)(storeFactory);
-  auto fix_log_factory = (ExternalLogFactory *)(logFactory);
-  auto fix_settings = (FIX::SessionSettings *)(settings);
+  CATCH_OR_RETURN_NULL({ return new SocketInitiator(*application, *storeFactory, *settings, *logFactory); });
+}
 
-  CATCH_OR_RETURN_NULL({
-    return (FixSocketInitiator_t *)(new FIX::SocketInitiator(*fix_application, *fix_store_factory, *fix_settings,
-                                                             *fix_log_factory));
+int8_t FixSocketInitiator_start(SocketInitiator *obj) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->start();
+    return 0;
   });
 }
 
-int8_t FixSocketInitiator_start(const FixSocketInitiator_t *obj) {
+int8_t FixSocketInitiator_block(SocketInitiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::SocketInitiator, obj, start());
+  CATCH_OR_RETURN_ERRNO({
+    obj->block();
+    return 0;
+  });
 }
 
-int8_t FixSocketInitiator_block(const FixSocketInitiator_t *obj) {
+int8_t FixSocketInitiator_poll(SocketInitiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::SocketInitiator, obj, block());
+  RETURN_CXX_BOOL_CALL(obj->poll());
 }
 
-int8_t FixSocketInitiator_poll(const FixSocketInitiator_t *obj) {
+int8_t FixSocketInitiator_stop(SocketInitiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(FIX::SocketInitiator, obj, poll());
+  CATCH_OR_RETURN_ERRNO({
+    obj->stop();
+    return 0;
+  });
 }
 
-int8_t FixSocketInitiator_stop(const FixSocketInitiator_t *obj) {
+int8_t FixSocketInitiator_isLoggedOn(const SocketInitiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::SocketInitiator, obj, stop());
+  RETURN_CXX_BOOL_CALL(obj->isLoggedOn());
 }
 
-int8_t FixSocketInitiator_isLoggedOn(const FixSocketInitiator_t *obj) {
+int8_t FixSocketInitiator_isStopped(const SocketInitiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(FIX::SocketInitiator, obj, isLoggedOn());
+  RETURN_CXX_BOOL_CALL(obj->isStopped());
 }
 
-int8_t FixSocketInitiator_isStopped(const FixSocketInitiator_t *obj) {
-  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(FIX::SocketInitiator, obj, isStopped());
-}
-
-void FixSocketInitiator_delete(FixSocketInitiator_t *obj) {
+void FixSocketInitiator_delete(const SocketInitiator *obj) {
   RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::SocketInitiator, obj);
+  delete obj;
 }
 
-FixSessionID_t *FixSessionID_new(const char *beginString, const char *senderCompID, const char *targetCompID,
-                                 const char *sessionQualifier) {
+SessionID *FixSessionID_new(const char *beginString, const char *senderCompID, const char *targetCompID,
+                            const char *sessionQualifier) {
   RETURN_VAL_IF_NULL(beginString, NULL);
   RETURN_VAL_IF_NULL(senderCompID, NULL);
   RETURN_VAL_IF_NULL(targetCompID, NULL);
   RETURN_VAL_IF_NULL(sessionQualifier, NULL);
-  CATCH_OR_RETURN_NULL(
-      { return (FixSessionID_t *)(new FIX::SessionID(beginString, senderCompID, targetCompID, sessionQualifier)); });
+  CATCH_OR_RETURN_NULL({ return new SessionID(beginString, senderCompID, targetCompID, sessionQualifier); });
 }
 
-FixSessionID_t *FixSessionID_copy(const FixSessionID_t *src) {
+SessionID *FixSessionID_copy(const SessionID *src) {
   RETURN_VAL_IF_NULL(src, NULL);
-  CATCH_OR_RETURN_NULL({
-    auto fix_obj = (FIX::SessionID *)(src);
-    return (FixSessionID_t *)(new FIX::SessionID(*fix_obj));
-  });
+  CATCH_OR_RETURN_NULL({ return new SessionID(*src); });
 }
 
-const char *FixSessionID_getBeginString(const FixSessionID_t *session) {
+const char *FixSessionID_getBeginString(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, NULL);
-  RETURN_CXX_TO_C_STR(FIX::SessionID, session, getBeginString().getString())
+  RETURN_CXX_TO_C_STR(session->getBeginString().getString())
 }
 
-const char *FixSessionID_getSenderCompID(const FixSessionID_t *session) {
+const char *FixSessionID_getSenderCompID(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, NULL);
-  RETURN_CXX_TO_C_STR(FIX::SessionID, session, getSenderCompID().getString())
+  RETURN_CXX_TO_C_STR(session->getSenderCompID().getString())
 }
 
-const char *FixSessionID_getTargetCompID(const FixSessionID_t *session) {
+const char *FixSessionID_getTargetCompID(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, NULL);
-  RETURN_CXX_TO_C_STR(FIX::SessionID, session, getTargetCompID().getString())
+  RETURN_CXX_TO_C_STR(session->getTargetCompID().getString())
 }
 
-const char *FixSessionID_getSessionQualifier(const FixSessionID_t *session) {
+const char *FixSessionID_getSessionQualifier(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, NULL);
-  RETURN_CXX_TO_C_STR(FIX::SessionID, session, getSessionQualifier())
+  RETURN_CXX_TO_C_STR(session->getSessionQualifier())
 }
 
-int8_t FixSessionID_isFIXT(const FixSessionID_t *session) {
+int8_t FixSessionID_isFIXT(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(FIX::SessionID, session, isFIXT());
+  RETURN_CXX_BOOL_CALL(session->isFIXT());
 }
 
-const char *FixSessionID_toString(const FixSessionID *session) {
+const char *FixSessionID_toString(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, NULL);
-  CATCH_OR_RETURN_NULL({
-    auto fix_obj = (FIX::SessionID *)(session);
-    return fix_obj->toStringFrozen().c_str();
-  });
+  CATCH_OR_RETURN_NULL({ return session->toStringFrozen().c_str(); });
 }
 
-void FixSessionID_delete(FixSessionID_t *session) {
+void FixSessionID_delete(const SessionID *session) {
   RETURN_IF_NULL(session);
-  DELETE_OBJ(FIX::SessionID, session);
+  delete session;
 }
 
-FixMessage_t *FixMessage_new() {
-  CATCH_OR_RETURN_NULL({ return (FixMessage_t *)(new FIX::Message()); });
+Message *FixMessage_new() {
+  CATCH_OR_RETURN_NULL({ return new Message(); });
 }
 
-FixMessage_t *FixMessage_fromString(const char *text) {
+Message *FixMessage_fromString(const char *text) {
   RETURN_VAL_IF_NULL(text, NULL);
-  CATCH_OR_RETURN_NULL({ return (FixMessage_t *)(new FIX::Message(text, /* validate = */ false)); });
+  CATCH_OR_RETURN_NULL({ return new Message(text, /* validate = */ false); });
 }
 
-FixMessage_t *FixMessage_fromStringAndDictionary(const char *text, const FixDataDictionary_t *dictionary) {
+Message *FixMessage_fromStringAndDictionary(const char *text, const DataDictionary *dictionary) {
   RETURN_VAL_IF_NULL(text, NULL);
   RETURN_VAL_IF_NULL(dictionary, NULL);
 
-  auto fix_dictionary = (const FIX::DataDictionary *)(dictionary);
-  CATCH_OR_RETURN_NULL({ return (FixMessage_t *)(new FIX::Message(text, *fix_dictionary, /* validate = */ true)); });
+  CATCH_OR_RETURN_NULL({ return new Message(text, *dictionary, /* validate = */ true); });
 }
 
-const char *FixMessage_getField(const FixMessage_t *obj, int32_t tag) {
+const char *FixMessage_getField(const Message *obj, int32_t tag) {
   RETURN_VAL_IF_NULL(obj, NULL);
-  CATCH_OR_RETURN_NULL({
-    auto fix_obj = (FIX::Message *)(obj);
-    return fix_obj->getField(tag).c_str();
+  CATCH_OR_RETURN_NULL({ return obj->getField(tag).c_str(); });
+}
+
+int8_t FixMessage_setField(Message *obj, int32_t tag, const char *value) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->setField(tag, value);
+    return 0;
   });
 }
 
-int8_t FixMessage_setField(const FixMessage_t *obj, int32_t tag, const char *value) {
+int8_t FixMessage_removeField(Message *obj, int32_t tag) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::Message, obj, setField(tag, value));
+  CATCH_OR_RETURN_ERRNO({
+    obj->removeField(tag);
+    return 0;
+  });
 }
 
-int8_t FixMessage_removeField(const FixMessage_t *obj, int32_t tag) {
-  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::Message, obj, removeField(tag));
-}
-
-int8_t FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length) {
+int8_t FixMessage_toBuffer(const Message *obj, char *buffer, size_t length) {
   if (length == 0)
     return 0;
 
@@ -660,9 +603,7 @@ int8_t FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length)
   RETURN_VAL_IF_NULL(buffer, ERRNO_INVAL);
 
   CATCH_OR_RETURN_ERRNO({
-    auto fix_obj = (FIX::Message *)(obj);
-
-    auto repr = fix_obj->toString();
+    auto repr = obj->toString();
     if (length <= repr.length()) {
       return ERRNO_BUFFER_TO_SMALL;
     }
@@ -674,136 +615,136 @@ int8_t FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length)
   });
 }
 
-void FixMessage_delete(FixMessage_t *obj) {
+void FixMessage_delete(const Message *obj) {
   RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::Message, obj);
+  delete obj;
 }
 
-FixHeader_t *FixMessage_copyHeader(const FixMessage_t *obj) {
+Header *FixMessage_copyHeader(const Message *obj) {
   RETURN_VAL_IF_NULL(obj, NULL);
-  auto fix_obj = (FIX::Message *)(obj);
-  CATCH_OR_RETURN_NULL({ return (FixHeader_t *)(new FIX::Header(fix_obj->getHeader())); });
+  CATCH_OR_RETURN_NULL({ return new Header(obj->getHeader()); });
 }
 
-FixHeader_t *FixMessage_getHeaderRef(const FixMessage_t *obj) {
+Header *FixMessage_getHeaderRef(Message *obj) {
   RETURN_VAL_IF_NULL(obj, NULL);
-  auto fix_obj = (FIX::Message *)(obj);
-  CATCH_OR_RETURN_NULL({ return (FixHeader_t *)(&fix_obj->getHeader()); });
+  CATCH_OR_RETURN_NULL({ return &obj->getHeader(); });
 }
 
-const char *FixHeader_getField(const FixHeader_t *obj, int32_t tag) {
+const char *FixHeader_getField(const Header *obj, int32_t tag) {
   RETURN_VAL_IF_NULL(obj, NULL);
-  auto fix_obj = (FIX::Header *)(obj);
-  CATCH_OR_RETURN_NULL({ return fix_obj->getField(tag).c_str(); });
+  CATCH_OR_RETURN_NULL({ return obj->getField(tag).c_str(); });
 }
 
-int8_t FixHeader_setField(const FixHeader_t *obj, int32_t tag, const char *value) {
+int8_t FixHeader_setField(Header *obj, int32_t tag, const char *value) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::Header, obj, setField(tag, value));
-}
-
-int8_t FixHeader_removeField(const FixHeader_t *obj, int32_t tag) {
-  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::Header, obj, removeField(tag));
-}
-
-void FixHeader_delete(FixHeader_t *obj) {
-  RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::Header, obj);
-}
-
-FixTrailer_t *FixMessage_copyTrailer(const FixMessage_t *obj) {
-  RETURN_VAL_IF_NULL(obj, NULL);
-  auto fix_obj = (FIX::Message *)(obj);
-  CATCH_OR_RETURN_NULL({ return (FixTrailer_t *)(new FIX::Trailer(fix_obj->getTrailer())); });
-}
-
-FixTrailer_t *FixMessage_getTrailerRef(const FixMessage_t *obj) {
-  RETURN_VAL_IF_NULL(obj, NULL);
-  CATCH_OR_RETURN_NULL({
-    auto fix_obj = (FIX::Message *)(obj);
-    return (FixTrailer_t *)(&fix_obj->getTrailer());
-  });
-}
-
-const char *FixTrailer_getField(const FixTrailer_t *obj, int32_t tag) {
-  RETURN_VAL_IF_NULL(obj, NULL);
-  CATCH_OR_RETURN_NULL({
-    auto fix_obj = (FIX::Trailer *)(obj);
-    return fix_obj->getField(tag).c_str();
-  });
-}
-
-int8_t FixTrailer_setField(const FixTrailer_t *obj, int32_t tag, const char *value) {
-  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::Trailer, obj, setField(tag, value));
-}
-
-int8_t FixTrailer_removeField(const FixTrailer_t *obj, int32_t tag) {
-  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::Trailer, obj, removeField(tag));
-}
-
-void FixTrailer_delete(FixTrailer_t *obj) {
-  RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::Trailer, obj);
-}
-
-FixGroup_t *FixMessage_copyGroup(const FixMessage_t *obj, int32_t num, int32_t tag) {
-  RETURN_VAL_IF_NULL(obj, NULL);
-  auto fix_obj = (FIX::Message *)(obj);
-  CATCH_OR_RETURN_NULL({
-    auto src_group = (FIX::Group *)(fix_obj->getGroupPtr(num, tag));
-    return (FixGroup_t *)(new FIX::Group(*src_group));
-  });
-}
-
-FixGroup_t *FixMessage_getGroupRef(const FixMessage_t *obj, int32_t num, int32_t tag) {
-  RETURN_VAL_IF_NULL(obj, NULL);
-  CATCH_OR_RETURN_NULL({
-    auto fix_obj = (FIX::Message *)(obj);
-    return (FixGroup_t *)(fix_obj->getGroupPtr(num, tag));
-  });
-}
-
-const char *FixGroup_getField(const FixGroup_t *obj, int32_t tag) {
-  RETURN_VAL_IF_NULL(obj, NULL);
-  CATCH_OR_RETURN_NULL({
-    auto fix_obj = (FIX::Group *)(obj);
-    return fix_obj->getField(tag).c_str();
-  });
-}
-
-int8_t FixGroup_setField(const FixGroup_t *obj, int32_t tag, const char *value) {
-  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::Group, obj, setField(tag, value));
-}
-
-int8_t FixGroup_removeField(const FixGroup_t *obj, int32_t tag) {
-  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  SAFE_CXX_CALL(FIX::Group, obj, removeField(tag));
-}
-
-void FixGroup_delete(FixGroup_t *obj) {
-  RETURN_IF_NULL(obj);
-  DELETE_OBJ(FIX::Group, obj);
-}
-
-int8_t FixSession_sendToTarget(const FixMessage_t *msg, const FixSessionID_t *session_id) {
-  RETURN_VAL_IF_NULL(msg, ERRNO_INVAL);
-  RETURN_VAL_IF_NULL(session_id, ERRNO_INVAL);
-
-  auto fix_msg = (FIX::Message *)(msg);
-  auto fix_session_id = (FIX::SessionID *)(session_id);
-
   CATCH_OR_RETURN_ERRNO({
-    FIX::Session::sendToTarget(*fix_msg, *fix_session_id);
+    obj->setField(tag, value);
     return 0;
   });
 }
+
+int8_t FixHeader_removeField(Header *obj, int32_t tag) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->removeField(tag);
+    return 0;
+  });
+}
+
+void FixHeader_delete(const Header *obj) {
+  RETURN_IF_NULL(obj);
+  delete obj;
+}
+
+Trailer *FixMessage_copyTrailer(const Message *obj) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  CATCH_OR_RETURN_NULL({ return new Trailer(obj->getTrailer()); });
+}
+
+Trailer *FixMessage_getTrailerRef(Message *obj) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  CATCH_OR_RETURN_NULL({ return &obj->getTrailer(); });
+}
+
+const char *FixTrailer_getField(const Trailer *obj, int32_t tag) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  CATCH_OR_RETURN_NULL({ return obj->getField(tag).c_str(); });
+}
+
+int8_t FixTrailer_setField(Trailer *obj, int32_t tag, const char *value) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->setField(tag, value);
+    return 0;
+  });
+}
+
+int8_t FixTrailer_removeField(Trailer *obj, int32_t tag) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->removeField(tag);
+    return 0;
+  });
+}
+
+void FixTrailer_delete(const Trailer *obj) {
+  RETURN_IF_NULL(obj);
+  delete obj;
+}
+
+Group *FixMessage_copyGroup(const Message *obj, int32_t num, int32_t tag) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  CATCH_OR_RETURN_NULL({
+    auto src_group = (Group *)(obj->getGroupPtr(num, tag));
+    return new Group(*src_group);
+  });
+}
+
+Group *FixMessage_getGroupRef(const Message *obj, int32_t num, int32_t tag) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  CATCH_OR_RETURN_NULL({ return (Group *)(obj->getGroupPtr(num, tag)); });
+}
+
+const char *FixGroup_getField(const Group *obj, int32_t tag) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  CATCH_OR_RETURN_NULL({ return obj->getField(tag).c_str(); });
+}
+
+int8_t FixGroup_setField(Group *obj, int32_t tag, const char *value) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  RETURN_VAL_IF_NULL(value, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->setField(tag, value);
+    return 0;
+  });
+}
+
+int8_t FixGroup_removeField(Group *obj, int32_t tag) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->removeField(tag);
+    return 0;
+  });
+}
+
+void FixGroup_delete(const Group *obj) {
+  RETURN_IF_NULL(obj);
+  delete obj;
+}
+
+int8_t FixSession_sendToTarget(Message *msg, const SessionID *session_id) {
+  RETURN_VAL_IF_NULL(msg, ERRNO_INVAL);
+  RETURN_VAL_IF_NULL(session_id, ERRNO_INVAL);
+
+  CATCH_OR_RETURN_ERRNO({
+    Session::sendToTarget(*msg, *session_id);
+    return 0;
+  });
+}
+
+} // namespace FIX
 
 #ifdef __cplusplus
 }

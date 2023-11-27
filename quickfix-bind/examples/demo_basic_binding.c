@@ -16,11 +16,11 @@ static void customOnLogout(const void *data, const FixSessionID_t *session) {
   printf("customOnLogout: %p %p\n", data, session);
 }
 
-static void customToAdmin(const void *data, const FixMessage_t *msg, const FixSessionID_t *session) {
+static void customToAdmin(const void *data, FixMessage_t *msg, const FixSessionID_t *session) {
   printf("customToAdmin: %p %p %p\n", data, msg, session);
 }
 
-static void customToApp(const void *data, const FixMessage_t *msg, const FixSessionID_t *session) {
+static void customToApp(const void *data, FixMessage_t *msg, const FixSessionID_t *session) {
   printf("customToApp: %p %p %p\n", data, msg, session);
 }
 
