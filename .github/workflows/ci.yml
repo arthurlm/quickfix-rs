@@ -17,13 +17,40 @@ jobs:
       with:
         submodules: true
     - uses: Swatinem/rust-cache@v2
-  
     - name: Build
       run: cargo build --verbose
     - name: Run tests no default features
       run: cargo test --no-default-features
     - name: Run tests
       run: cargo test
+
+  test_mysql:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - uses: Swatinem/rust-cache@v2
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install --yes libmysqlclient-dev
+    - name: Run tests
+      run: cargo test -F build-with-mysql
+
+  test_postgresql:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - uses: Swatinem/rust-cache@v2
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install --yes libpq-dev
+    - name: Run tests
+      run: cargo test -F build-with-postgres
 
   lint:
     runs-on: ubuntu-latest
@@ -32,7 +59,6 @@ jobs:
       with:
         submodules: true
     - uses: Swatinem/rust-cache@v2
-
     - name: Lint
       run: cargo clippy
     - name: Format
