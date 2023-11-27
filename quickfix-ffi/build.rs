@@ -3,7 +3,7 @@ use std::env;
 use cmake::Config;
 
 fn have_feature(flag: &str) -> bool {
-    env::var(&format!(
+    env::var(format!(
         "CARGO_FEATURE_{}",
         flag.replace('-', "_").to_uppercase()
     ))
