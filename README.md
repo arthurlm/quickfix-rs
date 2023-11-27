@@ -39,6 +39,7 @@ What I do **not** plan to bind from this crate:
 4. Autotools build toolchain.
 
     Just use `cmake` once and for all !
+    We are in 2023+ and not targeting OS from the 70s.
 
 5. Struct to bind messages from XML spec.
 
@@ -55,10 +56,10 @@ What I do **not** plan to bind from this crate:
 
     Moreover Rust file descriptor are protected by mutex, so this avoid mixing log from C++ / Rust in the same program.
 
-7. SQL binding for `MessageStoreFactory`.
+7. Custom `MessageStoreFactory` from rust.
 
    For now, only `FileMessageStoreFactory` and `MemoryMessageStoreFactory` are bind.
-   I will add later support of SQL message store as build option.
+   You can use also use `MySqlMessageStoreFactory` and `PostgresMessageStoreFactory` when enabling crate feature flag.
    Implementing message store from rust side is a little bit tricky and I am not 100% sure of the correct way to proceed.
 
 8. Exotic operating system.
