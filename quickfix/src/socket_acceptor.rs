@@ -20,7 +20,7 @@ where
     S: FfiMessageStoreFactory,
     L: LogCallback,
 {
-    pub(crate) inner: FixSocketAcceptor_t,
+    inner: FixSocketAcceptor_t,
     phantom_application: PhantomData<&'a A>,
     phantom_message_store_factory: PhantomData<&'a S>,
     phantom_log_factory: PhantomData<&'a L>,

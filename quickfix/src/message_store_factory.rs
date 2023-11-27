@@ -13,7 +13,7 @@ pub trait FfiMessageStoreFactory {
 
 /// File based implementation of `MessageStore`.
 #[derive(Debug)]
-pub struct FileMessageStoreFactory(pub(crate) FixMessageStoreFactory_t);
+pub struct FileMessageStoreFactory(FixMessageStoreFactory_t);
 
 impl FileMessageStoreFactory {
     /// Try to create new struct from settings.
@@ -38,7 +38,7 @@ impl Drop for FileMessageStoreFactory {
 
 /// In memory implementation of `MessageStore`.
 #[derive(Debug)]
-pub struct MemoryMessageStoreFactory(pub(crate) FixMessageStoreFactory_t);
+pub struct MemoryMessageStoreFactory(FixMessageStoreFactory_t);
 
 impl MemoryMessageStoreFactory {
     /// Create new struct.

@@ -9,7 +9,7 @@ use crate::{Message, QuickFixError};
 
 /// Represents a data dictionary for a version of FIX.
 #[derive(Debug)]
-pub struct DataDictionary(pub(crate) FixDataDictionary_t);
+pub struct DataDictionary(FixDataDictionary_t);
 
 impl DataDictionary {
     /// Create a new empty struct.
