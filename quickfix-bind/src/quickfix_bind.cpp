@@ -15,6 +15,14 @@
 #include <quickfix/SocketAcceptor.h>
 #include <quickfix/SocketInitiator.h>
 
+#ifdef HAVE_MYSQL
+#include <quickfix/MySQLStore.h>
+#endif // HAVE_MYSQL
+
+#ifdef HAVE_POSTGRESQL
+#include <quickfix/PostgreSQLStore.h>
+#endif // HAVE_POSTGRESQL
+
 #define RETURN_IF_NULL(_OBJ_)                                                                                          \
   if ((_OBJ_) == nullptr)                                                                                              \
     return;
@@ -394,15 +402,31 @@ void FixDataDictionary_delete(FixDataDictionary_t *obj) {
 
 FixMessageStoreFactory_t *FixFileMessageStoreFactory_new(const FixSessionSettings_t *settings) {
   RETURN_VAL_IF_NULL(settings, NULL);
-  CATCH_OR_RETURN_NULL({
-    auto fix_settings = (FIX::SessionSettings *)(settings);
-    return (FixMessageStoreFactory_t *)(new FIX::FileStoreFactory(*fix_settings));
-  });
+
+  auto fix_settings = (FIX::SessionSettings *)(settings);
+  CATCH_OR_RETURN_NULL({ return (FixMessageStoreFactory_t *)(new FIX::FileStoreFactory(*fix_settings)); });
 }
 
-FixMessageStoreFactory_t *FixMemoryMessageStoreFactory_new() {
-  CATCH_OR_RETURN_NULL({ return (FixMessageStoreFactory_t *)(new FIX::MemoryStoreFactory()); })
+FixMessageStoreFactory_t *FixMemoryMessageStoreFactory_new(){
+    CATCH_OR_RETURN_NULL({ return (FixMessageStoreFactory_t *)(new FIX::MemoryStoreFactory()); })}
+
+#ifdef HAVE_MYSQL
+FixMessageStoreFactory_t *FixMysqlMessageStoreFactory_new(const FixSessionSettings_t *settings) {
+  RETURN_VAL_IF_NULL(settings, NULL);
+
+  auto fix_settings = (FIX::SessionSettings *)(settings);
+  CATCH_OR_RETURN_NULL({ return (FixMessageStoreFactory_t *)(new FIX::MySQLStoreFactory(*fix_settings)); });
 }
+#endif // HAVE_MYSQL
+
+#ifdef HAVE_POSTGRESQL
+FixMessageStoreFactory_t *FixPostgresMessageStoreFactory_new(const FixSessionSettings_t *settings) {
+  RETURN_VAL_IF_NULL(settings, NULL);
+
+  auto fix_settings = (FIX::SessionSettings *)(settings);
+  CATCH_OR_RETURN_NULL({ return (FixMessageStoreFactory_t *)(new FIX::PostgreSQLStoreFactory(*fix_settings)); });
+}
+#endif // HAVE_POSTGRESQL
 
 void FixMessageStoreFactory_delete(FixMessageStoreFactory_t *obj) {
   RETURN_IF_NULL(obj);

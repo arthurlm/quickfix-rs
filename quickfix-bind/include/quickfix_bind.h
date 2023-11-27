@@ -8,6 +8,9 @@
 #define PRINT_QUICKFIX_EX_STDOUT 0
 #endif // PRINT_QUICKFIX_EX_STDOUT
 
+// #define HAVE_MYSQL
+// #define HAVE_POSTGRESQL
+
 #define ERRNO_INVAL -1
 #define ERRNO_EXCEPTION -2
 #define ERRNO_BUFFER_TO_SMALL -3
@@ -76,6 +79,15 @@ void FixDataDictionary_delete(FixDataDictionary_t *obj);
 
 FixMessageStoreFactory_t *FixFileMessageStoreFactory_new(const FixSessionSettings_t *settings);
 FixMessageStoreFactory_t *FixMemoryMessageStoreFactory_new();
+
+#ifdef HAVE_MYSQL
+FixMessageStoreFactory_t *FixMysqlMessageStoreFactory_new(const FixSessionSettings_t *settings);
+#endif // HAVE_MYSQL
+
+#ifdef HAVE_POSTGRESQL
+FixMessageStoreFactory_t *FixPostgresMessageStoreFactory_new(const FixSessionSettings_t *settings);
+#endif // HAVE_POSTGRESQL
+
 void FixMessageStoreFactory_delete(FixMessageStoreFactory_t *obj);
 
 FixLogFactory_t *FixLogFactory_new(const void *data, const FixLogCallbacks_t *callbacks);

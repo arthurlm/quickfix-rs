@@ -11,3 +11,5 @@ cmake = "0.1.50"
 [features]
 default = []
 print-ex = []
+build-with-mysql = []
+build-with-postgres = []
