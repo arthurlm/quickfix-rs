@@ -44,6 +44,10 @@ pub use trailer::Trailer;
 
 #[cfg(feature = "log")]
 pub use log_factory::RustLogger;
+#[cfg(feature = "build-with-mysql")]
+pub use message_store_factory::mysql::MySqlMessageStoreFactory;
+#[cfg(feature = "build-with-postgres")]
+pub use message_store_factory::postgres::PostgresMessageStoreFactory;
 
 /// Permit control of an underlying socket connection.
 pub trait ConnectionHandler {

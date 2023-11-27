@@ -5,6 +5,12 @@ use quickfix_ffi::{
 
 use crate::{QuickFixError, SessionSettings};
 
+#[cfg(feature = "build-with-mysql")]
+pub mod mysql;
+
+#[cfg(feature = "build-with-postgres")]
+pub mod postgres;
+
 ///  Object can be converted as a foreign object representing a `MessageStore`.
 pub trait FfiMessageStoreFactory {
     /// Get a representation of the message store as a FFI pointer.

@@ -183,6 +183,16 @@ extern "C" {
 
     pub fn FixMemoryMessageStoreFactory_new() -> Option<FixMessageStoreFactory_t>;
 
+    #[cfg(feature = "build-with-mysql")]
+    pub fn FixMysqlMessageStoreFactory_new(
+        settings: FixSessionSettings_t,
+    ) -> Option<FixMessageStoreFactory_t>;
+
+    #[cfg(feature = "build-with-postgres")]
+    pub fn FixPostgresMessageStoreFactory_new(
+        settings: FixSessionSettings_t,
+    ) -> Option<FixMessageStoreFactory_t>;
+
     pub fn FixMessageStoreFactory_delete(obj: FixMessageStoreFactory_t);
 
     // Log factory
