@@ -73,10 +73,24 @@ fn main() {
         "cargo:rustc-link-search=native={}/lib",
         quickfix_bind_dst.display()
     );
-    println!("cargo:rustc-link-lib=static=quickfix");
-    println!("cargo:rustc-link-lib=static=quickfixbind");
-    println!("cargo:rustc-link-lib=stdc++");
 
+    if matches!(env::var("PROFILE").as_deref(), Ok("debug"))
+        && matches!(env::var("CARGO_CFG_TARGET_OS").as_deref(), Ok("windows"))
+    {
+        // libquickfix as a different name on windows with debug profile.
+        println!("cargo:rustc-link-lib=static=quickfixd");
+    } else {
+        println!("cargo:rustc-link-lib=static=quickfix");
+    }
+
+    println!("cargo:rustc-link-lib=static=quickfixbind");
+
+    // Lib std C++ is only available on UNIX platform.
+    if env::var("CARGO_CFG_UNIX").is_ok() {
+        println!("cargo:rustc-link-lib=stdc++");
+    }
+
+    // Link with external libraries if needed.
     if have_feature("build-with-mysql") {
         println!("cargo:rustc-link-lib=mysqlclient");
     }

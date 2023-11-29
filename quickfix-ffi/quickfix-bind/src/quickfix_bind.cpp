@@ -595,7 +595,7 @@ int8_t FixMessage_removeField(Message *obj, int32_t tag) {
   });
 }
 
-int8_t FixMessage_toBuffer(const Message *obj, char *buffer, size_t length) {
+int8_t FixMessage_toBuffer(const Message *obj, char *buffer, uint64_t length) {
   if (length == 0)
     return 0;
 

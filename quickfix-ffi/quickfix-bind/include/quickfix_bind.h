@@ -133,7 +133,7 @@ FixMessage_t *FixMessage_fromStringAndDictionary(const char *text, const FixData
 const char *FixMessage_getField(const FixMessage_t *obj, int32_t tag);
 int8_t FixMessage_setField(FixMessage_t *obj, int32_t tag, const char *value);
 int8_t FixMessage_removeField(FixMessage_t *obj, int32_t tag);
-int8_t FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, size_t length);
+int8_t FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, uint64_t length);
 void FixMessage_delete(const FixMessage_t *obj);
 
 FixHeader_t *FixMessage_copyHeader(const FixMessage_t *obj);
