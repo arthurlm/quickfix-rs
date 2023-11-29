@@ -1,4 +1,4 @@
-use std::{env, fs, path::Path};
+use std::{env, fs, path::Path, process::Command};
 
 use cmake::Config;
 use fs_extra::dir::CopyOptions;
@@ -21,6 +21,9 @@ fn read_cmake_opt(flag: &str) -> &'static str {
 
 fn main() {
     let out_dir = env::var("OUT_DIR").expect("Missing OUT_DIR");
+
+    // Make sure sub-repositories are correctly init
+    update_sub_repositories();
 
     // Tell Cargo that if the given file changes, to rerun this build script.
     println!("cargo:rerun-if-changed=./CMakeLists.txt");
@@ -79,5 +82,21 @@ fn main() {
     }
     if have_feature("build-with-postgres") {
         println!("cargo:rustc-link-lib=pq");
+    }
+}
+
+fn update_sub_repositories() {
+    if Path::new("libquickfix/LICENSE").exists() {
+        return;
+    }
+
+    if !Command::new("git")
+        .args(["submodule", "update", "--init", "--recursive"])
+        .current_dir("..")
+        .status()
+        .expect("Fail to get command status")
+        .success()
+    {
+        panic!("Fail to update sub repo");
     }
 }
