@@ -4,7 +4,14 @@ include_directories(include)
 add_library(quickfixbind STATIC
     src/quickfix_bind.cpp
 )
-target_link_libraries(quickfixbind ${MYSQL_CLIENT_LIBS} ${PostgreSQL_LIBRARIES} quickfix)
+target_link_libraries(quickfixbind ${MYSQL_CLIENT_LIBS} ${PostgreSQL_LIBRARIES})
+
+if (WIN32)
+    target_link_libraries(quickfixbind debug quickfixd)
+    target_link_libraries(quickfixbind optimized quickfix)
+else()
+    target_link_libraries(quickfixbind quickfix)
+endif()
 
 # Add option if asked
 if (WITH_PRINT_EX_STDOUT)

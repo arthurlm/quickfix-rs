@@ -43,7 +43,7 @@ impl Message {
     pub fn as_string_with_len(&self, max_len: usize) -> Result<String, QuickFixError> {
         let mut buffer = vec![0_u8; max_len];
         let buffer_ptr = buffer.as_mut_ptr() as *mut i8;
-        match unsafe { FixMessage_toBuffer(self.0, buffer_ptr, max_len as i64) } {
+        match unsafe { FixMessage_toBuffer(self.0, buffer_ptr, max_len as u64) } {
             0 => Ok(read_buffer_to_string(&buffer)),
             code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
         }
