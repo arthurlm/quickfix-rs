@@ -18,27 +18,28 @@ impl ApplicationCallback for MyApplication {
 }
 
 fn build_settings() -> Result<SessionSettings, QuickFixError> {
-    let mut global_params = Dictionary::default();
-    global_params.set("ConnectionType", "acceptor".to_string())?;
-    global_params.set("ReconnectInterval", 60)?;
-    global_params.set("FileStorePath", "store".to_string())?;
-
-    let mut session1_params = Dictionary::default();
-    session1_params.set("StartTime", "12:30:00".to_string())?;
-    session1_params.set("EndTime", "23:30:00".to_string())?;
-    session1_params.set("HeartBtInt", 20)?;
-    session1_params.set("SocketAcceptPort", 4000)?;
-    session1_params.set(
-        "DataDictionary",
-        "quickfix-ffi/libquickfix/spec/FIX41.xml".to_string(),
-    )?;
-
     let mut settings = SessionSettings::new();
-    settings.set(None, global_params)?;
-    settings.set(
-        Some(SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?),
-        session1_params,
-    )?;
+
+    settings.set(None, {
+        let mut params = Dictionary::default();
+        params.set("ConnectionType", "acceptor".to_string())?;
+        params.set("ReconnectInterval", 60)?;
+        params.set("FileStorePath", "store".to_string())?;
+        params
+    })?;
+
+    settings.set(Some(SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?), {
+        let mut params = Dictionary::default();
+        params.set("StartTime", "12:30:00".to_string())?;
+        params.set("EndTime", "23:30:00".to_string())?;
+        params.set("HeartBtInt", 20)?;
+        params.set("SocketAcceptPort", 4000)?;
+        params.set(
+            "DataDictionary",
+            "quickfix-ffi/libquickfix/spec/FIX41.xml".to_string(),
+        )?;
+        params
+    })?;
 
     Ok(settings)
 }
