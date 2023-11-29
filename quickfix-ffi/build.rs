@@ -21,6 +21,7 @@ fn read_cmake_opt(flag: &str) -> &'static str {
 
 fn main() {
     let out_dir = env::var("OUT_DIR").expect("Missing OUT_DIR");
+    let target_os = TargetOs::from_env();
 
     // Make sure sub-repositories are correctly init
     update_sub_repositories();
@@ -74,9 +75,7 @@ fn main() {
         quickfix_bind_dst.display()
     );
 
-    if matches!(env::var("PROFILE").as_deref(), Ok("debug"))
-        && matches!(env::var("CARGO_CFG_TARGET_OS").as_deref(), Ok("windows"))
-    {
+    if matches!(env::var("PROFILE").as_deref(), Ok("debug")) && target_os == TargetOs::Windows {
         // libquickfix as a different name on windows with debug profile.
         println!("cargo:rustc-link-lib=static=quickfixd");
     } else {
@@ -86,8 +85,8 @@ fn main() {
     println!("cargo:rustc-link-lib=static=quickfixbind");
 
     // Lib std C++ is only available on UNIX platform.
-    if env::var("CARGO_CFG_UNIX").is_ok() {
-        println!("cargo:rustc-link-lib=stdc++");
+    if let Some(lib_cpp_name) = target_os.lib_std_cpp_name() {
+        println!("cargo:rustc-link-lib={lib_cpp_name}");
     }
 
     // Link with external libraries if needed.
@@ -112,5 +111,30 @@ fn update_sub_repositories() {
         .success()
     {
         panic!("Fail to update sub repo");
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+enum TargetOs {
+    Windows,
+    Linux,
+    Other,
+}
+
+impl TargetOs {
+    fn from_env() -> Self {
+        match env::var("CARGO_CFG_TARGET_OS").as_deref() {
+            Ok("windows") => Self::Windows,
+            Ok("linux") => Self::Linux,
+            _ => Self::Other,
+        }
+    }
+
+    fn lib_std_cpp_name(&self) -> Option<&'static str> {
+        match self {
+            Self::Windows => None,
+            Self::Linux => Some("stdc++"),
+            Self::Other => Some("c++"),
+        }
     }
 }
