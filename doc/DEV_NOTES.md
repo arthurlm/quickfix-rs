@@ -1,5 +1,11 @@
 # Development notes
 
+Since it is not possible (yet) to produce binding from Rust to C++ library, I have take another approach.
+
+1. Create a C++ to C library: `quickfix-ffi/quickfix-bind`.
+2. Create a C to Rust unsafe library: `quickfix-ffi`.
+3. Create a Rust unsafe to safe library: `quickfix`.
+
 ## Current design
 
 Actually there is 3 components in the project

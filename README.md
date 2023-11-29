@@ -1,120 +1,83 @@
 # Quick fix binding for Rust
 
+![CI workflow](https://github.com/arthurlm/quickfix-rs/actions/workflows/ci.yml/badge.svg)
+
 This project is an **unofficial** binding between [quickfix library](https://github.com/quickfix/quickfix) and rust project.
 
-## What is it, what it is not ?
+## Features
 
-Main idea of this project is to provide a **minimal** safe and working bridge between rust and C++ quickfix library.
+- Provide basic and safe API wrapper above [quickfix](https://github.com/quickfix/quickfix) library.
+- Run on any hardware and operating system supported by Rust Tier 1.
+- Message decoding / encoding including run-time validation.
+- Session state storage options: SQL, File, In Memory.
+- Logging options: stdout, stderr, [log](https://crates.io/crates/log) or any other crate if you implement your own trait.
 
-Not all methods, functions, classes, nor features of the original library will be exposed to Rust crate.
-Target is just to have minimal features to create small and safe applications like:
+## Documentation
 
-- some program that can send order / receive messages to adjust strategy from.
-- basic router with no smart order router capabilities.
+- [What is it, what it is not ?](./doc/ABOUT.md)
+- [FAQ](./doc/FAQ.md)
+- [Internal design](./doc/DEV_NOTES.md)
 
-What is already bind and working in this crate:
+## Examples
 
-1. Basic structure binding `Settings` / `LogFactory` / `MessageStoreFactory` / `Message` / `Group` / `SessionID` / `...`.
-2. Reading / writing messages.
-3. Sending messages using session ID.
-4. `SocketAcceptor` / `SocketInitiator`.
-5. `Application` callbacks as a Rust trait.
+Here is the minimal application you can write to getting started with quickfix:
 
-What I do **not** plan to bind from this crate:
+```rust
+use std::{
+    env,
+    io::{stdin, Read},
+    process::exit,
+};
 
-1. SSL support.
+use quickfix::*;
 
-    Use binary like `stunnel` to emulate the feature.
-    It is simpler to use than the original SSL quickfix, even if it add some performances overhead.
+#[derive(Default)]
+pub struct MyApplication;
 
-2. Python / Ruby binding.
+impl ApplicationCallback for MyApplication {
+    // Implement whatever callback you need
 
-    Use original library instead obviously.
+    fn on_create(&self, _session: &SessionId) {
+        // Do whatever you want here 😁
+    }
+}
 
-3. Threaded versions of socket acceptor / initiator.
+fn main() -> Result<(), QuickFixError> {
+    let args: Vec<_> = env::args().collect();
+    let Some(config_file) = args.get(1) else {
+        eprintln!("Bad program usage: {} <config_file>", args[0]);
+        exit(1);
+    };
 
-    Multithreading model is just too different between Rust / C++.
-    It is much more simple to handle correctly multithreading from Rust side and use single thread C++ socket handler.
+    let settings = SessionSettings::try_from_path(config_file)?;
+    let store_factory = FileMessageStoreFactory::try_new(&settings)?;
+    let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
+    let app = Application::try_new(&MyApplication)?;
 
-4. Autotools build toolchain.
+    let mut acceptor = SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
+    acceptor.start()?;
 
-    Just use `cmake` once and for all !
-    We are in 2023+ and not targeting OS from the 70s.
+    println!(">> App running, press 'q' to quit");
+    let mut stdin = stdin().lock();
+    let mut stdin_buf = [0];
+    loop {
+        let _ = stdin.read_exact(&mut stdin_buf);
+        if stdin_buf[0] == b'q' {
+            break;
+        }
+    }
 
-5. Struct to bind messages from XML spec.
+    acceptor.stop()?;
+    Ok(())
+}
+```
 
-    Most of the time, vendors / brokers have custom field that do not match auto-generated struct.
-    To me they are not relevant most of the time.
-
-    Moreover it is so simple to just create an Rust enum / struct that match your current model.
-    Having all this messaging generated stuff just make the code more complicated for most of the need.
-
-6. All binding of `LogFactory`.
-
-    I just provide Rust standard trait.
-    You can implement whatever you want using standard Rust crate and impl 3 callbacks (logger / redis / syslog / sql / ...).
-
-    Moreover Rust file descriptor are protected by mutex, so this avoid mixing log from C++ / Rust in the same program.
-
-7. Custom `MessageStoreFactory` from rust.
-
-   For now, only `FileMessageStoreFactory` and `MemoryMessageStoreFactory` are bind.
-   You can use also use `MySqlMessageStoreFactory` and `PostgresMessageStoreFactory` when enabling crate feature flag.
-   Implementing message store from rust side is a little bit tricky and I am not 100% sure of the correct way to proceed.
-
-8. Exotic operating system.
-
-    AIX / Solaris are not targeted.
-    They are not Rust [Tier1](https://doc.rust-lang.org/nightly/rustc/platform-support.html) for now.
+You may consider checking out this [directory](./quickfix/examples/) for more examples.
 
 ## Is it ready for production ?
 
 Yes. But keep in mind that not every feature of the original FIX library are available.
 If some of your needs are missing: PR / feedbacks are welcomed 😁!
-
-## How does it work ?
-
-Since it is not possible (yet) to produce binding from Rust to C++ library, I have take another approach.
-
-1. Create a C++ to C library: `quickfix-ffi/quickfix-bind`.
-2. Create a C to Rust unsafe library: `quickfix-ffi`.
-3. Create a Rust unsafe to safe library: `quickfix`.
-
-Check [DEV_NOTES](./doc/DEV_NOTES.md) for more information on the dev workflow and my research.
-
-## How do I ?
-
-Build C binding library:
-
-```sh
-mkdir build
-cd build
-CFLAGS="-I$HOME/.local/include" CXXFLAGS="-I$HOME/.local/include" LDFLAGS="-L$HOME/.local/lib" cmake \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DQUICKFIX_BIND_EXAMPLES=ON \
-    ../quickfix-ffi
-make
-```
-
-Run C binding example:
-
-```sh
-LD_LIBRARY_PATH="$HOME/.local/lib" ./examples/demo_basic_binding ../configs/settings.ini
-```
-
-Rust FFI example:
-
-```sh
-cargo r --example demo_basic_ffi -- configs/settings.ini
-```
-
-Run rust full binding example:
-
-```sh
-cargo r --example fix_getting_started -- configs/server.ini
-cargo r --example fix_repl -- acceptor configs/server.ini
-cargo r --example fix_repl -- initiator configs/client.ini
-```
 
 ## Build requirements
 
