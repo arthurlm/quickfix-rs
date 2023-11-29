@@ -1,7 +1,13 @@
 [package]
 name = "quickfix-ffi"
 version = "0.1.0"
+authors = ["Arthur LE MOIGNE"]
 edition = "2021"
+description = "Low level binding to quickfix C++ library"
+repository = "https://github.com/arthurlm/quickfix-rs"
+license = "MIT"
+keywords = ["quickfix", "fix-protocol", "finance"]
+categories = ["external-ffi-bindings"]
 
 [dependencies]
 
