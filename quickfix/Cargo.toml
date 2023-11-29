@@ -10,7 +10,7 @@ keywords = ["quickfix", "fix-protocol", "finance"]
 categories = ["api-bindings", "finance"]
 
 [dependencies]
-quickfix-ffi = { path = "../quickfix-ffi" }
+quickfix-ffi = { path = "../quickfix-ffi", version = "0.1.0" }
 thiserror = "1.0.50"
 log = { version = "0.4.20", optional = true }
 

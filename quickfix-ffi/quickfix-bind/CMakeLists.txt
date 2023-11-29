@@ -19,13 +19,5 @@ if (HAVE_POSTGRESQL)
     target_compile_definitions(quickfixbind PRIVATE "HAVE_POSTGRESQL=1")
 endif()
 
-# Add example if asked
-if(QUICKFIX_BIND_EXAMPLES)
-add_executable(demo_basic_binding
-    examples/demo_basic_binding.c
-)
-target_link_libraries(demo_basic_binding ${MYSQL_CLIENT_LIBS} ${PostgreSQL_LIBRARIES} quickfixbind)
-endif()
-
 # Configure install target
 install(TARGETS quickfixbind DESTINATION lib)

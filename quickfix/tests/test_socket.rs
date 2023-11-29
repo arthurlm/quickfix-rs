@@ -16,7 +16,7 @@ fn build_settings(connection_type: &str) -> Result<SessionSettings, QuickFixErro
     session1_params.set("SocketAcceptPort", 4000)?;
     session1_params.set(
         "DataDictionary",
-        "../libquickfix/spec/FIX41.xml".to_string(),
+        "../quickfix-ffi/libquickfix/spec/FIX41.xml".to_string(),
     )?;
 
     let mut settings = SessionSettings::new();

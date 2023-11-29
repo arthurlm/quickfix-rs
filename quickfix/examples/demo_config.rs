@@ -28,7 +28,10 @@ fn build_settings() -> Result<SessionSettings, QuickFixError> {
     session1_params.set("EndTime", "23:30:00".to_string())?;
     session1_params.set("HeartBtInt", 20)?;
     session1_params.set("SocketAcceptPort", 4000)?;
-    session1_params.set("DataDictionary", "libquickfix/spec/FIX41.xml".to_string())?;
+    session1_params.set(
+        "DataDictionary",
+        "quickfix-ffi/libquickfix/spec/FIX41.xml".to_string(),
+    )?;
 
     let mut settings = SessionSettings::new();
     settings.set(None, global_params)?;

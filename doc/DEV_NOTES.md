@@ -6,11 +6,11 @@ Actually there is 3 components in the project
 
 ```txt
 
-quickfix (lang: C++)
+quickfix-ffi/libquickfix (lang: C++)
     ^
     |
     v
-quickfix-bind (lang: C)
+quickfix-ffi/quickfix-bind (lang: C)
     ^
     |   ABI=C
     v

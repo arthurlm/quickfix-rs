@@ -23,4 +23,10 @@ if (HAVE_POSTGRESQL)
     message("-- Building with POSTGRESQL")
 endif()
 
+# Add main directory
 add_subdirectory(quickfix-bind)
+
+# Add example if asked
+if(QUICKFIX_BIND_EXAMPLES)
+add_subdirectory(examples)
+endif()

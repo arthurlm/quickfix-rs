@@ -1,6 +1,7 @@
-use std::env;
+use std::{env, fs, path::Path};
 
 use cmake::Config;
+use fs_extra::dir::CopyOptions;
 
 fn have_feature(flag: &str) -> bool {
     env::var(format!(
@@ -19,14 +20,22 @@ fn read_cmake_opt(flag: &str) -> &'static str {
 }
 
 fn main() {
+    let out_dir = env::var("OUT_DIR").expect("Missing OUT_DIR");
+
     // Tell Cargo that if the given file changes, to rerun this build script.
-    println!("cargo:rerun-if-changed=../CMakeLists.txt");
-    println!("cargo:rerun-if-changed=../quickfix-bind/CMakeLists.txt");
-    println!("cargo:rerun-if-changed=../quickfix-bind/include/quickfix_bind.h");
-    println!("cargo:rerun-if-changed=../quickfix-bind/src/quickfix_bind.cpp");
+    println!("cargo:rerun-if-changed=./CMakeLists.txt");
+    println!("cargo:rerun-if-changed=./libquickfix");
+    println!("cargo:rerun-if-changed=./quickfix-bind");
+
+    // Clone libquickfix to OUT_DIR because it modify itself when building
+    let libquickfix_build_dir = Path::new(&out_dir).join("libquickfix");
+
+    let _ = fs::remove_dir_all(&libquickfix_build_dir);
+    fs_extra::copy_items(&["./libquickfix"], &out_dir, &CopyOptions::default())
+        .expect("Fail to copy libquickfix");
 
     // Build quickfix as a static library
-    let quickfix_dst = Config::new("../libquickfix")
+    let quickfix_dst = Config::new(libquickfix_build_dir)
         .define("HAVE_SSL", "OFF")
         .define("HAVE_MYSQL", read_cmake_opt("build-with-mysql"))
         .define("HAVE_POSTGRESQL", read_cmake_opt("build-with-postgres"))
@@ -43,7 +52,7 @@ fn main() {
     // Build quickfix C bind also as a static library.
     env::set_var("CMAKE_LIBRARY_PATH", [quickfix_lib_path].join(";"));
 
-    let quickfix_bind_dst = Config::new("..")
+    let quickfix_bind_dst = Config::new(".")
         .cflag(format!("-I{quickfix_include_path}"))
         .cxxflag(format!("-I{quickfix_include_path}"))
         .define("QUICKFIX_BIND_EXAMPLES", "OFF")

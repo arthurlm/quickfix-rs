@@ -76,7 +76,7 @@ If some of your needs are missing: PR / feedbacks are welcomed 😁!
 
 Since it is not possible (yet) to produce binding from Rust to C++ library, I have take another approach.
 
-1. Create a C++ to C library: `quickfix-bind`.
+1. Create a C++ to C library: `quickfix-ffi/quickfix-bind`.
 2. Create a C to Rust unsafe library: `quickfix-ffi`.
 3. Create a Rust unsafe to safe library: `quickfix`.
 
@@ -87,19 +87,19 @@ Check [DEV_NOTES](./doc/DEV_NOTES.md) for more information on the dev workflow a
 Build C binding library:
 
 ```sh
-mkdir target
-cd target
+mkdir build
+cd build
 CFLAGS="-I$HOME/.local/include" CXXFLAGS="-I$HOME/.local/include" LDFLAGS="-L$HOME/.local/lib" cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DQUICKFIX_BIND_EXAMPLES=ON \
-    ..
+    ../quickfix-ffi
 make
 ```
 
 Run C binding example:
 
 ```sh
-LD_LIBRARY_PATH="$HOME/.local/lib" ./quickfix-bind/demo_basic_binding ../configs/settings.ini
+LD_LIBRARY_PATH="$HOME/.local/lib" ./examples/demo_basic_binding ../configs/settings.ini
 ```
 
 Rust FFI example:
