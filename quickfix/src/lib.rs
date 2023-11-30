@@ -18,6 +18,61 @@ Following package must be install to build the library:
 - a C++ compiler (with C++17 support)
 - `rustup` / `rustc` / `cargo` (obviously 😉)
 
+## Example usage
+
+Here some minimal code sample to getting started:
+
+```rust
+# use quickfix::*;
+// Configure FIX engine.
+let mut settings = SessionSettings::new();
+
+settings.set(None, {
+    let mut params = Dictionary::default();
+    params.set("ConnectionType", "acceptor".to_string())?;
+    params
+})?;
+
+settings.set(Some(SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?), {
+    let mut params = Dictionary::default();
+    params.set("StartTime", "12:30:00".to_string())?;
+    params.set("EndTime", "23:30:00".to_string())?;
+    params.set("SocketAcceptPort", 4000)?;
+    params.set("DataDictionary", "../quickfix-ffi/libquickfix/spec/FIX41.xml".to_string())?;
+    params
+})?;
+
+// Configure FIX callbacks.
+pub struct MyApplication;
+
+impl ApplicationCallback for MyApplication {
+    // Implement whatever callback you need
+
+    fn on_create(&self, _session: &SessionId) {
+        // Do whatever you want here 😁
+    }
+}
+
+// Create FIX objects.
+let store_factory = MemoryMessageStoreFactory::new();
+let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
+let app = Application::try_new(&MyApplication)?;
+
+let mut acceptor = SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
+
+// Start session.
+acceptor.start()?;
+
+loop {
+    // Do whatever you want here ...
+    # break;
+}
+
+// End application
+acceptor.stop()?;
+# Ok::<(), QuickFixError>(())
+```
+
 */
 
 mod application;

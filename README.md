@@ -79,7 +79,7 @@ You may consider checking out this [directory](./quickfix/examples/) for more ex
 Yes. But keep in mind that not every feature of the original FIX library are available.
 If some of your needs are missing: PR / feedbacks are welcomed 😁!
 
-Crate is not published (yet), because it is still in the review process.
+Crate is not published (yet), because it is still in the [reviewing process](https://github.com/quickfix/quickfix/issues/533).
 If you want to use it in your project, just add this to your `Cargo.toml` config file:
 
 ```toml
