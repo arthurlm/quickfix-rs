@@ -2,12 +2,12 @@
 
 ![CI workflow](https://github.com/arthurlm/quickfix-rs/actions/workflows/ci.yml/badge.svg)
 
-This project is an **unofficial** binding between [quickfix library](https://github.com/quickfix/quickfix) and rust project.
+This project is an **unofficial** binding between [quickfix](https://github.com/quickfix/quickfix) library and Rust projects.
 
 ## Features
 
 - Provide basic and safe API wrapper above [quickfix](https://github.com/quickfix/quickfix) library.
-- Run on any hardware and operating system supported by Rust Tier 1.
+- Run on any hardware and operating system supported by Rust Tier 1 (Windows 7+, MacOS 10.12+ & Linux).
 - Message decoding / encoding including run-time validation.
 - Session state storage options: SQL, File, In Memory.
 - Logging options: stdout, stderr, [log](https://crates.io/crates/log) or any other crate if you implement your own trait.
@@ -78,6 +78,14 @@ You may consider checking out this [directory](./quickfix/examples/) for more ex
 
 Yes. But keep in mind that not every feature of the original FIX library are available.
 If some of your needs are missing: PR / feedbacks are welcomed 😁!
+
+Crate is not published (yet), because it is still in the review process.
+If you want to use it in your project, just add this to your `Cargo.toml` config file:
+
+```toml
+[dependencies]
+quickfix = { git = "https://github.com/arthurlm/quickfix-rs.git" }
+```
 
 ## Build requirements
 

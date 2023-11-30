@@ -1,6 +1,24 @@
 #![warn(missing_docs, missing_debug_implementations)]
 
-/*! This project is an **unofficial** binding between [quickfix library](https://github.com/quickfix/quickfix) and rust project. */
+/*! This project is an **unofficial** binding between quickfix library and Rust projects.
+
+## Features
+
+- Provide basic and safe API wrapper above [quickfix](https://github.com/quickfix/quickfix) library.
+- Run on any hardware and operating system supported by Rust Tier 1 (Windows 7+, MacOS 10.12+ & Linux).
+- Message decoding / encoding including run-time validation.
+- Session state storage options: SQL, File, In Memory.
+- Logging options: stdout, stderr, [log](https://crates.io/crates/log) or any other crate if you implement your own trait.
+
+## Build requirements
+
+Following package must be install to build the library:
+
+- `cmake`
+- a C++ compiler (with C++17 support)
+- `rustup` / `rustc` / `cargo` (obviously 😉)
+
+*/
 
 mod application;
 mod data_dictionary;
