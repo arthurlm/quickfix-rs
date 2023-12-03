@@ -1,6 +1,7 @@
 # Quick fix binding for Rust
 
 ![CI workflow](https://github.com/arthurlm/quickfix-rs/actions/workflows/ci.yml/badge.svg)
+![MSRV](https://img.shields.io/badge/MSRV-1.65.0-blue)
 [![dependency status](https://deps.rs/repo/github/arthurlm/quickfix-rs/status.svg)](https://deps.rs/repo/github/arthurlm/quickfix-rs)
 
 This project is an **unofficial** binding between [quickfix](https://github.com/quickfix/quickfix) library and Rust projects.
