@@ -1,10 +1,10 @@
 use std::{ffi::CString, fmt, mem::ManuallyDrop};
 
 use quickfix_ffi::{
-    FixMessage_copyGroup, FixMessage_copyHeader, FixMessage_copyTrailer, FixMessage_delete,
-    FixMessage_fromString, FixMessage_getField, FixMessage_getGroupRef, FixMessage_getHeaderRef,
-    FixMessage_getTrailerRef, FixMessage_new, FixMessage_removeField, FixMessage_setField,
-    FixMessage_t, FixMessage_toBuffer,
+    FixMessage_addGroup, FixMessage_copyGroup, FixMessage_copyHeader, FixMessage_copyTrailer,
+    FixMessage_delete, FixMessage_fromString, FixMessage_getField, FixMessage_getGroupRef,
+    FixMessage_getHeaderRef, FixMessage_getTrailerRef, FixMessage_new, FixMessage_removeField,
+    FixMessage_setField, FixMessage_t, FixMessage_toBuffer,
 };
 
 use crate::{
@@ -111,6 +111,12 @@ impl Message {
         } else {
             Err(QuickFixError::NullFunctionReturn)
         }
+    }
+
+    /// Add a new group to message and update count.
+    pub fn add_group(&mut self, group: &Group) -> Result<(), QuickFixError> {
+        ffi_code_to_result(unsafe { FixMessage_addGroup(self.0, group.0) })?;
+        Ok(())
     }
 
     /// Clone struct group part for a given tag and group index.

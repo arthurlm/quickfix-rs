@@ -15,8 +15,10 @@ pub struct Group(pub(crate) FixGroup_t);
 
 impl Group {
     /// Create new empty struct.
-    pub fn try_new(field_id: i32, delim: i32) -> Option<Self> {
-        unsafe { FixGroup_new(field_id, delim) }.map(Self)
+    pub fn try_new(field_id: i32, delim: i32) -> Result<Self, QuickFixError> {
+        unsafe { FixGroup_new(field_id, delim) }
+            .map(Self)
+            .ok_or(QuickFixError::NullFunctionReturn)
     }
 
     /// Get field ID.

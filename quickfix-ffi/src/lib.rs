@@ -317,6 +317,9 @@ extern "C" {
     pub fn FixMessage_removeField(obj: FixMessage_t, tag: i32) -> i8;
 
     #[must_use]
+    pub fn FixMessage_addGroup(obj: FixMessage_t, group: FixGroup_t) -> i8;
+
+    #[must_use]
     pub fn FixMessage_toBuffer(obj: FixMessage_t, buffer: *mut ffi::c_char, length: u64) -> i8;
     pub fn FixMessage_delete(obj: FixMessage_t);
 

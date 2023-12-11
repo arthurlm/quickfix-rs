@@ -5,7 +5,10 @@ use std::{
     time::Duration,
 };
 
+use msg_const::*;
 use quickfix::*;
+
+mod msg_const;
 
 // FIX Application logic ===============================================================================================
 
@@ -175,14 +178,17 @@ fn test_full_fix_application() -> Result<(), QuickFixError> {
     assert_eq!(sender.user_msg_count(), MsgCounter::default());
     assert_eq!(receiver.user_msg_count(), MsgCounter::default());
 
-    let news = new_msg_news()?;
+    let news = build_news("Hello", &[])?;
     send_to_target(news, &ServerType::Sender.session_id())?;
     thread::sleep(Duration::from_millis(50));
 
     assert_eq!(sender.user_msg_count(), MsgCounter { sent: 1, recv: 0 });
     assert_eq!(receiver.user_msg_count(), MsgCounter { sent: 0, recv: 1 });
 
-    let news = new_msg_news()?;
+    let news = build_news(
+        "Anyone here",
+        &["This news have", "some content", "that is very interesting"],
+    )?;
     send_to_target(news, &ServerType::Receiver.session_id())?;
     thread::sleep(Duration::from_millis(50));
 
@@ -285,20 +291,4 @@ fn find_available_port() -> u16 {
 
 fn assert_session_id_equals(a: &SessionId, b: &SessionId) {
     assert_eq!(a.as_string(), b.as_string());
-}
-
-/// Create new News message.
-///
-/// This is a super simple message to build.
-///
-/// Doc: https://www.onixs.biz/fix-dictionary/4.4/msgType_B_66.html
-fn new_msg_news() -> Result<Message, QuickFixError> {
-    let mut msg = Message::new();
-    msg.with_header_mut(|h| {
-        h.set_field(35, "B")?;
-        Ok::<_, QuickFixError>(())
-    })??;
-    msg.set_field(148, "This is a test news")?;
-    msg.set_field(33, "0")?;
-    Ok(msg)
 }

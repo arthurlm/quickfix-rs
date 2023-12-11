@@ -595,6 +595,15 @@ int8_t FixMessage_removeField(Message *obj, int32_t tag) {
   });
 }
 
+int8_t FixMessage_addGroup(Message *obj, const Group *group) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  RETURN_VAL_IF_NULL(group, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->addGroup(*group);
+    return 0;
+  })
+}
+
 int8_t FixMessage_toBuffer(const Message *obj, char *buffer, uint64_t length) {
   if (length == 0)
     return 0;
@@ -719,12 +728,12 @@ Group *FixMessage_getGroupRef(const Message *obj, int32_t num, int32_t tag) {
   CATCH_OR_RETURN_NULL({ return (Group *)(obj->getGroupPtr(num, tag)); });
 }
 
-int32_t FixGroup_getFieldId(const FixGroup_t *obj) {
+int32_t FixGroup_getFieldId(const Group *obj) {
   RETURN_VAL_IF_NULL(obj, 0);
   CATCH_OR_RETURN(0, { return obj->field(); });
 }
 
-int32_t FixGroup_getDelim(const FixGroup_t *obj) {
+int32_t FixGroup_getDelim(const Group *obj) {
   RETURN_VAL_IF_NULL(obj, 0);
   CATCH_OR_RETURN(0, { return obj->delim(); });
 }
