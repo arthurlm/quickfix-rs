@@ -2,6 +2,10 @@
 
 /*! This project is an **unofficial** binding between quickfix library and Rust projects.
 
+![CI workflow](https://github.com/arthurlm/quickfix-rs/actions/workflows/ci.yml/badge.svg)
+![MSRV](https://img.shields.io/badge/MSRV-1.70.0-blue)
+[![dependency status](https://deps.rs/repo/github/arthurlm/quickfix-rs/status.svg)](https://deps.rs/repo/github/arthurlm/quickfix-rs)
+
 ## Features
 
 - Provide basic and safe API wrapper above [quickfix](https://github.com/quickfix/quickfix) library.
