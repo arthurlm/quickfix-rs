@@ -120,35 +120,33 @@ impl Message {
     }
 
     /// Clone struct group part for a given tag and group index.
-    pub fn clone_group(&self, index: i32, tag: i32) -> Result<Group, QuickFixError> {
-        unsafe { FixMessage_copyGroup(self.0, index, tag) }
-            .map(Group)
-            .ok_or(QuickFixError::NullFunctionReturn)
+    pub fn clone_group(&self, index: i32, tag: i32) -> Option<Group> {
+        unsafe { FixMessage_copyGroup(self.0, index, tag) }.map(Group)
     }
 
     /// Read struct group part for a given tag and group index.
-    pub fn with_group<T, F>(&self, index: i32, tag: i32, f: F) -> Result<T, QuickFixError>
+    pub fn with_group<T, F>(&self, index: i32, tag: i32, f: F) -> Option<T>
     where
         F: FnOnce(&Group) -> T,
     {
         if let Some(ptr) = unsafe { FixMessage_getGroupRef(self.0, index, tag) } {
             let obj = ManuallyDrop::new(Group(ptr));
-            Ok(f(&obj))
+            Some(f(&obj))
         } else {
-            Err(QuickFixError::NullFunctionReturn)
+            None
         }
     }
 
     /// Read or write struct group part for a given tag and group index.
-    pub fn with_group_mut<T, F>(&mut self, index: i32, tag: i32, f: F) -> Result<T, QuickFixError>
+    pub fn with_group_mut<T, F>(&mut self, index: i32, tag: i32, f: F) -> Option<T>
     where
         F: FnOnce(&mut Group) -> T,
     {
         if let Some(ptr) = unsafe { FixMessage_getGroupRef(self.0, index, tag) } {
             let mut obj = ManuallyDrop::new(Group(ptr));
-            Ok(f(&mut obj))
+            Some(f(&mut obj))
         } else {
-            Err(QuickFixError::NullFunctionReturn)
+            None
         }
     }
 }
