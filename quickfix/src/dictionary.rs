@@ -19,8 +19,13 @@ use crate::{
 pub struct Dictionary(pub(crate) FixDictionary_t);
 
 impl Dictionary {
+    /// Create a new empty struct.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     /// Try to create new empty struct with a given name.
-    pub fn try_new(name: &str) -> Result<Self, QuickFixError> {
+    pub fn with_name(name: &str) -> Result<Self, QuickFixError> {
         let c_name = CString::new(name)?;
         unsafe { FixDictionary_new(c_name.as_ptr()) }
             .map(Self)
@@ -137,7 +142,7 @@ impl fmt::Debug for Dictionary {
 
 impl Default for Dictionary {
     fn default() -> Self {
-        Self::try_new("").expect("Fail to allocate Dictionary")
+        Self::with_name("").expect("Fail to allocate Dictionary")
     }
 }
 

@@ -2,7 +2,7 @@ use quickfix::*;
 
 #[test]
 fn test_text() {
-    let mut dict = Dictionary::try_new("HELLO").unwrap();
+    let mut dict = Dictionary::with_name("HELLO").unwrap();
 
     // Test with valid kay / value
     dict.set("str_1", "foo".to_string()).unwrap();
@@ -17,7 +17,7 @@ fn test_text() {
 
 #[test]
 fn test_int() {
-    let mut dict = Dictionary::try_new("HELLO").unwrap();
+    let mut dict = Dictionary::with_name("HELLO").unwrap();
 
     // Test with valid kay / value
     dict.set("int_1", 42).unwrap();
@@ -35,7 +35,7 @@ fn test_int() {
 
 #[test]
 fn test_double() {
-    let mut dict = Dictionary::try_new("HELLO").unwrap();
+    let mut dict = Dictionary::with_name("HELLO").unwrap();
 
     // Test with valid kay / value
     dict.set("double_1", 56.8).unwrap();
@@ -62,7 +62,7 @@ fn test_double() {
 
 #[test]
 fn test_bool() {
-    let mut dict = Dictionary::try_new("HELLO").unwrap();
+    let mut dict = Dictionary::with_name("HELLO").unwrap();
 
     // Test with valid kay / value
     dict.set("bool_1", false).unwrap();
@@ -83,7 +83,7 @@ fn test_day() {
         };
     }
 
-    let mut dict = Dictionary::try_new("HELLO").unwrap();
+    let mut dict = Dictionary::with_name("HELLO").unwrap();
 
     // Test with valid kay / value
     dict.set("day_1", 0).unwrap();
@@ -118,7 +118,7 @@ fn test_day() {
 
 #[test]
 fn test_contains() {
-    let mut dict = Dictionary::try_new("HELLO").unwrap();
+    let mut dict = Dictionary::with_name("HELLO").unwrap();
     assert!(!dict.contains("foo").unwrap());
 
     dict.set("foo", "bar".to_string()).unwrap();

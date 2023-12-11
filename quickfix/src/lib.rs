@@ -28,13 +28,13 @@ Here some minimal code sample to getting started:
 let mut settings = SessionSettings::new();
 
 settings.set(None, {
-    let mut params = Dictionary::default();
+    let mut params = Dictionary::new();
     params.set("ConnectionType", "acceptor".to_string())?;
     params
 })?;
 
 settings.set(Some(SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?), {
-    let mut params = Dictionary::default();
+    let mut params = Dictionary::new();
     params.set("StartTime", "12:30:00".to_string())?;
     params.set("EndTime", "23:30:00".to_string())?;
     params.set("SocketAcceptPort", 4000)?;

@@ -12,14 +12,14 @@ fn test_from_file() {
 
 #[test]
 fn test_getter_and_setter() {
-    let mut dict_global = Dictionary::try_new("DEFAULT").unwrap();
+    let mut dict_global = Dictionary::with_name("DEFAULT").unwrap();
     dict_global
         .set("ConnectionType", "initiator".to_string())
         .unwrap();
     dict_global.set("foo", 60).unwrap();
 
     let session_id = SessionId::try_new("FIX.4.4", "CLIENT1", "SERVER1", "").unwrap();
-    let mut dict_session = Dictionary::try_new("SESSION").unwrap();
+    let mut dict_session = Dictionary::with_name("SESSION").unwrap();
     dict_session.set("foo", 45).unwrap();
 
     // Configure settings

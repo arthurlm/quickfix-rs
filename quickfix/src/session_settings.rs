@@ -15,9 +15,7 @@ pub struct SessionSettings(pub(crate) FixSessionSettings_t);
 impl SessionSettings {
     /// Create new empty struct.
     pub fn new() -> Self {
-        unsafe { FixSessionSettings_new() }
-            .map(Self)
-            .expect("Fail to allocate new SessionSettings")
+        Self::default()
     }
 
     /// Try to load struct data from Path.
@@ -76,7 +74,9 @@ impl SessionSettings {
 
 impl Default for SessionSettings {
     fn default() -> Self {
-        Self::new()
+        unsafe { FixSessionSettings_new() }
+            .map(Self)
+            .expect("Fail to allocate new SessionSettings")
     }
 }
 

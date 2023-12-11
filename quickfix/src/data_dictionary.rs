@@ -13,9 +13,7 @@ pub struct DataDictionary(FixDataDictionary_t);
 impl DataDictionary {
     /// Create a new empty struct.
     pub fn new() -> Self {
-        unsafe { FixDataDictionary_new() }
-            .map(Self)
-            .expect("Fail to allocate new DataDictionary")
+        Self::default()
     }
 
     /// Try to load struct data from path.
@@ -48,7 +46,9 @@ impl fmt::Debug for DataDictionary {
 
 impl Default for DataDictionary {
     fn default() -> Self {
-        Self::new()
+        unsafe { FixDataDictionary_new() }
+            .map(Self)
+            .expect("Fail to allocate new DataDictionary")
     }
 }
 

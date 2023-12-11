@@ -49,9 +49,7 @@ pub struct MemoryMessageStoreFactory(FixMessageStoreFactory_t);
 impl MemoryMessageStoreFactory {
     /// Create new struct.
     pub fn new() -> Self {
-        unsafe { FixMemoryMessageStoreFactory_new() }
-            .map(Self)
-            .expect("Fail to allocate MemoryMessageStore")
+        Self::default()
     }
 }
 
@@ -63,7 +61,9 @@ impl FfiMessageStoreFactory for MemoryMessageStoreFactory {
 
 impl Default for MemoryMessageStoreFactory {
     fn default() -> Self {
-        Self::new()
+        unsafe { FixMemoryMessageStoreFactory_new() }
+            .map(Self)
+            .expect("Fail to allocate MemoryMessageStore")
     }
 }
 

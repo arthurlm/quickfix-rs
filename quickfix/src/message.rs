@@ -21,9 +21,7 @@ pub struct Message(pub(crate) FixMessage_t);
 impl Message {
     /// Create new empty struct.
     pub fn new() -> Self {
-        unsafe { FixMessage_new() }
-            .map(Self)
-            .expect("Fail to allocate new Message")
+        Self::default()
     }
 
     /// Try create new struct from raw text message.
@@ -175,7 +173,9 @@ impl fmt::Debug for Message {
 
 impl Default for Message {
     fn default() -> Self {
-        Self::new()
+        unsafe { FixMessage_new() }
+            .map(Self)
+            .expect("Fail to allocate new Message")
     }
 }
 
