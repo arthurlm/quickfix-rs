@@ -58,3 +58,9 @@ fn test_message() {
     let obj = Message::try_from_text("9=0\u{1}10=000\u{1}").unwrap();
     assert_eq!(format!("{obj:?}"), "Message(\"9=0|10=167|\")");
 }
+
+#[test]
+fn test_session_settings() {
+    let obj = SessionSettings::new();
+    assert_eq!(format!("{obj:?}"), "SessionSettings");
+}

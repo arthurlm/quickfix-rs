@@ -1,4 +1,4 @@
-use std::{ffi::CString, mem::ManuallyDrop, path::Path};
+use std::{ffi::CString, fmt, mem::ManuallyDrop, path::Path};
 
 use quickfix_ffi::{
     FixSessionSettings_delete, FixSessionSettings_fromPath, FixSessionSettings_getGlobalRef,
@@ -9,7 +9,6 @@ use quickfix_ffi::{
 use crate::{utils::ffi_code_to_result, Dictionary, QuickFixError, SessionId};
 
 /// Container for setting dictionaries mapped to sessions.
-#[derive(Debug)]
 pub struct SessionSettings(pub(crate) FixSessionSettings_t);
 
 impl SessionSettings {
@@ -32,11 +31,7 @@ impl SessionSettings {
     }
 
     /// Borrow inner dictionary for session or global configuration.
-    pub fn with_dictionary<T, F>(
-        &self,
-        session_id: Option<SessionId>,
-        f: F,
-    ) -> Result<T, QuickFixError>
+    pub fn with_dictionary<T, F>(&self, session_id: Option<SessionId>, f: F) -> Option<T>
     where
         F: FnOnce(&Dictionary) -> T,
     {
@@ -51,9 +46,9 @@ impl SessionSettings {
         // Check ptr and pass it to callback.
         if let Some(ptr) = res {
             let obj = ManuallyDrop::new(Dictionary(ptr));
-            Ok(f(&obj))
+            Some(f(&obj))
         } else {
-            Err(QuickFixError::NullFunctionReturn)
+            None
         }
     }
 
@@ -69,6 +64,12 @@ impl SessionSettings {
                 Some(session_id) => FixSessionSettings_setSession(self.0, session_id.0, value.0),
             }
         })
+    }
+}
+
+impl fmt::Debug for SessionSettings {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("SessionSettings").finish()
     }
 }
 
