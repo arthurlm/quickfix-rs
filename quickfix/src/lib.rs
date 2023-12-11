@@ -108,7 +108,7 @@ pub use dictionary::Dictionary;
 pub use error::QuickFixError;
 pub use group::Group;
 pub use header::Header;
-pub use log_factory::{LogCallback, LogFactory, StdLogger};
+pub use log_factory::{LogCallback, LogFactory, NullLogger, StdLogger};
 pub use message::Message;
 pub use message_store_factory::{
     FfiMessageStoreFactory, FileMessageStoreFactory, MemoryMessageStoreFactory,

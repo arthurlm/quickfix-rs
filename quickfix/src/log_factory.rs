@@ -93,6 +93,12 @@ impl<C: LogCallback> Drop for LogFactory<'_, C> {
     }
 }
 
+/// Drop every log message.
+#[derive(Debug)]
+pub struct NullLogger;
+
+impl LogCallback for NullLogger {}
+
 /// Log message to std file descriptors.
 #[derive(Debug)]
 pub enum StdLogger {
