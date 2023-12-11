@@ -13,6 +13,10 @@ pub struct SessionId(pub(crate) FixSessionID_t);
 
 impl SessionId {
     /// Try create new struct from all its inner components.
+    ///
+    /// # Panic
+    ///
+    /// When memory allocation fail in C++ library.
     pub fn try_new(
         begin_string: &str,
         sender_comp_id: &str,
