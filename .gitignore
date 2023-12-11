@@ -7,3 +7,6 @@ target
 # Quickfix output path
 store
 log
+
+# Code coverage
+lcov.info
