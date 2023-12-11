@@ -168,10 +168,13 @@ impl FieldMap for Message {
 
 impl fmt::Debug for Message {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let content = self.as_string();
-        f.debug_tuple("Message")
-            .field(&content.as_deref().unwrap_or("Invalid msg text"))
-            .finish()
+        let mut printer = f.debug_tuple("Message");
+
+        if let Ok(txt) = self.as_string() {
+            printer.field(&txt.replace(1 as char, "|"));
+        }
+
+        printer.finish()
     }
 }
 

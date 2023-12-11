@@ -52,3 +52,9 @@ fn test_logger() {
         assert_eq!(format!("{obj:?}"), "RustLogger");
     }
 }
+
+#[test]
+fn test_message() {
+    let obj = Message::try_from_text("9=0\u{1}10=000\u{1}").unwrap();
+    assert_eq!(format!("{obj:?}"), "Message(\"9=0|10=167|\")");
+}

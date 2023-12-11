@@ -1,4 +1,4 @@
-use quickfix::{DataDictionary, QuickFixError};
+use quickfix::*;
 
 #[test]
 fn test_create_and_drop() {

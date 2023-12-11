@@ -15,6 +15,11 @@ fn test_group() {
     check_field_map(Group::try_new(42, 10).unwrap());
 }
 
+#[test]
+fn test_message() {
+    check_field_map(Message::new());
+}
+
 fn check_field_map<T: FieldMap>(mut item: T) {
     const FIELD_ID: i32 = 89;
 

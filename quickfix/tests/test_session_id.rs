@@ -1,4 +1,4 @@
-use quickfix::{QuickFixError, SessionId};
+use quickfix::*;
 
 #[test]
 fn test_new() {
