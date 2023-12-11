@@ -1,108 +1,16 @@
-use std::{
-    net::TcpListener,
-    sync::atomic::{AtomicBool, AtomicUsize, Ordering},
-    thread,
-    time::Duration,
-};
+use std::{thread, time::Duration};
 
 use msg_const::*;
 use quickfix::*;
+use recorder::*;
+use utils::find_available_port;
+
+use crate::settings_builder::{build_settings, ServerType};
 
 mod msg_const;
-
-// FIX Application logic ===============================================================================================
-
-#[derive(Debug)]
-struct FixRecorder {
-    expected_session_id: SessionId,
-    session_created: AtomicUsize,
-    is_logged_in: AtomicBool,
-    sent_admin: AtomicUsize,
-    sent_user: AtomicUsize,
-    recv_admin: AtomicUsize,
-    recv_user: AtomicUsize,
-}
-
-impl FixRecorder {
-    fn new(expected_session_id: SessionId) -> Self {
-        Self {
-            expected_session_id,
-            session_created: AtomicUsize::new(0),
-            is_logged_in: AtomicBool::new(false),
-            sent_admin: AtomicUsize::new(0),
-            sent_user: AtomicUsize::new(0),
-            recv_admin: AtomicUsize::new(0),
-            recv_user: AtomicUsize::new(0),
-        }
-    }
-
-    fn session_created(&self) -> usize {
-        self.session_created.load(Ordering::Relaxed)
-    }
-
-    fn is_logged_in(&self) -> bool {
-        self.is_logged_in.load(Ordering::Relaxed)
-    }
-
-    fn admin_msg_count(&self) -> MsgCounter {
-        MsgCounter {
-            sent: self.sent_admin.load(Ordering::Relaxed),
-            recv: self.recv_admin.load(Ordering::Relaxed),
-        }
-    }
-
-    fn user_msg_count(&self) -> MsgCounter {
-        MsgCounter {
-            sent: self.sent_user.load(Ordering::Relaxed),
-            recv: self.recv_user.load(Ordering::Relaxed),
-        }
-    }
-}
-
-impl ApplicationCallback for FixRecorder {
-    fn on_create(&self, session_id: &SessionId) {
-        self.session_created.fetch_add(1, Ordering::Relaxed);
-        assert_session_id_equals(&self.expected_session_id, &session_id);
-    }
-
-    fn on_logon(&self, session_id: &SessionId) {
-        self.is_logged_in.store(true, Ordering::Relaxed);
-        assert_session_id_equals(&self.expected_session_id, &session_id);
-    }
-
-    fn on_logout(&self, session_id: &SessionId) {
-        self.is_logged_in.store(false, Ordering::Relaxed);
-        assert_session_id_equals(&self.expected_session_id, &session_id);
-    }
-
-    fn on_msg_to_admin(&self, _msg: &mut Message, session_id: &SessionId) {
-        self.sent_admin.fetch_add(1, Ordering::Relaxed);
-        assert_session_id_equals(&self.expected_session_id, &session_id);
-    }
-
-    fn on_msg_to_app(&self, _msg: &mut Message, session_id: &SessionId) {
-        self.sent_user.fetch_add(1, Ordering::Relaxed);
-        assert_session_id_equals(&self.expected_session_id, &session_id);
-    }
-
-    fn on_msg_from_admin(&self, _msg: &Message, session_id: &SessionId) {
-        self.recv_admin.fetch_add(1, Ordering::Relaxed);
-        assert_session_id_equals(&self.expected_session_id, &session_id);
-    }
-
-    fn on_msg_from_app(&self, _msg: &Message, session_id: &SessionId) {
-        self.recv_user.fetch_add(1, Ordering::Relaxed);
-        assert_session_id_equals(&self.expected_session_id, &session_id);
-    }
-}
-
-#[derive(Debug, Default, PartialEq, Eq, Clone, Copy)]
-struct MsgCounter {
-    sent: usize,
-    recv: usize,
-}
-
-// Main test code 😎 ===================================================================================================
+mod recorder;
+mod settings_builder;
+mod utils;
 
 #[test]
 fn test_full_fix_application() -> Result<(), QuickFixError> {
@@ -216,79 +124,4 @@ fn test_full_fix_application() -> Result<(), QuickFixError> {
     assert_eq!(receiver.admin_msg_count(), MsgCounter { recv: 2, sent: 2 });
 
     Ok(())
-}
-
-// Settings builder ====================================================================================================
-
-enum ServerType {
-    Receiver,
-    Sender,
-}
-
-impl ServerType {
-    fn name(&self) -> &'static str {
-        match self {
-            ServerType::Receiver => "acceptor",
-            ServerType::Sender => "initiator",
-        }
-    }
-
-    fn session_id(&self) -> SessionId {
-        match self {
-            ServerType::Receiver => SessionId::try_new("FIX.4.4", "ME", "THEIR", ""),
-            ServerType::Sender => SessionId::try_new("FIX.4.4", "THEIR", "ME", ""),
-        }
-        .expect("Fail to build session ID")
-    }
-
-    fn fill_settings(&self, params: &mut Dictionary, port: u16) -> Result<(), QuickFixError> {
-        match self {
-            ServerType::Receiver => {
-                params.set("SocketAcceptPort", port as i32)?;
-            }
-            ServerType::Sender => {
-                params.set("SocketConnectPort", port as i32)?;
-                params.set("SocketConnectHost", "127.0.0.1".to_string())?;
-            }
-        }
-        Ok(())
-    }
-}
-
-fn build_settings(server_type: ServerType, port: u16) -> Result<SessionSettings, QuickFixError> {
-    let mut settings = SessionSettings::new();
-
-    settings.set(None, {
-        let mut params = Dictionary::new();
-        params.set("ConnectionType", server_type.name().to_string())?;
-        params.set("ReconnectInterval", 60)?;
-        params
-    })?;
-
-    settings.set(Some(server_type.session_id()), {
-        let mut params = Dictionary::new();
-        params.set("StartTime", "00:00:00".to_string())?;
-        params.set("EndTime", "23:59:59".to_string())?;
-        params.set("HeartBtInt", 20)?;
-        params.set(
-            "DataDictionary",
-            "../quickfix-ffi/libquickfix/spec/FIX44.xml".to_string(),
-        )?;
-        server_type.fill_settings(&mut params, port)?;
-        params
-    })?;
-
-    Ok(settings)
-}
-
-// Utils ===============================================================================================================
-
-fn find_available_port() -> u16 {
-    (8000..9000)
-        .find(|port| TcpListener::bind(("127.0.0.1", *port)).is_ok())
-        .expect("No port available in test range")
-}
-
-fn assert_session_id_equals(a: &SessionId, b: &SessionId) {
-    assert_eq!(a.as_string(), b.as_string());
 }
