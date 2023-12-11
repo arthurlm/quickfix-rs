@@ -96,6 +96,7 @@ where
     L: LogCallback,
 {
     fn drop(&mut self) {
+        let _ = self.stop();
         unsafe { FixSocketAcceptor_delete(self.inner) }
     }
 }
