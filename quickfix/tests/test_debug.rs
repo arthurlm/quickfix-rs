@@ -29,3 +29,26 @@ fn test_group() {
     let obj = Group::try_new(42, 10).unwrap();
     assert_eq!(format!("{obj:?}"), "Group { id: 42, delim: 10 }");
 }
+
+#[test]
+fn test_log_factory() {
+    let obj = LogFactory::try_new(&NullLogger).unwrap();
+    assert_eq!(format!("{obj:?}"), "LogFactory");
+}
+
+#[test]
+fn test_logger() {
+    let obj = NullLogger;
+    assert_eq!(format!("{obj:?}"), "NullLogger");
+
+    let obj = StdLogger::Stdout;
+    assert_eq!(format!("{obj:?}"), "log_stdout");
+    let obj = StdLogger::Stderr;
+    assert_eq!(format!("{obj:?}"), "log_stderr");
+
+    #[cfg(feature = "log")]
+    {
+        let obj = RustLogger;
+        assert_eq!(format!("{obj:?}"), "RustLogger");
+    }
+}

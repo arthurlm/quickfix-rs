@@ -1,5 +1,5 @@
 use std::{
-    ffi,
+    ffi, fmt,
     io::{self, Write},
     marker::PhantomData,
     mem::ManuallyDrop,
@@ -27,7 +27,6 @@ pub trait LogCallback {
 }
 
 /// Logging factory.
-#[derive(Debug)]
 pub struct LogFactory<'a, C: LogCallback>(pub(crate) FixLogFactory_t, PhantomData<&'a C>);
 
 impl<'a, C> LogFactory<'a, C>
@@ -87,6 +86,12 @@ where
     }
 }
 
+impl<'a, C: LogCallback> fmt::Debug for LogFactory<'a, C> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("LogFactory").finish()
+    }
+}
+
 impl<C: LogCallback> Drop for LogFactory<'_, C> {
     fn drop(&mut self) {
         unsafe { FixLogFactory_delete(self.0) }
@@ -100,12 +105,20 @@ pub struct NullLogger;
 impl LogCallback for NullLogger {}
 
 /// Log message to std file descriptors.
-#[derive(Debug)]
 pub enum StdLogger {
     /// Log to stdout.
     Stdout,
     /// Log to stderr.
     Stderr,
+}
+
+impl fmt::Debug for StdLogger {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Stdout => write!(f, "log_stdout"),
+            Self::Stderr => write!(f, "log_stderr"),
+        }
+    }
 }
 
 impl StdLogger {
