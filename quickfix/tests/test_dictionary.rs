@@ -77,24 +77,43 @@ fn test_bool() {
 
 #[test]
 fn test_day() {
+    macro_rules! read_day {
+        ($d:expr, $k:expr) => {
+            $d.get::<DayOfWeek>($k)
+        };
+    }
+
     let mut dict = Dictionary::try_new("HELLO").unwrap();
 
     // Test with valid kay / value
     dict.set("day_1", 0).unwrap();
-    assert!(dict.get::<DayOfWeek>("day_1").is_err());
-
-    dict.set("day_2", "TH".to_string()).unwrap();
-    assert_eq!(dict.get::<DayOfWeek>("day_2").unwrap(), DayOfWeek::Thursday);
+    assert!(read_day!(dict, "day_1").is_err());
 
     dict.set("day_3", -4).unwrap();
-    assert!(dict.get::<DayOfWeek>("day_3").is_err());
+    assert!(read_day!(dict, "day_3").is_err());
 
-    dict.set("day_4", DayOfWeek::Friday).unwrap();
-    assert_eq!(dict.get::<DayOfWeek>("day_4").unwrap(), DayOfWeek::Friday);
-    assert_eq!(dict.get::<String>("day_4").unwrap(), "FR");
+    fn check_set_and_get(dict: &mut Dictionary, day: DayOfWeek, txt: &str) {
+        // Set as DOW
+        dict.set("day_4", day).unwrap();
+        assert_eq!(read_day!(dict, "day_4").unwrap(), day);
+        assert_eq!(dict.get::<String>("day_4").unwrap(), txt);
+
+        // Set as text
+        dict.set("day_4", txt.to_string()).unwrap();
+        assert_eq!(read_day!(dict, "day_4").unwrap(), day);
+        assert_eq!(dict.get::<String>("day_4").unwrap(), txt);
+    }
+
+    check_set_and_get(&mut dict, DayOfWeek::Sunday, "SU");
+    check_set_and_get(&mut dict, DayOfWeek::Monday, "MO");
+    check_set_and_get(&mut dict, DayOfWeek::Tuesday, "TU");
+    check_set_and_get(&mut dict, DayOfWeek::Wednesday, "WE");
+    check_set_and_get(&mut dict, DayOfWeek::Thursday, "TH");
+    check_set_and_get(&mut dict, DayOfWeek::Friday, "FR");
+    check_set_and_get(&mut dict, DayOfWeek::Saturday, "SA");
 
     // Test with invalid key
-    assert!(dict.get::<DayOfWeek>("invalid").is_err());
+    assert!(read_day!(dict, "invalid").is_err());
 }
 
 #[test]
