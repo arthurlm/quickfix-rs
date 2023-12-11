@@ -24,17 +24,17 @@ impl SessionId {
         let ffi_target_comp_id = CString::new(target_comp_id)?;
         let ffi_session_qualifier = CString::new(session_qualifier)?;
 
-        match unsafe {
+        Ok(unsafe {
+            // Session ID cannot fail
             FixSessionID_new(
                 ffi_begin_string.as_ptr(),
                 ffi_sender_comp_id.as_ptr(),
                 ffi_target_comp_id.as_ptr(),
                 ffi_session_qualifier.as_ptr(),
             )
-        } {
-            Some(val) => Ok(Self(val)),
-            None => Err(QuickFixError::NullFunctionReturn),
         }
+        .map(Self)
+        .expect("Fail to allocate SessionId"))
     }
 
     /// Try cloning the struct.
