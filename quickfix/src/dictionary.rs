@@ -1,4 +1,7 @@
-use std::ffi::{CStr, CString};
+use std::{
+    ffi::{CStr, CString},
+    fmt,
+};
 
 use quickfix_ffi::{
     FixDictionary_delete, FixDictionary_getBool, FixDictionary_getDay, FixDictionary_getDouble,
@@ -13,7 +16,6 @@ use crate::{
 };
 
 /// For storage and retrieval of key/value pairs.
-#[derive(Debug)]
 pub struct Dictionary(pub(crate) FixDictionary_t);
 
 impl Dictionary {
@@ -124,6 +126,12 @@ impl PropertyContainer<DayOfWeek> for Dictionary {
 
     fn ffi_set(&mut self, key: CString, value: DayOfWeek) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixDictionary_setDay(self.0, key.as_ptr(), value as i32) })
+    }
+}
+
+impl fmt::Debug for Dictionary {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("Dictionary").finish()
     }
 }
 

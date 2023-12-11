@@ -1,4 +1,4 @@
-use std::{ffi::CString, path::Path};
+use std::{ffi::CString, fmt, path::Path};
 
 use quickfix_ffi::{
     FixDataDictionary_delete, FixDataDictionary_fromPath, FixDataDictionary_new,
@@ -8,7 +8,6 @@ use quickfix_ffi::{
 use crate::{Message, QuickFixError};
 
 /// Represents a data dictionary for a version of FIX.
-#[derive(Debug)]
 pub struct DataDictionary(FixDataDictionary_t);
 
 impl DataDictionary {
@@ -38,6 +37,12 @@ impl DataDictionary {
         unsafe { FixMessage_fromStringAndDictionary(ffi_text.as_ptr(), self.0) }
             .map(Message)
             .ok_or(QuickFixError::NullFunctionReturn)
+    }
+}
+
+impl fmt::Debug for DataDictionary {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("DataDictionary").finish()
     }
 }
 
