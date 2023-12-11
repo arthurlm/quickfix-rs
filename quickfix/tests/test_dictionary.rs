@@ -1,6 +1,38 @@
 use quickfix::*;
 
 #[test]
+fn test_new_invalid_text() {
+    assert_eq!(
+        Dictionary::with_name("in\0valid").unwrap_err(),
+        QuickFixError::invalid_argument("nul byte found in provided data at position: 2")
+    );
+}
+
+#[test]
+fn test_get_invalid_text() {
+    let dict = Dictionary::new();
+
+    assert_eq!(
+        dict.get::<String>("in\0valid").unwrap_err(),
+        QuickFixError::invalid_argument("nul byte found in provided data at position: 2")
+    );
+}
+
+#[test]
+fn test_set_invalid_text() {
+    let mut dict = Dictionary::new();
+
+    assert_eq!(
+        dict.set("\0invalid", "foo".to_string()).unwrap_err(),
+        QuickFixError::invalid_argument("nul byte found in provided data at position: 0")
+    );
+    assert_eq!(
+        dict.set("key", "\0invalid".to_string()).unwrap_err(),
+        QuickFixError::invalid_argument("nul byte found in provided data at position: 0")
+    );
+}
+
+#[test]
 fn test_text() {
     let mut dict = Dictionary::with_name("HELLO").unwrap();
 
@@ -120,6 +152,11 @@ fn test_day() {
 fn test_contains() {
     let mut dict = Dictionary::with_name("HELLO").unwrap();
     assert!(!dict.contains("foo").unwrap());
+
+    assert_eq!(
+        dict.contains("in\0valid").unwrap_err(),
+        QuickFixError::invalid_argument("nul byte found in provided data at position: 2")
+    );
 
     dict.set("foo", "bar".to_string()).unwrap();
     assert!(dict.contains("foo").unwrap());
