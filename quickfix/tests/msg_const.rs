@@ -14,7 +14,7 @@ pub const MSG_HEADLINE: i32 = 148;
 /// Doc: https://www.onixs.biz/fix-dictionary/4.4/msgType_B_66.html
 pub fn build_news(headline: &str, lines: &[&str]) -> Result<Message, QuickFixError> {
     let mut msg = Message::new();
-    msg.with_header_mut(|h| h.set_field(MSG_TYPE, "B"))??;
+    msg.with_header_mut(|h| h.set_field(MSG_TYPE, "B"))?;
 
     msg.set_field(MSG_HEADLINE, headline)?;
     msg.set_field(MSG_NO_LINES_OF_TEXT, &lines.len().to_string())?; // Not required but always nice

@@ -48,69 +48,93 @@ impl Message {
     }
 
     /// Clone struct header part.
-    pub fn clone_header(&self) -> Result<Header, QuickFixError> {
+    ///
+    /// # Panic
+    ///
+    /// When memory allocation fail in C++ library.
+    pub fn clone_header(&self) -> Header {
         unsafe { FixMessage_copyHeader(self.0) }
             .map(Header)
-            .ok_or(QuickFixError::NullFunctionReturn)
+            .expect("Fail to allocate new Header")
     }
 
     /// Read struct header part.
-    pub fn with_header<T, F>(&self, f: F) -> Result<T, QuickFixError>
+    ///
+    /// # Panic
+    ///
+    /// When struct pointer cannot be read from `FIX::Message`. This is
+    /// something that could not be theoretically possible.
+    pub fn with_header<T, F>(&self, f: F) -> T
     where
         F: FnOnce(&Header) -> T,
     {
-        if let Some(ptr) = unsafe { FixMessage_getHeaderRef(self.0) } {
-            let obj = ManuallyDrop::new(Header(ptr));
-            Ok(f(&obj))
-        } else {
-            Err(QuickFixError::NullFunctionReturn)
-        }
+        let ptr =
+            unsafe { FixMessage_getHeaderRef(self.0) }.expect("Fail to get ptr on message header");
+
+        let obj = ManuallyDrop::new(Header(ptr));
+        f(&obj)
     }
 
     /// Read or write struct header part.
-    pub fn with_header_mut<T, F>(&mut self, f: F) -> Result<T, QuickFixError>
+    ///
+    /// # Panic
+    ///
+    /// When struct pointer cannot be read from `FIX::Message`. This is
+    /// something that could not be theoretically possible.
+    pub fn with_header_mut<T, F>(&mut self, f: F) -> T
     where
         F: FnOnce(&mut Header) -> T,
     {
-        if let Some(ptr) = unsafe { FixMessage_getHeaderRef(self.0) } {
-            let mut obj = ManuallyDrop::new(Header(ptr));
-            Ok(f(&mut obj))
-        } else {
-            Err(QuickFixError::NullFunctionReturn)
-        }
+        let ptr =
+            unsafe { FixMessage_getHeaderRef(self.0) }.expect("Fail to get ptr on message header");
+
+        let mut obj = ManuallyDrop::new(Header(ptr));
+        f(&mut obj)
     }
 
     /// Clone struct trailer part.
-    pub fn clone_trailer(&self) -> Result<Trailer, QuickFixError> {
+    ///
+    /// # Panic
+    ///
+    /// When memory allocation fail in C++ library.
+    pub fn clone_trailer(&self) -> Trailer {
         unsafe { FixMessage_copyTrailer(self.0) }
             .map(Trailer)
-            .ok_or(QuickFixError::NullFunctionReturn)
+            .expect("Fail to allocate new Trailer")
     }
 
     /// Read struct trailer part.
-    pub fn with_trailer<T, F>(&self, f: F) -> Result<T, QuickFixError>
+    ///
+    /// # Panic
+    ///
+    /// When struct pointer cannot be read from `FIX::Message`. This is
+    /// something that could not be theoretically possible.
+    pub fn with_trailer<T, F>(&self, f: F) -> T
     where
         F: FnOnce(&Trailer) -> T,
     {
-        if let Some(ptr) = unsafe { FixMessage_getTrailerRef(self.0) } {
-            let obj = ManuallyDrop::new(Trailer(ptr));
-            Ok(f(&obj))
-        } else {
-            Err(QuickFixError::NullFunctionReturn)
-        }
+        let ptr = unsafe { FixMessage_getTrailerRef(self.0) }
+            .expect("Fail to get ptr on message trailer");
+
+        let obj = ManuallyDrop::new(Trailer(ptr));
+        f(&obj)
     }
 
     /// Read or write struct trailer part.
-    pub fn with_trailer_mut<T, F>(&mut self, f: F) -> Result<T, QuickFixError>
+    ///
+    /// # Panic
+    ///
+    /// When struct pointer cannot be read from `FIX::Message`. This is
+    /// something that could not be theoretically possible.
+    pub fn with_trailer_mut<T, F>(&mut self, f: F) -> T
     where
         F: FnOnce(&mut Trailer) -> T,
     {
-        if let Some(ptr) = unsafe { FixMessage_getTrailerRef(self.0) } {
-            let mut obj = ManuallyDrop::new(Trailer(ptr));
-            Ok(f(&mut obj))
-        } else {
-            Err(QuickFixError::NullFunctionReturn)
-        }
+        let ptr = unsafe { FixMessage_getTrailerRef(self.0) }
+            .expect("Fail to get ptr on message trailer");
+
+        let mut obj = ManuallyDrop::new(Trailer(ptr));
+        f(&mut obj)
     }
 
     /// Add a new group to message and update count.
