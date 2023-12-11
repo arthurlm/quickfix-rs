@@ -322,6 +322,8 @@ extern "C" {
 
     // Header
 
+    pub fn FixHeader_new() -> Option<FixHeader_t>;
+
     pub fn FixMessage_copyHeader(obj: FixMessage_t) -> Option<FixHeader_t>;
 
     pub fn FixMessage_getHeaderRef(obj: FixMessage_t) -> Option<FixHeader_t>;
@@ -335,6 +337,8 @@ extern "C" {
     pub fn FixHeader_delete(obj: FixHeader_t);
 
     // Trailer
+
+    pub fn FixTrailer_new() -> Option<FixTrailer_t>;
 
     pub fn FixMessage_copyTrailer(obj: FixMessage_t) -> Option<FixTrailer_t>;
 
@@ -350,9 +354,15 @@ extern "C" {
 
     // Group
 
+    pub fn FixGroup_new(fieldId: i32, delim: i32) -> Option<FixGroup_t>;
+
     pub fn FixMessage_copyGroup(obj: FixMessage_t, num: i32, tag: i32) -> Option<FixGroup_t>;
 
     pub fn FixMessage_getGroupRef(obj: FixMessage_t, num: i32, tag: i32) -> Option<FixGroup_t>;
+
+    pub fn FixGroup_getFieldId(obj: FixGroup_t) -> i32;
+
+    pub fn FixGroup_getDelim(obj: FixGroup_t) -> i32;
 
     pub fn FixGroup_getField(obj: FixGroup_t, tag: i32) -> NullableCStr;
 

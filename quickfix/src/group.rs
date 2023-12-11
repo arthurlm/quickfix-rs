@@ -1,7 +1,8 @@
 use std::ffi::CString;
 
 use quickfix_ffi::{
-    FixGroup_delete, FixGroup_getField, FixGroup_removeField, FixGroup_setField, FixGroup_t,
+    FixGroup_delete, FixGroup_getDelim, FixGroup_getField, FixGroup_getFieldId, FixGroup_new,
+    FixGroup_removeField, FixGroup_setField, FixGroup_t,
 };
 
 use crate::{
@@ -12,6 +13,23 @@ use crate::{
 /// Base class for all FIX repeating groups.
 #[derive(Debug)]
 pub struct Group(pub(crate) FixGroup_t);
+
+impl Group {
+    /// Create new empty struct.
+    pub fn try_new(field_id: i32, delim: i32) -> Option<Self> {
+        unsafe { FixGroup_new(field_id, delim) }.map(Self)
+    }
+
+    /// Get field ID.
+    pub fn field_id(&self) -> i32 {
+        unsafe { FixGroup_getFieldId(self.0) }
+    }
+
+    /// Get delimiter.
+    pub fn delim(&self) -> i32 {
+        unsafe { FixGroup_getDelim(self.0) }
+    }
+}
 
 impl FieldMap for Group {
     fn get_field(&self, tag: i32) -> Option<String> {

@@ -1,7 +1,8 @@
 use std::ffi::CString;
 
 use quickfix_ffi::{
-    FixHeader_delete, FixHeader_getField, FixHeader_removeField, FixHeader_setField, FixHeader_t,
+    FixHeader_delete, FixHeader_getField, FixHeader_new, FixHeader_removeField, FixHeader_setField,
+    FixHeader_t,
 };
 
 use crate::{
@@ -12,6 +13,13 @@ use crate::{
 /// Header part of a FIX message.
 #[derive(Debug)]
 pub struct Header(pub(crate) FixHeader_t);
+
+impl Header {
+    /// Create new empty struct.
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 
 impl FieldMap for Header {
     fn get_field(&self, tag: i32) -> Option<String> {
@@ -25,6 +33,14 @@ impl FieldMap for Header {
 
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixHeader_removeField(self.0, tag) })
+    }
+}
+
+impl Default for Header {
+    fn default() -> Self {
+        unsafe { FixHeader_new() }
+            .map(Self)
+            .expect("Fail to allocate new Header")
     }
 }
 

@@ -1,8 +1,8 @@
 use std::ffi::CString;
 
 use quickfix_ffi::{
-    FixTrailer_delete, FixTrailer_getField, FixTrailer_removeField, FixTrailer_setField,
-    FixTrailer_t,
+    FixTrailer_delete, FixTrailer_getField, FixTrailer_new, FixTrailer_removeField,
+    FixTrailer_setField, FixTrailer_t,
 };
 
 use crate::{
@@ -13,6 +13,13 @@ use crate::{
 /// Trailer part of a FIX message.
 #[derive(Debug)]
 pub struct Trailer(pub(crate) FixTrailer_t);
+
+impl Trailer {
+    /// Create new empty struct.
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 
 impl FieldMap for Trailer {
     fn get_field(&self, tag: i32) -> Option<String> {
@@ -26,6 +33,14 @@ impl FieldMap for Trailer {
 
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixTrailer_removeField(self.0, tag) })
+    }
+}
+
+impl Default for Trailer {
+    fn default() -> Self {
+        unsafe { FixTrailer_new() }
+            .map(Self)
+            .expect("Fail to allocate new Trailer")
     }
 }
 

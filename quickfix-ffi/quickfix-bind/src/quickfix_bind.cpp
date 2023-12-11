@@ -620,6 +620,10 @@ void FixMessage_delete(const Message *obj) {
   delete obj;
 }
 
+Header *FixHeader_new() {
+  CATCH_OR_RETURN_NULL({ return new Header(); });
+}
+
 Header *FixMessage_copyHeader(const Message *obj) {
   RETURN_VAL_IF_NULL(obj, NULL);
   CATCH_OR_RETURN_NULL({ return new Header(obj->getHeader()); });
@@ -655,6 +659,10 @@ int8_t FixHeader_removeField(Header *obj, int32_t tag) {
 void FixHeader_delete(const Header *obj) {
   RETURN_IF_NULL(obj);
   delete obj;
+}
+
+Trailer *FixTrailer_new() {
+  CATCH_OR_RETURN_NULL({ return new Trailer(); });
 }
 
 Trailer *FixMessage_copyTrailer(const Message *obj) {
@@ -694,6 +702,10 @@ void FixTrailer_delete(const Trailer *obj) {
   delete obj;
 }
 
+Group *FixGroup_new(int32_t fieldId, int32_t delim) {
+  CATCH_OR_RETURN_NULL({ return new Group(fieldId, delim); });
+}
+
 Group *FixMessage_copyGroup(const Message *obj, int32_t num, int32_t tag) {
   RETURN_VAL_IF_NULL(obj, NULL);
   CATCH_OR_RETURN_NULL({
@@ -705,6 +717,16 @@ Group *FixMessage_copyGroup(const Message *obj, int32_t num, int32_t tag) {
 Group *FixMessage_getGroupRef(const Message *obj, int32_t num, int32_t tag) {
   RETURN_VAL_IF_NULL(obj, NULL);
   CATCH_OR_RETURN_NULL({ return (Group *)(obj->getGroupPtr(num, tag)); });
+}
+
+int32_t FixGroup_getFieldId(const FixGroup_t *obj) {
+  RETURN_VAL_IF_NULL(obj, 0);
+  CATCH_OR_RETURN(0, { return obj->field(); });
+}
+
+int32_t FixGroup_getDelim(const FixGroup_t *obj) {
+  RETURN_VAL_IF_NULL(obj, 0);
+  CATCH_OR_RETURN(0, { return obj->delim(); });
 }
 
 const char *FixGroup_getField(const Group *obj, int32_t tag) {
