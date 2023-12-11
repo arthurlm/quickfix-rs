@@ -1,4 +1,4 @@
-use std::ffi::CString;
+use std::{ffi::CString, fmt};
 
 use quickfix_ffi::{
     FixHeader_delete, FixHeader_getField, FixHeader_new, FixHeader_removeField, FixHeader_setField,
@@ -11,7 +11,6 @@ use crate::{
 };
 
 /// Header part of a FIX message.
-#[derive(Debug)]
 pub struct Header(pub(crate) FixHeader_t);
 
 impl Header {
@@ -33,6 +32,12 @@ impl FieldMap for Header {
 
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixHeader_removeField(self.0, tag) })
+    }
+}
+
+impl fmt::Debug for Header {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("Header").finish()
     }
 }
 

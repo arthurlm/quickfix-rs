@@ -1,4 +1,4 @@
-use std::ffi::CString;
+use std::{ffi::CString, fmt};
 
 use quickfix_ffi::{
     FixTrailer_delete, FixTrailer_getField, FixTrailer_new, FixTrailer_removeField,
@@ -11,7 +11,6 @@ use crate::{
 };
 
 /// Trailer part of a FIX message.
-#[derive(Debug)]
 pub struct Trailer(pub(crate) FixTrailer_t);
 
 impl Trailer {
@@ -33,6 +32,12 @@ impl FieldMap for Trailer {
 
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixTrailer_removeField(self.0, tag) })
+    }
+}
+
+impl fmt::Debug for Trailer {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("Trailer").finish()
     }
 }
 
