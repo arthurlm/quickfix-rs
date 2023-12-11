@@ -29,6 +29,15 @@ fn check_field_map<T: FieldMap>(mut item: T) {
     item.set_field(FIELD_ID, "bar").unwrap();
     assert_eq!(item.get_field(FIELD_ID).as_deref(), Some("bar"));
 
+    // Set with invalid value and check
+    assert_eq!(
+        item.set_field(FIELD_ID, "\0 haha"),
+        Err(QuickFixError::invalid_argument(
+            "nul byte found in provided data at position: 0"
+        ))
+    );
+    assert_eq!(item.get_field(FIELD_ID).as_deref(), Some("bar"));
+
     // Remove and check
     item.remove_field(FIELD_ID).unwrap();
     assert_eq!(item.get_field(FIELD_ID), None);
