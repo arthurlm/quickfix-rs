@@ -1,4 +1,4 @@
-use quickfix::SessionId;
+use quickfix::{QuickFixError, SessionId};
 
 #[test]
 fn test_new() {
@@ -8,6 +8,21 @@ fn test_new() {
     assert_eq!(session.get_target_comp_id().as_deref(), Some("BAR"));
     assert_eq!(session.get_session_qualifier().as_deref(), Some(""));
     assert_eq!(session.as_string(), "FIX.4.1:FOO->BAR");
+}
+
+#[test]
+fn test_new_invalid_string() {
+    let expected =
+        QuickFixError::invalid_argument("nul byte found in provided data at position: 3");
+
+    let err = SessionId::try_new("Bad\0 FIX.4.1", "FOO", "BAR", "").unwrap_err();
+    assert_eq!(err, expected);
+    let err = SessionId::try_new("FIX.4.1", "Bad\0 FOO", "BAR", "").unwrap_err();
+    assert_eq!(err, expected);
+    let err = SessionId::try_new("FIX.4.1", "FOO", "Bad\0 BAR", "").unwrap_err();
+    assert_eq!(err, expected);
+    let err = SessionId::try_new("FIX.4.1", "FOO", "BAR", "Bad\0").unwrap_err();
+    assert_eq!(err, expected);
 }
 
 #[test]

@@ -1,4 +1,4 @@
-use quickfix::{FieldMap, Message};
+use quickfix::*;
 
 #[test]
 fn test_read_empy_message() {
