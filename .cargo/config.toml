@@ -1,3 +1,9 @@
 [alias]
-cov = ["llvm-cov", "--workspace", "--all-features"]
+cov = [
+    "llvm-cov",
+    "--workspace",
+    "--exclude=quickfix-ffi",
+    "--ignore-filename-regex=quickfix-ffi",
+    "--all-features",
+]
 vscode-cov = ["cov", "--lcov", "--output-path", "lcov.info"]
