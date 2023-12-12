@@ -1,7 +1,8 @@
-use msg_const::*;
 use quickfix::*;
 
-mod msg_const;
+use crate::utils::*;
+
+mod utils;
 
 #[test]
 fn test_build_with_group() {
