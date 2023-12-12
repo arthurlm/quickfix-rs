@@ -81,8 +81,12 @@ impl PropertyContainer<String> for Dictionary {
             ))?;
 
             // Convert to String
-            let text = CStr::from_bytes_with_nul(&buffer)?.to_str()?.to_string();
-            Ok(text)
+            //
+            // NOTE: Here, I deliberately made the choice to drop C weird string / invalid UTF8 string
+            //       content. If this happen, there is not so much we can do about ...
+            //       Returning no error is sometime nicer, than an incomprehensible error.
+            let text = CStr::from_bytes_with_nul(&buffer).unwrap_or_default();
+            Ok(text.to_string_lossy().to_string())
         }
     }
 
