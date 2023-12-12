@@ -1,5 +1,8 @@
+#![allow(dead_code)]
+
 use std::net::TcpListener;
 
+pub mod checker;
 mod msg_const;
 mod recorder;
 mod settings_builder;
