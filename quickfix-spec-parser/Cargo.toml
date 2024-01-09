@@ -1,0 +1,10 @@
+[package]
+name = "quickfix-spec-parser"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+bytes = "1.5.0"
+quick-xml = "0.31.0"
+thiserror = "1.0.56"
