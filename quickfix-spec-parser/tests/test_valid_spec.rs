@@ -4,12 +4,17 @@ fn check(expected: &[u8]) {
     let spec = parse_spec(expected).unwrap();
 
     let out = write_spec(&spec).unwrap();
-    let txt = String::from_utf8(out.to_vec())
+    let out_txt = String::from_utf8(out.to_vec())
         .unwrap()
         .replace('\"', "'")
-        .replace("/>", " />");
+        .replace("/>", " />")
+        .replace("\r\n", "\n");
 
-    assert_eq!(txt.as_bytes(), expected);
+    let expected_txt = String::from_utf8(expected.to_vec())
+        .unwrap()
+        .replace("\r\n", "\n");
+
+    assert_eq!(out_txt, expected_txt);
 }
 
 #[test]
