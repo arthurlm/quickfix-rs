@@ -1,0 +1,17 @@
+[package]
+name = "quickfix-msg42"
+version = "0.1.0"
+authors = ["Arthur LE MOIGNE"]
+edition = "2021"
+description = "FIX 4.2 messages generated from official XML spec file"
+repository = "https://github.com/arthurlm/quickfix-rs"
+license = "MIT"
+keywords = ["quickfix", "fix-protocol", "finance", "auto-generated"]
+categories = ["encoding"]
+rust-version = "1.70.0"
+
+[dependencies]
+quickfix = { path = "../quickfix", version = "0.1.0" }
+
+[build-dependencies]
+quickfix-msg-gen = { path = "../quickfix-msg-gen", version = "0.1.0" }

@@ -35,15 +35,18 @@ What I do **not** plan to bind from this crate:
 4. Autotools build toolchain.
 
     Just use `cmake` once and for all !
-    We are in 2023+ and not targeting OS from the 70s.
+    We are in 2023+ and not targeting OS from the 80s.
 
-5. Struct to bind messages from XML spec.
+5. FIX 5x messages generated code.
 
-    Most of the time, vendors / brokers have custom field that do not match auto-generated struct.
-    To me they are not relevant most of the time.
+    FIX 5x XML definition is a little bit weird ...
+    For example:
+    - In [MatchType](https://www.onixs.biz/fix-dictionary/5.0/tagNum_574.html) some tag is defined multiple times.
+      Generated enum are so inconsistent and cannot be safely generated.
+    - There is no header / trailer in spec files (see: [FIX50.xml](https://github.com/quickfix/quickfix/blob/0b88788710b6b9767440cd430bf24c6b6e2080a2/spec/FIX50.xml#L2)).
+    - There are probably other incompatibility but I stopped here ...
 
-    Moreover it is so simple to just create an Rust enum / struct that match your current model.
-    Having all this messaging generated stuff just make the code more complicated for most of the need.
+    You can edit XML spec to your need and create a package with desired spec locally.
 
 6. All binding of `LogFactory`.
 

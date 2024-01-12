@@ -12,6 +12,9 @@ This project is an **unofficial** binding between [quickfix](https://github.com/
 - Provide basic and safe API wrapper above [quickfix](https://github.com/quickfix/quickfix) library.
 - Run on any hardware and operating system supported by Rust Tier 1 (Windows 7+, MacOS 10.12+ & Linux).
 - Message decoding / encoding including run-time validation.
+- Supports FIX versions 4x (version 5x can be build locally from XML spec file).
+- Spec driven run-time message validation.
+- Spec driven code generation of type-safe FIX messages, fields, and repeating groups.
 - Session state storage options: SQL, File, In Memory.
 - Logging options: stdout, stderr, [log](https://crates.io/crates/log) or any other crate if you implement your own trait.
 
@@ -90,6 +93,10 @@ If you want to use it in your project, just add this to your `Cargo.toml` config
 quickfix = { git = "https://github.com/arthurlm/quickfix-rs.git" }
 ```
 
+**NOTE**: I am personally not using for now the generated message struct.
+I know they works fine thanks to unit tests and can be used in production code.
+Feedback on this part are welcomed !
+
 ## Build requirements
 
 Following package must be install to build the library:
@@ -97,3 +104,4 @@ Following package must be install to build the library:
 - `cmake`
 - a C++ compiler (with C++17 support)
 - `rustup` / `rustc` / `cargo` (obviously 😉)
+- `rustfmt` for auto generated messages from spec.

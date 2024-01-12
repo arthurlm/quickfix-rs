@@ -1,3 +1,13 @@
 [workspace]
 resolver = "2"
-members = ["quickfix-ffi", "quickfix-spec-parser", "quickfix"]
+members = [
+    "quickfix-ffi",
+    "quickfix-msg-gen",
+    "quickfix-spec-parser",
+    "quickfix",
+    "quickfix-msg40",
+    "quickfix-msg41",
+    "quickfix-msg42",
+    "quickfix-msg43",
+    "quickfix-msg44",
+]
