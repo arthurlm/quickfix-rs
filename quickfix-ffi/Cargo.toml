@@ -8,7 +8,7 @@ repository = "https://github.com/arthurlm/quickfix-rs"
 license = "MIT"
 keywords = ["quickfix", "fix-protocol", "finance"]
 categories = ["external-ffi-bindings"]
-rust-version = "1.65.0"
+rust-version = "1.70.0"
 exclude = ["examples"]
 
 [dependencies]

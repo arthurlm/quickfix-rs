@@ -21,6 +21,7 @@ jobs:
         submodules: true
     - run: rustup toolchain install 1.70.0
     - run: rustup override set 1.70.0
+    - run: rustup component add rustfmt
     - uses: Swatinem/rust-cache@v2
     - run: rustc --version
     - name: Build debug
@@ -40,6 +41,7 @@ jobs:
         submodules: true
     - run: rustup toolchain install 1.70.0
     - run: rustup override set 1.70.0
+    - run: rustup component add rustfmt
     - uses: Swatinem/rust-cache@v2
     - name: Install dependencies
       run: |
@@ -57,6 +59,7 @@ jobs:
         submodules: true
     - run: rustup toolchain install 1.70.0
     - run: rustup override set 1.70.0
+    - run: rustup component add rustfmt
     - uses: Swatinem/rust-cache@v2
     - name: Install dependencies
       run: |

@@ -1,0 +1,18 @@
+[package]
+name = "quickfix-msg-gen"
+version = "0.1.0"
+authors = ["Arthur LE MOIGNE"]
+edition = "2021"
+description = "FIX code generator from XML spec file"
+repository = "https://github.com/arthurlm/quickfix-rs"
+license = "MIT"
+keywords = ["quickfix", "fix-protocol", "finance", "code-generator"]
+categories = ["development-tools::build-utils"]
+rust-version = "1.70.0"
+
+[dependencies]
+quickfix-spec-parser = { path = "../quickfix-spec-parser", version = "0.1.0" }
+quickfix = { path = "../quickfix", version = "0.1.0" }
+convert_case = "0.6.0"
+itertools = "0.12.0"
+bytes = "1.5.0"
