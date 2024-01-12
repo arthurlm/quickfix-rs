@@ -157,7 +157,7 @@ pub trait FieldMap {
     fn get_field(&self, tag: i32) -> Option<String>;
 
     /// Set field value for a given tag number.
-    fn set_field(&mut self, tag: i32, value: &str) -> Result<(), QuickFixError>;
+    fn set_field<V: AsRef<str>>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError>;
 
     /// Remove a field from  collection.
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError>;

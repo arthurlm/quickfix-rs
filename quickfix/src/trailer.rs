@@ -25,8 +25,8 @@ impl FieldMap for Trailer {
         unsafe { FixTrailer_getField(self.0, tag) }.map(read_checked_cstr)
     }
 
-    fn set_field(&mut self, tag: i32, value: &str) -> Result<(), QuickFixError> {
-        let ffi_value = CString::new(value)?;
+    fn set_field<V: AsRef<str>>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError> {
+        let ffi_value = CString::new(value.as_ref())?;
         ffi_code_to_result(unsafe { FixTrailer_setField(self.0, tag, ffi_value.as_ptr()) })
     }
 
