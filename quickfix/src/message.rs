@@ -12,7 +12,7 @@ use crate::{
     header::Header,
     trailer::Trailer,
     utils::{ffi_code_to_result, read_buffer_to_string, read_checked_cstr},
-    FieldMap, QuickFixError,
+    AsFixValue, FieldMap, QuickFixError,
 };
 
 /// Base class for all FIX messages.
@@ -180,8 +180,8 @@ impl FieldMap for Message {
         unsafe { FixMessage_getField(self.0, tag) }.map(read_checked_cstr)
     }
 
-    fn set_field<V: AsRef<str>>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError> {
-        let ffi_value = CString::new(value.as_ref())?;
+    fn set_field<V: AsFixValue>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError> {
+        let ffi_value = CString::new(value.as_fix_value())?;
         ffi_code_to_result(unsafe { FixMessage_setField(self.0, tag, ffi_value.as_ptr()) })
     }
 

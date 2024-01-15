@@ -21,7 +21,7 @@ pub fn build_news(headline: &str, lines: &[&str]) -> Result<Message, QuickFixErr
 
     for line in lines {
         let mut group = Group::try_new(MSG_NO_LINES_OF_TEXT, MSG_TEXT)?;
-        group.set_field(MSG_TEXT, line)?;
+        group.set_field(MSG_TEXT, *line)?;
         msg.add_group(&group)?;
     }
 

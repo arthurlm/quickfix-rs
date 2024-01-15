@@ -148,6 +148,40 @@ pub trait ConnectionHandler {
     fn is_stopped(&self) -> Result<bool, QuickFixError>;
 }
 
+/// Convert object to FIX value.
+///
+/// This trait is like `std::fmt::Display` but it has a different meaning.
+/// Using `AsRef<str>` feel also like mixing different thing together that does not match.
+///
+/// This is why it exists.
+pub trait AsFixValue {
+    /// Convert implementer to a printable FIX value.
+    fn as_fix_value(&self) -> String;
+}
+
+macro_rules! impl_as_fix_value {
+    ($t:ty) => {
+        impl AsFixValue for $t {
+            fn as_fix_value(&self) -> String {
+                self.to_string()
+            }
+        }
+    };
+}
+
+impl_as_fix_value!(String);
+impl_as_fix_value!(&str);
+impl_as_fix_value!(u8);
+impl_as_fix_value!(u16);
+impl_as_fix_value!(u32);
+impl_as_fix_value!(u64);
+impl_as_fix_value!(usize);
+impl_as_fix_value!(i8);
+impl_as_fix_value!(i16);
+impl_as_fix_value!(i32);
+impl_as_fix_value!(i64);
+impl_as_fix_value!(isize);
+
 /// Stores and organizes a collection of Fields.
 ///
 /// This is the basis for a message, header, and trailer.  This collection
@@ -157,7 +191,7 @@ pub trait FieldMap {
     fn get_field(&self, tag: i32) -> Option<String>;
 
     /// Set field value for a given tag number.
-    fn set_field<V: AsRef<str>>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError>;
+    fn set_field<V: AsFixValue>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError>;
 
     /// Remove a field from  collection.
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError>;
