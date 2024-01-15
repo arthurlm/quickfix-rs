@@ -711,8 +711,9 @@ void FixTrailer_delete(const Trailer *obj) {
   delete obj;
 }
 
-Group *FixGroup_new(int32_t fieldId, int32_t delim) {
-  CATCH_OR_RETURN_NULL({ return new Group(fieldId, delim); });
+Group *FixGroup_new(int32_t fieldId, int32_t delim, const int32_t order[]) {
+  RETURN_VAL_IF_NULL(order, NULL);
+  CATCH_OR_RETURN_NULL({ return new Group(fieldId, delim, order); });
 }
 
 Group *FixMessage_copyGroup(const Message *obj, int32_t num, int32_t tag) {

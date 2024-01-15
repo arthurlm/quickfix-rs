@@ -5,7 +5,7 @@ use crate::utils::*;
 mod utils;
 
 #[test]
-fn test_build_with_group() {
+fn test_build_with_simple_group() {
     let msg = build_news("Simple news", &[]).unwrap();
     assert_eq!(
         msg.as_string().unwrap(),
@@ -24,6 +24,28 @@ fn test_build_with_group() {
          58=Release soon\u{1}\
          58=Idea: making FIX available for everyone\u{1}\
          148=New great project available\u{1}10=205\u{1}"
+    );
+}
+
+#[test]
+fn test_build_with_complex_group() {
+    let msg = build_list_status(
+        "foo",
+        &[
+            &[(11, "a1"), (14, "b1"), (84, "c1"), (6, "d1")],
+            &[(84, "c2"), (6, "d2"), (11, "a2"), (14, "b2")],
+            &[(11, "a3"), (6, "d3"), (14, "b3"), (84, "c3")],
+        ],
+    )
+    .unwrap();
+
+    assert_eq!(
+        msg.as_string().unwrap(),
+        "9=81\u{1}66=foo\u{1}73=3\u{1}\
+         11=a1\u{1}14=b1\u{1}84=c1\u{1}6=d1\u{1}\
+         11=a2\u{1}14=b2\u{1}84=c2\u{1}6=d2\u{1}\
+         11=a3\u{1}14=b3\u{1}84=c3\u{1}6=d3\u{1}\
+         10=194\u{1}"
     );
 }
 

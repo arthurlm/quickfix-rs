@@ -153,7 +153,7 @@ int8_t FixTrailer_setField(FixTrailer_t *obj, int32_t tag, const char *value);
 int8_t FixTrailer_removeField(FixTrailer_t *obj, int32_t tag);
 void FixTrailer_delete(const FixTrailer_t *obj);
 
-FixGroup_t *FixGroup_new(int32_t fieldId, int32_t delim);
+FixGroup_t *FixGroup_new(int32_t fieldId, int32_t delim, const int32_t order[]);
 FixGroup_t *FixMessage_copyGroup(const FixMessage_t *obj, int32_t num, int32_t tag);
 FixGroup_t *FixMessage_getGroupRef(const FixMessage_t *obj, int32_t num, int32_t tag);
 int32_t FixGroup_getFieldId(const FixGroup_t *obj);

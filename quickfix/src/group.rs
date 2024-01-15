@@ -16,7 +16,22 @@ pub struct Group(pub(crate) FixGroup_t);
 impl Group {
     /// Create new empty struct.
     pub fn try_new(field_id: i32, delim: i32) -> Result<Self, QuickFixError> {
-        unsafe { FixGroup_new(field_id, delim) }
+        Self::try_with_orders(field_id, delim, &[])
+    }
+
+    /// Create struct with all its sub-components values.
+    ///
+    /// NOTE: Ending orders with 0 field ID is not required. It will be done in this builder.
+    pub fn try_with_orders(
+        field_id: i32,
+        delim: i32,
+        orders: &[i32],
+    ) -> Result<Self, QuickFixError> {
+        let mut safe_orders = Vec::<i32>::with_capacity(orders.len() + 1);
+        safe_orders.extend(orders);
+        safe_orders.push(0); // Make sure orders input end with null field ID.
+
+        unsafe { FixGroup_new(field_id, delim, safe_orders.as_ptr()) }
             .map(Self)
             .ok_or(QuickFixError::NullFunctionReturn)
     }

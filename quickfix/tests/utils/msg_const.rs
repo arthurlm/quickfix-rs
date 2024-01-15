@@ -27,3 +27,27 @@ pub fn build_news(headline: &str, lines: &[&str]) -> Result<Message, QuickFixErr
 
     Ok(msg)
 }
+
+/// Create list status message
+///
+/// Doc: https://www.onixs.biz/fix-dictionary/4.4/msgType_N_78.html
+pub fn build_list_status(
+    list_id: &str,
+    params_list: &[&[(i32, &str)]],
+) -> Result<Message, QuickFixError> {
+    let mut msg = Message::new();
+
+    for params in params_list {
+        msg.add_group(&{
+            let mut group = Group::try_with_orders(73, 11, &[11, 14, 84, 6])?;
+            for (param_id, param_value) in *params {
+                group.set_field(*param_id, *param_value)?;
+            }
+            group
+        })?;
+    }
+
+    msg.set_field(66, list_id)?;
+
+    Ok(msg)
+}

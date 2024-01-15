@@ -357,7 +357,7 @@ extern "C" {
 
     // Group
 
-    pub fn FixGroup_new(fieldId: i32, delim: i32) -> Option<FixGroup_t>;
+    pub fn FixGroup_new(fieldId: i32, delim: i32, order: *const i32) -> Option<FixGroup_t>;
 
     pub fn FixMessage_copyGroup(obj: FixMessage_t, num: i32, tag: i32) -> Option<FixGroup_t>;
 
