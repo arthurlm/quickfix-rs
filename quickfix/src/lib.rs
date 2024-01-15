@@ -181,6 +181,8 @@ impl_as_fix_value!(i16);
 impl_as_fix_value!(i32);
 impl_as_fix_value!(i64);
 impl_as_fix_value!(isize);
+impl_as_fix_value!(f32);
+impl_as_fix_value!(f64);
 
 /// Stores and organizes a collection of Fields.
 ///
