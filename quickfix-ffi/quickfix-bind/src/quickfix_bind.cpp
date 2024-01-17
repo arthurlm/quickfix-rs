@@ -723,14 +723,14 @@ Group *FixGroup_new(int32_t fieldId, int32_t delim, const int32_t order[]) {
 Group *FixMessage_copyGroup(const Message *obj, int32_t num, int32_t tag) {
   RETURN_VAL_IF_NULL(obj, NULL);
   CATCH_OR_RETURN_NULL({
-    auto src_group = (Group *)(obj->getGroupPtr(num, tag));
+    auto src_group = static_cast<Group *>(obj->getGroupPtr(num, tag));
     return new Group(*src_group);
   });
 }
 
 Group *FixMessage_getGroupRef(const Message *obj, int32_t num, int32_t tag) {
   RETURN_VAL_IF_NULL(obj, NULL);
-  CATCH_OR_RETURN_NULL({ return (Group *)(obj->getGroupPtr(num, tag)); });
+  CATCH_OR_RETURN_NULL({ return static_cast<Group *>(obj->getGroupPtr(num, tag)); });
 }
 
 int32_t FixGroup_getFieldId(const Group *obj) {
