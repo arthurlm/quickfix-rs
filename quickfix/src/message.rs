@@ -160,17 +160,6 @@ impl Message {
         f(&mut obj)
     }
 
-    /// Add a new group to message and update count.
-    pub fn add_group(&mut self, group: &Group) -> Result<(), QuickFixError> {
-        ffi_code_to_result(unsafe { FixMessage_addGroup(self.0, group.0) })?;
-        Ok(())
-    }
-
-    /// Clone struct group part for a given tag and group index.
-    pub fn clone_group(&self, index: i32, tag: i32) -> Option<Group> {
-        unsafe { FixMessage_copyGroup(self.0, index, tag) }.map(Group)
-    }
-
     /// Read struct group part for a given tag and group index.
     pub fn with_group<T, F>(&self, index: i32, tag: i32, f: F) -> Option<T>
     where
@@ -210,6 +199,15 @@ impl FieldMap for Message {
 
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixMessage_removeField(self.0, tag) })
+    }
+
+    fn add_group(&mut self, group: &Group) -> Result<(), QuickFixError> {
+        ffi_code_to_result(unsafe { FixMessage_addGroup(self.0, group.0) })?;
+        Ok(())
+    }
+
+    fn clone_group(&self, index: i32, tag: i32) -> Option<Group> {
+        unsafe { FixMessage_copyGroup(self.0, index, tag) }.map(Group)
     }
 }
 

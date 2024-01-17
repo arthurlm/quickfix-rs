@@ -669,6 +669,15 @@ int8_t FixHeader_removeField(Header *obj, int32_t tag) {
   });
 }
 
+int8_t FixHeader_addGroup(Header *obj, const Group *group) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  RETURN_VAL_IF_NULL(group, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->addGroup(*group);
+    return 0;
+  })
+}
+
 void FixHeader_delete(const Header *obj) {
   RETURN_IF_NULL(obj);
   delete obj;
@@ -710,6 +719,15 @@ int8_t FixTrailer_removeField(Trailer *obj, int32_t tag) {
   });
 }
 
+int8_t FixTrailer_addGroup(Trailer *obj, const Group *group) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  RETURN_VAL_IF_NULL(group, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->addGroup(*group);
+    return 0;
+  })
+}
+
 void FixTrailer_delete(const Trailer *obj) {
   RETURN_IF_NULL(obj);
   delete obj;
@@ -721,6 +739,30 @@ Group *FixGroup_new(int32_t fieldId, int32_t delim, const int32_t order[]) {
 }
 
 Group *FixMessage_copyGroup(const Message *obj, int32_t num, int32_t tag) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  CATCH_OR_RETURN_NULL({
+    auto src_group = static_cast<Group *>(obj->getGroupPtr(num, tag));
+    return new Group(*src_group);
+  });
+}
+
+Group *FixHeader_copyGroup(const Header *obj, int32_t num, int32_t tag) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  CATCH_OR_RETURN_NULL({
+    auto src_group = static_cast<Group *>(obj->getGroupPtr(num, tag));
+    return new Group(*src_group);
+  });
+}
+
+Group *FixTrailer_copyGroup(const Trailer *obj, int32_t num, int32_t tag) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  CATCH_OR_RETURN_NULL({
+    auto src_group = static_cast<Group *>(obj->getGroupPtr(num, tag));
+    return new Group(*src_group);
+  });
+}
+
+Group *FixGroup_copyGroup(const Group *obj, int32_t num, int32_t tag) {
   RETURN_VAL_IF_NULL(obj, NULL);
   CATCH_OR_RETURN_NULL({
     auto src_group = static_cast<Group *>(obj->getGroupPtr(num, tag));
@@ -763,6 +805,15 @@ int8_t FixGroup_removeField(Group *obj, int32_t tag) {
     obj->removeField(tag);
     return 0;
   });
+}
+
+int8_t FixGroup_addGroup(Group *obj, const Group *group) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
+  RETURN_VAL_IF_NULL(group, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    obj->addGroup(*group);
+    return 0;
+  })
 }
 
 void FixGroup_delete(const Group *obj) {

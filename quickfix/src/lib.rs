@@ -197,6 +197,12 @@ pub trait FieldMap {
 
     /// Remove a field from  collection.
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError>;
+
+    /// Add a new group to storage and update count.
+    fn add_group(&mut self, group: &Group) -> Result<(), QuickFixError>;
+
+    /// Clone group part for a given tag and group index.
+    fn clone_group(&self, index: i32, tag: i32) -> Option<Group>;
 }
 
 /// Allow reading / writing value (aka property) from an object.

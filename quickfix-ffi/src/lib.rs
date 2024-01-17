@@ -340,9 +340,14 @@ extern "C" {
 
     pub fn FixHeader_getField(obj: FixHeader_t, tag: i32) -> NullableCStr;
 
+    #[must_use]
     pub fn FixHeader_setField(obj: FixHeader_t, tag: i32, value: *const ffi::c_char) -> i8;
 
+    #[must_use]
     pub fn FixHeader_removeField(obj: FixHeader_t, tag: i32) -> i8;
+
+    #[must_use]
+    pub fn FixHeader_addGroup(obj: FixHeader_t, group: FixGroup_t) -> i8;
 
     pub fn FixHeader_delete(obj: FixHeader_t);
 
@@ -356,9 +361,14 @@ extern "C" {
 
     pub fn FixTrailer_getField(obj: FixTrailer_t, tag: i32) -> NullableCStr;
 
+    #[must_use]
     pub fn FixTrailer_setField(obj: FixTrailer_t, tag: i32, value: *const ffi::c_char) -> i8;
 
+    #[must_use]
     pub fn FixTrailer_removeField(obj: FixTrailer_t, tag: i32) -> i8;
+
+    #[must_use]
+    pub fn FixTrailer_addGroup(obj: FixTrailer_t, group: FixGroup_t) -> i8;
 
     pub fn FixTrailer_delete(obj: FixTrailer_t);
 
@@ -368,6 +378,12 @@ extern "C" {
 
     pub fn FixMessage_copyGroup(obj: FixMessage_t, num: i32, tag: i32) -> Option<FixGroup_t>;
 
+    pub fn FixHeader_copyGroup(obj: FixHeader_t, num: i32, tag: i32) -> Option<FixGroup_t>;
+
+    pub fn FixTrailer_copyGroup(obj: FixTrailer_t, num: i32, tag: i32) -> Option<FixGroup_t>;
+
+    pub fn FixGroup_copyGroup(obj: FixGroup_t, num: i32, tag: i32) -> Option<FixGroup_t>;
+
     pub fn FixMessage_getGroupRef(obj: FixMessage_t, num: i32, tag: i32) -> Option<FixGroup_t>;
 
     pub fn FixGroup_getFieldId(obj: FixGroup_t) -> i32;
@@ -376,9 +392,14 @@ extern "C" {
 
     pub fn FixGroup_getField(obj: FixGroup_t, tag: i32) -> NullableCStr;
 
+    #[must_use]
     pub fn FixGroup_setField(obj: FixGroup_t, tag: i32, value: *const ffi::c_char) -> i8;
 
+    #[must_use]
     pub fn FixGroup_removeField(obj: FixGroup_t, tag: i32) -> i8;
+
+    #[must_use]
+    pub fn FixGroup_addGroup(obj: FixGroup_t, group: FixGroup_t) -> i8;
 
     pub fn FixGroup_delete(obj: FixGroup_t);
 

@@ -144,6 +144,7 @@ FixHeader_t *FixMessage_getHeaderRef(FixMessage_t *obj);
 const char *FixHeader_getField(const FixHeader_t *obj, int32_t tag);
 int8_t FixHeader_setField(FixHeader_t *obj, int32_t tag, const char *value);
 int8_t FixHeader_removeField(FixHeader_t *obj, int32_t tag);
+int8_t FixHeader_addGroup(FixHeader_t *obj, const FixGroup_t *group);
 void FixHeader_delete(const FixHeader_t *obj);
 
 FixTrailer_t *FixTrailer_new();
@@ -152,16 +153,21 @@ FixTrailer_t *FixMessage_getTrailerRef(FixMessage_t *obj);
 const char *FixTrailer_getField(const FixTrailer_t *obj, int32_t tag);
 int8_t FixTrailer_setField(FixTrailer_t *obj, int32_t tag, const char *value);
 int8_t FixTrailer_removeField(FixTrailer_t *obj, int32_t tag);
+int8_t FixTrailer_addGroup(FixTrailer_t *obj, const FixGroup_t *group);
 void FixTrailer_delete(const FixTrailer_t *obj);
 
 FixGroup_t *FixGroup_new(int32_t fieldId, int32_t delim, const int32_t order[]);
 FixGroup_t *FixMessage_copyGroup(const FixMessage_t *obj, int32_t num, int32_t tag);
+FixGroup_t *FixHeader_copyGroup(const FixHeader_t *obj, int32_t num, int32_t tag);
+FixGroup_t *FixTrailer_copyGroup(const FixTrailer_t *obj, int32_t num, int32_t tag);
+FixGroup_t *FixGroup_copyGroup(const FixGroup_t *obj, int32_t num, int32_t tag);
 FixGroup_t *FixMessage_getGroupRef(const FixMessage_t *obj, int32_t num, int32_t tag);
 int32_t FixGroup_getFieldId(const FixGroup_t *obj);
 int32_t FixGroup_getDelim(const FixGroup_t *obj);
 const char *FixGroup_getField(const FixGroup_t *obj, int32_t tag);
 int8_t FixGroup_setField(FixGroup_t *obj, int32_t tag, const char *value);
 int8_t FixGroup_removeField(FixGroup_t *obj, int32_t tag);
+int8_t FixGroup_addGroup(FixGroup_t *obj, const FixGroup_t *group);
 void FixGroup_delete(const FixGroup_t *obj);
 
 int8_t FixSession_sendToTarget(FixMessage_t *msg, const FixSessionID_t *session_id);
