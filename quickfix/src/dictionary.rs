@@ -1,7 +1,4 @@
-use std::{
-    ffi::{CStr, CString},
-    fmt,
-};
+use std::{ffi::CString, fmt};
 
 use quickfix_ffi::{
     FixDictionary_delete, FixDictionary_getBool, FixDictionary_getDay, FixDictionary_getDouble,
@@ -61,12 +58,10 @@ impl PropertyContainer<String> for Dictionary {
     fn ffi_get(&self, key: CString) -> Result<String, QuickFixError> {
         unsafe {
             // Prepare output buffer
-            let mut buffer_len = FixDictionary_getStringLen(self.0, key.as_ptr());
+            let buffer_len = FixDictionary_getStringLen(self.0, key.as_ptr());
             if buffer_len < 0 {
                 return Err(QuickFixError::InvalidFunctionReturnCode(buffer_len as i8));
             }
-
-            buffer_len += 1; // Add null end char
 
             // Allocate buffer on rust side
             let mut buffer = vec![0_u8; buffer_len as usize];
@@ -85,7 +80,7 @@ impl PropertyContainer<String> for Dictionary {
             // NOTE: Here, I deliberately made the choice to drop C weird string / invalid UTF8 string
             //       content. If this happen, there is not so much we can do about ...
             //       Returning no error is sometime nicer, than an incomprehensible error.
-            let text = CStr::from_bytes_with_nul(&buffer).unwrap_or_default();
+            let text = CString::from_vec_with_nul(buffer).unwrap_or_default();
             Ok(text.to_string_lossy().to_string())
         }
     }

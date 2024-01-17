@@ -281,21 +281,22 @@ int64_t FixDictionary_getStringLen(const Dictionary *obj, const char *key) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
 
-  CATCH_OR_RETURN_ERRNO({ return obj->getString(key).size(); })
+  CATCH_OR_RETURN_ERRNO({ return obj->getString(key).size() + 1; })
 }
 
 int8_t FixDictionary_readString(const Dictionary *obj, const char *key, char *buffer, int64_t buffer_len) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
+  RETURN_VAL_IF_NULL(buffer, ERRNO_INVAL);
 
   CATCH_OR_RETURN_ERRNO({
     auto value = obj->getString(key);
-    if (buffer_len <= value.length()) {
+    if (buffer_len <= value.size()) {
       return ERRNO_BUFFER_TO_SMALL;
     }
 
     strncpy(buffer, value.c_str(), buffer_len);
-    buffer[value.length()] = '\0';
+    buffer[value.size()] = '\0';
 
     return 0;
   })
@@ -604,24 +605,27 @@ int8_t FixMessage_addGroup(Message *obj, const Group *group) {
   })
 }
 
-int8_t FixMessage_toBuffer(const Message *obj, char *buffer, uint64_t length) {
-  if (length == 0)
-    return 0;
+int64_t FixMessage_getStringLen(const FixMessage_t *obj) {
+  RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
 
+  CATCH_OR_RETURN_ERRNO({ return obj->toString().size() + 1; });
+}
+
+int8_t FixMessage_readString(const FixMessage_t *obj, char *buffer, int64_t buffer_len) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(buffer, ERRNO_INVAL);
 
   CATCH_OR_RETURN_ERRNO({
-    auto repr = obj->toString();
-    if (length <= repr.length()) {
+    auto value = obj->toString();
+    if (buffer_len <= value.size()) {
       return ERRNO_BUFFER_TO_SMALL;
     }
 
-    strncpy(buffer, repr.c_str(), length);
-    buffer[repr.length()] = '\0';
+    strncpy(buffer, value.c_str(), buffer_len);
+    buffer[value.size()] = '\0';
 
     return 0;
-  });
+  })
 }
 
 void FixMessage_delete(const Message *obj) {

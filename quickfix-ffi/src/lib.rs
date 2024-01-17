@@ -319,8 +319,15 @@ extern "C" {
     #[must_use]
     pub fn FixMessage_addGroup(obj: FixMessage_t, group: FixGroup_t) -> i8;
 
+    pub fn FixMessage_getStringLen(obj: FixMessage_t) -> i64;
+
     #[must_use]
-    pub fn FixMessage_toBuffer(obj: FixMessage_t, buffer: *mut ffi::c_char, length: u64) -> i8;
+    pub fn FixMessage_readString(
+        obj: FixMessage_t,
+        buffer: *mut ffi::c_char,
+        buffer_len: i64,
+    ) -> i8;
+
     pub fn FixMessage_delete(obj: FixMessage_t);
 
     // Header

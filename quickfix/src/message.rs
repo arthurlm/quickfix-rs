@@ -3,15 +3,15 @@ use std::{ffi::CString, fmt, mem::ManuallyDrop};
 use quickfix_ffi::{
     FixMessage_addGroup, FixMessage_copyGroup, FixMessage_copyHeader, FixMessage_copyTrailer,
     FixMessage_delete, FixMessage_fromString, FixMessage_getField, FixMessage_getGroupRef,
-    FixMessage_getHeaderRef, FixMessage_getTrailerRef, FixMessage_new, FixMessage_removeField,
-    FixMessage_setField, FixMessage_t, FixMessage_toBuffer,
+    FixMessage_getHeaderRef, FixMessage_getStringLen, FixMessage_getTrailerRef, FixMessage_new,
+    FixMessage_readString, FixMessage_removeField, FixMessage_setField, FixMessage_t,
 };
 
 use crate::{
     group::Group,
     header::Header,
     trailer::Trailer,
-    utils::{ffi_code_to_result, read_buffer_to_string, read_checked_cstr},
+    utils::{ffi_code_to_result, read_checked_cstr},
     AsFixValue, FieldMap, QuickFixError,
 };
 
@@ -32,18 +32,41 @@ impl Message {
             .ok_or(QuickFixError::NullFunctionReturn)
     }
 
-    /// Try reading underlying struct buffer as a string of 1 page size.
+    /// Try reading underlying struct buffer as a string.
+    ///
+    /// # Performances
+    ///
+    /// Do not use this method in latency sensitive code.
+    ///
+    /// String will be generated twice in C++ code:
+    /// - Once for getting a safe buffer length.
+    /// - Then to copy buffer to rust "memory".
     pub fn as_string(&self) -> Result<String, QuickFixError> {
-        self.as_string_with_len(4096 /* 1 page */)
-    }
+        unsafe {
+            // Prepare output buffer
+            let buffer_len = FixMessage_getStringLen(self.0);
+            if buffer_len < 0 {
+                return Err(QuickFixError::InvalidFunctionReturnCode(buffer_len as i8));
+            }
 
-    /// Try reading underlying struct buffer with a custom buffer size.
-    pub fn as_string_with_len(&self, max_len: usize) -> Result<String, QuickFixError> {
-        let mut buffer = vec![0_u8; max_len];
-        let buffer_ptr = buffer.as_mut_ptr() as *mut i8;
-        match unsafe { FixMessage_toBuffer(self.0, buffer_ptr, max_len as u64) } {
-            0 => Ok(read_buffer_to_string(&buffer)),
-            code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+            // Allocate buffer on rust side
+            let mut buffer = vec![0_u8; buffer_len as usize];
+            assert_eq!(buffer.len(), buffer_len as usize);
+
+            // Read text
+            ffi_code_to_result(FixMessage_readString(
+                self.0,
+                buffer.as_mut_ptr().cast(),
+                buffer_len,
+            ))?;
+
+            // Convert to String
+            //
+            // NOTE: Here, I deliberately made the choice to drop C weird string / invalid UTF8 string
+            //       content. If this happen, there is not so much we can do about ...
+            //       Returning no error is sometime nicer, than an incomprehensible error.
+            let text = CString::from_vec_with_nul(buffer).unwrap_or_default();
+            Ok(text.to_string_lossy().to_string())
         }
     }
 

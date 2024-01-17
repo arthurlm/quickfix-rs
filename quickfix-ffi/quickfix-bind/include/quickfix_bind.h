@@ -134,7 +134,8 @@ const char *FixMessage_getField(const FixMessage_t *obj, int32_t tag);
 int8_t FixMessage_setField(FixMessage_t *obj, int32_t tag, const char *value);
 int8_t FixMessage_removeField(FixMessage_t *obj, int32_t tag);
 int8_t FixMessage_addGroup(FixMessage_t *obj, const FixGroup_t *group);
-int8_t FixMessage_toBuffer(const FixMessage_t *obj, char *buffer, uint64_t length);
+int64_t FixMessage_getStringLen(const FixMessage_t *obj);
+int8_t FixMessage_readString(const FixMessage_t *obj, char *buffer, int64_t buffer_len);
 void FixMessage_delete(const FixMessage_t *obj);
 
 FixHeader_t *FixHeader_new();

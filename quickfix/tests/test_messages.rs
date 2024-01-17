@@ -4,19 +4,9 @@ use quickfix::*;
 fn test_read_empy_message() {
     let msg = Message::new();
     assert_eq!(msg.as_string().as_deref(), Ok("9=0\u{1}10=167\u{1}"));
-}
 
-#[test]
-fn test_as_string() {
     let msg = Message::try_from_text("9=0\u{1}10=000\u{1}").unwrap();
-    assert_eq!(
-        msg.as_string_with_len(512).as_deref(),
-        Ok("9=0\u{1}10=167\u{1}")
-    );
-    assert_eq!(
-        msg.as_string_with_len(6),
-        Err(QuickFixError::InvalidFunctionReturnCode(-3))
-    );
+    assert_eq!(msg.as_string().as_deref(), Ok("9=0\u{1}10=167\u{1}"));
 }
 
 #[test]
