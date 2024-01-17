@@ -47,14 +47,18 @@ fn test_from_text() {
 }
 
 #[test]
-fn test_set_field() {
+fn test_set_field() -> Result<(), QuickFixError> {
     let mut msg = Message::new();
-    msg.set_field(42, "foo").unwrap();
-    msg.set_field(56, "bar").unwrap();
+    msg.set_field(42, "foo")?;
+    msg.set_field(56, "bar")?;
+    msg.set_field(89, true)?;
+    msg.set_field(78, false)?;
+    msg.set_field(489, 1234)?;
     assert_eq!(
         msg.as_string().as_deref(),
-        Ok("9=14\u{1}42=foo\u{1}56=bar\u{1}10=162\u{1}")
+        Ok("9=33\u{1}42=foo\u{1}56=bar\u{1}78=N\u{1}89=Y\u{1}489=1234\u{1}10=083\u{1}")
     );
+    Ok(())
 }
 
 #[test]

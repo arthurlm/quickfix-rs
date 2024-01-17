@@ -184,6 +184,13 @@ impl_as_fix_value!(isize);
 impl_as_fix_value!(f32);
 impl_as_fix_value!(f64);
 
+impl AsFixValue for bool {
+    fn as_fix_value(&self) -> String {
+        // Check reference here: https://www.onixs.biz/fix-dictionary/4.3/tagNum_575.html
+        if *self { "Y" } else { "N" }.to_string()
+    }
+}
+
 /// Stores and organizes a collection of Fields.
 ///
 /// This is the basis for a message, header, and trailer.  This collection
