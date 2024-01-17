@@ -5,7 +5,7 @@ use crate::{
     XmlWritable, XmlWriter,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Group {
     pub name: String,
     pub required: bool,

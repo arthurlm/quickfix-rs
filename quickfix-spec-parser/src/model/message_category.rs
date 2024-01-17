@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::FixSpecError;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum MessageCategory {
     App,
     Admin,

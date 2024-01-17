@@ -5,7 +5,7 @@ use crate::{
     XmlReadable, XmlReader, XmlWritable, XmlWriter,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Message {
     pub name: String,
     pub msg_type: String,

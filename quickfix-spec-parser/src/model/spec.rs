@@ -7,7 +7,7 @@ use crate::{
 
 use super::message::Message;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct FixSpec {
     pub version: (u8, u8, u8),
     pub is_fixt: bool,

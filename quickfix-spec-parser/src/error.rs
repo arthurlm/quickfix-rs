@@ -2,7 +2,7 @@ use std::{num::ParseIntError, string::FromUtf8Error};
 
 use thiserror::Error;
 
-#[derive(Debug, Error, PartialEq, Eq)]
+#[derive(Debug, Error, PartialEq, Eq, Clone)]
 pub enum FixSpecError {
     #[error("invalid document: {0}")]
     InvalidDocument(&'static str),

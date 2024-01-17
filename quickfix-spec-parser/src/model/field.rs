@@ -2,7 +2,7 @@ use quick_xml::events::BytesStart;
 
 use crate::{read_attribute, FixSpecError, XmlObject, XmlReadable, XmlWritable, XmlWriter};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Field {
     pub name: String,
     pub required: bool,

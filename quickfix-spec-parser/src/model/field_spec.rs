@@ -5,7 +5,7 @@ use crate::{
     XmlObject, XmlReadable, XmlReader, XmlWritable, XmlWriter,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct FieldSpec {
     pub number: u32,
     pub name: String,

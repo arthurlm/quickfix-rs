@@ -5,7 +5,7 @@ use crate::{
     XmlWriter,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum FieldValue {
     Field(Field),
     Group(Group),

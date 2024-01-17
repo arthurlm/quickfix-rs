@@ -5,7 +5,7 @@ use crate::{
     XmlWritable, XmlWriter,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ComponentSpec {
     pub name: String,
     pub values: Vec<FieldValue>,

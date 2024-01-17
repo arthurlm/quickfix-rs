@@ -15,15 +15,15 @@ fn check<T: Debug>(obj: T, expected: &str) {
 #[test]
 fn test_error() {
     assert_eq!(
-        format!("{:?}", FixSpecError::InvalidDocument("bad header")),
+        format!("{:?}", FixSpecError::InvalidDocument("bad header").clone()),
         "InvalidDocument(\"bad header\")"
     );
     assert_eq!(
-        format!("{}", FixSpecError::InvalidDocument("bad header")),
+        format!("{}", FixSpecError::InvalidDocument("bad header").clone()),
         "invalid document: bad header"
     );
     assert_ne!(
-        FixSpecError::InvalidDocument("Bad header"),
+        FixSpecError::InvalidDocument("Bad header").clone(),
         FixSpecError::Xml(s!("hello"))
     );
 }
@@ -36,14 +36,16 @@ fn test_debug() {
         Component {
             name: s!("foo"),
             required: false,
-        },
+        }
+        .clone(),
         "Component { name: \"foo\", required: false }",
     );
     check(
         ComponentSpec {
             name: s!("bar"),
             values: vec![],
-        },
+        }
+        .clone(),
         "ComponentSpec { name: \"bar\", values: [] }",
     );
     check(MessageCategory::Admin, "Admin");
@@ -52,7 +54,8 @@ fn test_debug() {
         FieldAllowedValue {
             value: s!("hello"),
             description: s!("Some value"),
-        },
+        }
+        .clone(),
         "FieldAllowedValue { value: \"hello\", description: \"Some value\" }",
     );
     check(
@@ -61,14 +64,15 @@ fn test_debug() {
             name: s!("The Ultimate Question of Life"),
             r#type: FieldType::Amount,
             values: vec![],
-        },
+        }.clone(),
         "FieldSpec { number: 42, name: \"The Ultimate Question of Life\", type: Amount, values: [] }",
     );
     check(
         Field {
             name: s!("X"),
             required: false,
-        },
+        }
+        .clone(),
         "Field { name: \"X\", required: false }",
     );
     check(
@@ -76,14 +80,16 @@ fn test_debug() {
             name: s!("X"),
             required: true,
             values: vec![],
-        },
+        }
+        .clone(),
         "Group { name: \"X\", required: true, values: [] }",
     );
     check(
         FieldValue::Field(Field {
             name: s!("X"),
             required: false,
-        }),
+        })
+        .clone(),
         "Field(Field { name: \"X\", required: false })",
     );
     check(
@@ -92,7 +98,8 @@ fn test_debug() {
             category: MessageCategory::App,
             msg_type: s!("bar"),
             values: vec![],
-        },
+        }
+        .clone(),
         "Message { name: \"foo\", msg_type: \"bar\", category: App, values: [] }",
     );
     check(
@@ -104,7 +111,7 @@ fn test_debug() {
             trailers: vec![],
             component_specs: vec![],
             field_specs: vec![],
-        },
+        }.clone(),
         "FixSpec { version: (4, 8, 3), is_fixt: false, headers: [], messages: [], trailers: [], component_specs: [], field_specs: [] }",
     );
 }

@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::FixSpecError;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 #[non_exhaustive]
 pub enum FieldType {
     // ⬆️ Add in FIX 4.0
