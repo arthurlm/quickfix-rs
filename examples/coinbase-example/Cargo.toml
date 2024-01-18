@@ -1,0 +1,17 @@
+[package]
+name = "coinbase-example"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+anyhow = "1.0.79"
+base64 = "0.21.7"
+bytes = "1.5.0"
+coinbase-fix42 = { path = "../coinbase-fix42" }
+hmac = "0.12.1"
+quickfix = { path = "../../quickfix", features = [
+    "print-ex",
+] } # 👓 Please note with `print-ex` feature enabled, FIX engine message will be displayed on stdout.
+sha2 = "0.10.8"
+uuid = { version = "1.6.1", features = ["v4"] }

@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "examples/coinbase-example",
     "examples/coinbase-fix42",
     "quickfix-ffi",
     "quickfix-msg-gen",
