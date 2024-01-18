@@ -1,5 +1,7 @@
 use std::env;
 
+use quickfix::SessionId;
+
 #[derive(Debug)]
 pub struct Config {
     pub api_key: String,
@@ -18,5 +20,15 @@ impl Config {
             api_passphrase: read("COINBASE_API_PASSPHRASE"),
             api_secret: read("COINBASE_API_SECRET"),
         }
+    }
+
+    pub fn session_id(&self) -> SessionId {
+        SessionId::try_new(
+            coinbase_fix42::FIX_BEGIN_STRING,
+            &self.api_key,
+            "Coinbase",
+            "",
+        )
+        .expect("Fail to build session ID")
     }
 }
