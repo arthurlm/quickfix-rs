@@ -78,7 +78,7 @@ fn main() -> Result<(), QuickFixError> {
 }
 ```
 
-You may consider checking out this [directory](./quickfix/examples/) for more examples.
+You may consider checking out this [directory](./examples/) for more examples.
 
 ## Is it ready for production ?
 
