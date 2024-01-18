@@ -1,0 +1,11 @@
+[package]
+name = "coinbase-fix42"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+quickfix = { path = "../../quickfix" }
+
+[build-dependencies]
+quickfix-msg-gen = { path = "../../quickfix-msg-gen" }
