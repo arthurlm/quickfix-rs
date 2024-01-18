@@ -672,7 +672,7 @@ fn generate_field_setters(
     // Generate code.
     output.push_str(&format!(
         r#" #[inline(always)]
-            pub fn set_{fun_name_suffix}(&mut self, value: {field_type}) -> Result<&Self, QuickFixError> {{
+            pub fn set_{fun_name_suffix}(&mut self, value: {field_type}) -> Result<&Self, quickfix::QuickFixError> {{
                 self.{call_set_prefix}set_field({field_id}, value){call_suffix}?;
                 Ok(self)
             }}
@@ -684,7 +684,7 @@ fn generate_field_setters(
     if !field.required {
         output.push_str(&format!(
             r#" #[inline(always)]
-                pub fn remove_{fun_name_suffix}(&mut self) -> Result<&Self, QuickFixError> {{
+                pub fn remove_{fun_name_suffix}(&mut self) -> Result<&Self, quickfix::QuickFixError> {{
                     self.{call_set_prefix}remove_field({field_id}){call_suffix}?;
                     Ok(self)
                 }}
@@ -720,7 +720,7 @@ fn generate_fn_add_group(output: &mut String, struct_name: &str, group: &Message
     // Generate code.
     output.push_str(&format!(
         r#" #[inline(always)]
-            pub fn {fun_name}(&mut self, value: {group_type}) -> Result<&Self, QuickFixError> {{
+            pub fn {fun_name}(&mut self, value: {group_type}) -> Result<&Self, quickfix::QuickFixError> {{
                 self.inner.add_group(&value.inner)?;
                 Ok(self)
             }}
