@@ -11,7 +11,6 @@ pub fn build(config: &Config) -> anyhow::Result<SessionSettings> {
     settings.set(None, {
         let mut params = Dictionary::new();
         params.set("ConnectionType", "initiator".to_string())?;
-        params.set("FileStorePath", "store".to_string())?;
         params
     })?;
 

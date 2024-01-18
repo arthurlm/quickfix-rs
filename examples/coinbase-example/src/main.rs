@@ -37,7 +37,7 @@ fn main() -> anyhow::Result<()> {
 
     // Init FIX engine.
     let settings = session_settings::build(&my_app.config)?;
-    let store_factory = FileMessageStoreFactory::try_new(&settings)?;
+    let store_factory = MemoryMessageStoreFactory::new();
     let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
     let app = Application::try_new(&my_app)?;
 
