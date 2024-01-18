@@ -48,6 +48,9 @@ fn main() {
         .define("QUICKFIX_SHARED_LIBS", "OFF")
         .define("QUICKFIX_EXAMPLES", "OFF")
         .define("QUICKFIX_TESTS", "OFF")
+        // Always compile libquickfix in release mode.
+        // We are not here to debug this library.
+        .profile("RelWithDebInfo")
         .build();
 
     let quickfix_include_path = format!("{}/include", quickfix_dst.display());
@@ -75,13 +78,8 @@ fn main() {
         quickfix_bind_dst.display()
     );
 
-    if matches!(env::var("PROFILE").as_deref(), Ok("debug")) && target_os == TargetOs::Windows {
-        // libquickfix as a different name on windows with debug profile.
-        println!("cargo:rustc-link-lib=static=quickfixd");
-    } else {
-        println!("cargo:rustc-link-lib=static=quickfix");
-    }
-
+    // ⚠️ NOTE: libquickfix as a different name on windows with debug profile.
+    println!("cargo:rustc-link-lib=static=quickfix");
     println!("cargo:rustc-link-lib=static=quickfixbind");
 
     // Lib std C++ is only available on UNIX platform.
