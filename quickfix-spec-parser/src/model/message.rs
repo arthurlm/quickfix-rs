@@ -21,7 +21,7 @@ impl XmlReadable for Message {
     fn parse_xml_node(element: &BytesStart) -> Result<Self, FixSpecError> {
         let name = read_attribute(element, "name")?;
         let msg_type = read_attribute(element, "msgtype")?;
-        let category = read_attribute(element, "msgcat")?.parse()?;
+        let category = MessageCategory::parse_xml_element(element).unwrap_or(MessageCategory::App);
 
         Ok(Self {
             name,

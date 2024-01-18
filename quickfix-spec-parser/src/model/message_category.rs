@@ -1,6 +1,8 @@
 use std::str::FromStr;
 
-use crate::FixSpecError;
+use quick_xml::events::BytesStart;
+
+use crate::{read_attribute, FixSpecError};
 
 #[derive(Debug, Clone, Copy)]
 pub enum MessageCategory {
@@ -14,6 +16,11 @@ impl MessageCategory {
             MessageCategory::App => "app",
             MessageCategory::Admin => "admin",
         }
+    }
+
+    pub fn parse_xml_element(element: &BytesStart) -> Result<Self, FixSpecError> {
+        let item = read_attribute(element, "msgcat")?.parse()?;
+        Ok(item)
     }
 }
 
