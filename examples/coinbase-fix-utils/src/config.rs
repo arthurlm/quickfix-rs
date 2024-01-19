@@ -11,14 +11,16 @@ pub struct CoinbaseConfig {
 
 impl CoinbaseConfig {
     pub fn from_env() -> Self {
-        fn read(key: &str) -> String {
-            env::var(key).expect(&format!("Missing env variable: {key}"))
+        macro_rules! read {
+            ($key:expr) => {
+                env::var($key).expect(concat!("Missing env variable: ", $key))
+            };
         }
 
         Self {
-            api_key: read("COINBASE_API_KEY"),
-            api_passphrase: read("COINBASE_API_PASSPHRASE"),
-            api_secret: read("COINBASE_API_SECRET"),
+            api_key: read!("COINBASE_API_KEY"),
+            api_passphrase: read!("COINBASE_API_PASSPHRASE"),
+            api_secret: read!("COINBASE_API_SECRET"),
         }
     }
 
