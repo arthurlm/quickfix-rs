@@ -58,13 +58,21 @@ name = "coinbase-example"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "coinbase-fix-utils",
+ "coinbase-fix42",
+ "quickfix",
+ "uuid",
+]
+
+[[package]]
+name = "coinbase-fix-utils"
+version = "0.1.0"
+dependencies = [
  "base64",
- "bytes",
  "coinbase-fix42",
  "hmac",
  "quickfix",
  "sha2",
- "uuid",
 ]
 
 [[package]]

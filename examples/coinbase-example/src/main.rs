@@ -1,17 +1,22 @@
-use std::io::{stdin, Read};
+use std::{
+    io::{stdin, Read},
+    thread,
+    time::Duration,
+};
 
-use coinbase_example::{config::Config, logon_utils, session_settings};
+use coinbase_example::*;
 use coinbase_fix42::{field_types::MsgType, *};
+use coinbase_fix_utils::{config::CoinbaseConfig, logon_utils};
 use quickfix::*;
 
 pub struct MyApplication {
-    config: Config,
+    config: CoinbaseConfig,
 }
 
 impl MyApplication {
     fn from_env() -> Self {
         Self {
-            config: Config::from_env(),
+            config: CoinbaseConfig::from_env(),
         }
     }
 }
@@ -36,8 +41,8 @@ fn main() -> anyhow::Result<()> {
     let my_app = MyApplication::from_env();
 
     // Init FIX engine.
-    let settings = session_settings::build(&my_app.config)?;
-    let store_factory = MemoryMessageStoreFactory::new();
+    let settings = build_session_settings(&my_app.config)?;
+    let store_factory = MemoryMessageStoreFactory::new(); // Coinbase do not have FIX replay enabled.
     let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
     let app = Application::try_new(&my_app)?;
 
@@ -46,7 +51,13 @@ fn main() -> anyhow::Result<()> {
     // Start the engine.
     acceptor.start()?;
 
-    // Main wait loop.
+    // Wait for login sequence completion
+    while !acceptor.is_logged_on()? {
+        thread::sleep(Duration::from_millis(250));
+    }
+    println!("We are now logged on. Let's trade 🎇");
+
+    // Start main app loop.
     println!(">> App running, press 'q' to quit");
     let mut stdin = stdin().lock();
     let mut stdin_buf = [0];

@@ -4,9 +4,9 @@ use hmac::{Hmac, Mac};
 use quickfix::*;
 use sha2::Sha256;
 
-use crate::config::Config;
+use crate::config::CoinbaseConfig;
 
-pub fn fill_message(msg: &mut Message, config: &Config) -> anyhow::Result<()> {
+pub fn fill_message(msg: &mut Message, config: &CoinbaseConfig) -> Result<(), QuickFixError> {
     // Set password
     msg.set_field(field_id::PASSWORD, config.api_passphrase.as_str())
         .expect("Fail to set password");
@@ -18,7 +18,7 @@ pub fn fill_message(msg: &mut Message, config: &Config) -> anyhow::Result<()> {
 ///
 /// This function is a direct implementation of Coinbase signature spec.
 /// See: https://docs.cloud.coinbase.com/exchange/docs/fix-msg-order-entry#logon-a
-pub fn sign(msg: &mut Message, config: &Config) -> anyhow::Result<()> {
+pub fn sign(msg: &mut Message, config: &CoinbaseConfig) -> Result<(), Box<dyn std::error::Error>> {
     // Add few macro to make it easier to work with `Message`.
     macro_rules! read_header {
         ($tag:expr) => {
