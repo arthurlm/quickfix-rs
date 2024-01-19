@@ -11,6 +11,7 @@ This project is an **unofficial** binding between [quickfix](https://github.com/
 
 - Provide basic and safe API wrapper above [quickfix](https://github.com/quickfix/quickfix) library.
 - Run on any hardware and operating system supported by Rust Tier 1 (Windows 7+, MacOS 10.12+ & Linux).
+- Only include and compile what you need since project is split into minimal crates.
 - Message decoding / encoding including run-time validation.
 - Supports FIX versions 4x (version 5x can be build locally from XML spec file).
 - Spec driven run-time message validation.

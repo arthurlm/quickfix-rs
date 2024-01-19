@@ -6,7 +6,7 @@ Since it is not possible (yet) to produce binding from Rust to C++ library, I ha
 2. Create a C to Rust unsafe library: `quickfix-ffi`.
 3. Create a Rust unsafe to safe library: `quickfix`.
 
-## Current design
+## Main library design
 
 Actually there is 3 components in the project
 
@@ -41,6 +41,29 @@ About compilation process:
   - `libquickfix_bind` is also build from here.
 
 - I have not implement search of existing library installation using `pkg-config`, but PR are welcomed.
+
+## Message generator design
+
+There are few sub-components to make it works:
+
+```txt
+
+📄 FIX XML file (ex: FIX43.xml)
+   |
+   v
+📦 quickfix-spec-parser: parse XML file to a rust struct / enum model.
+   |
+   v
+📦 quickfix-msg-gen: generate code from the XML model.
+   |
+   v
+📦 quickfix-msg43: contains a `build.rs` file to include generated code into a real crate.
+
+```
+
+Few more words on `quickfix-spec-parser`: this crate is agnostic from **any** programming language.
+It is a pure representation of the XML spec file as rust struct and enums.
+It can be used to generate code, doc, whatever you want to.
 
 ## Other way to bind C++ library to rust
 
