@@ -17,21 +17,21 @@ make
 Run C binding example:
 
 ```sh
-LD_LIBRARY_PATH="$HOME/.local/lib" ./examples/demo_basic_binding ../configs/settings.ini
+LD_LIBRARY_PATH="$HOME/.local/lib" ./examples/demo_basic_binding ../examples/configs/settings.ini
 ```
 
 Rust FFI example:
 
 ```sh
-cargo r --example demo_basic_ffi -- configs/settings.ini
+cargo r --example demo_basic_ffi -- examples/configs/settings.ini
 ```
 
 Run rust full binding example:
 
 ```sh
-cargo r --example fix_getting_started -- configs/server.ini
-cargo r --example fix_repl -- acceptor configs/server.ini
-cargo r --example fix_repl -- initiator configs/client.ini
+cargo r --example fix_getting_started -- examples/configs/server.ini
+cargo r --example fix_repl -- acceptor examples/configs/server.ini
+cargo r --example fix_repl -- initiator examples/configs/client.ini
 ```
 
 ## What is the rust library overhead vs C++ quickfix
