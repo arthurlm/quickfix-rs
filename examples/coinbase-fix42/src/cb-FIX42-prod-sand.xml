@@ -27,6 +27,7 @@
   <field name='MessageEncoding' required='N' />
   <field name='LastMsgSeqNumProcessed' required='N' />
   <field name='OnBehalfOfSendingTime' required='N' />
+  <field name='CoinbaseProductSeq' required='N' />
  </header>
  <messages>
   <message name='Heartbeat' msgtype='0' msgcat='admin'>
@@ -126,9 +127,9 @@
    <field name='LastMkt' required='N' />
    <field name='TradingSessionID' required='N' />
    <field name='LastCapacity' required='N' />
-   <field name='LeavesQty' required='Y' />
-   <field name='CumQty' required='Y' />
-   <field name='AvgPx' required='Y' />
+   <field name='LeavesQty' required='N' />
+   <field name='CumQty' required='N' />
+   <field name='AvgPx' required='N' />
    <field name='DayOrderQty' required='N' />
    <field name='DayCumQty' required='N' />
    <field name='DayAvgPx' required='N' />
@@ -156,6 +157,13 @@
    <field name='ClearingFirm' required='N' />
    <field name='ClearingAccount' required='N' />
    <field name='MultiLegReportingType' required='N' />
+   <group name='NoMiscFees' required='N'>
+    <field name='MiscFeeAmt' required='N' />
+    <field name='MiscFeeCurr' required='N' />
+    <field name='MiscFeeType' required='N' />
+   </group>
+   <field name='MiscFeeBasis' required='N' />
+   <field name='TradeID' required='N' />
    <!--Coinbase Pro additions-->
    <field name='AggressorIndicator' required='N' />
    <!--End additions-->
@@ -1892,5 +1900,7 @@
    <value enum='2' description='Percentage' />
   </field>
   <!--End additions-->
+  <field number='999' name='CoinbaseProductSeq' type='INT' />
+  <field number='1003' name='TradeID' type='INT' />
  </fields>
 </fix>
