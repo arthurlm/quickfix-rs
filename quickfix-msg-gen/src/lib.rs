@@ -41,6 +41,7 @@ pub fn generate<S: AsRef<Path>, D: AsRef<Path>>(
     generate_headers(&mut output, &spec.headers);
     generate_trailers(&mut output, &spec.trailers);
     generate_messages(&mut output, &spec.messages);
+    generate_message_cracker(&mut output, &spec.messages);
 
     // Spawn a rustfmt daemon.
     let mut rustfmt = process::Command::new("rustfmt")
@@ -727,6 +728,51 @@ fn generate_fn_add_group(output: &mut String, struct_name: &str, group: &Message
 
             "#
     ));
+}
+
+fn generate_message_cracker(output: &mut String, messages: &[MessageSpec]) {
+    // Generate enum with all possible messages.
+    output.push_str(
+        r#" #[derive(Debug)]
+            pub enum Messages {
+            "#,
+    );
+    for message in messages {
+        let struct_name = &message.name;
+
+        output.push_str(&format!("  {struct_name}({struct_name}),\n"));
+    }
+    output.push_str(
+        r#" }
+            "#,
+    );
+
+    // Generate decode helpers.
+    output.push_str(
+        r#" impl Messages {
+                /// Try decoding input message or return the message if it does not match any known message type.
+                pub fn decode(input: quickfix::Message) -> Result<Self, quickfix::Message> {
+                    match input
+                        .with_header(|h| h.get_field(crate::field_id::MSG_TYPE))
+                        .as_deref()
+                    {
+            "#,
+    );
+    for message in messages {
+        let struct_name = &message.name;
+        let message_type = &message.msg_type;
+
+        output.push_str(&format!(
+            "  Some(\"{message_type}\") => Ok(Self::{struct_name}(input.into())),\n"
+        ));
+    }
+    output.push_str(
+        r#"             _ => Err(input),
+                    }
+                }
+            }
+            "#,
+    );
 }
 
 fn format_field_id(input: &str) -> String {
