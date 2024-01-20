@@ -1,4 +1,4 @@
-use std::{ffi, marker::PhantomData, mem::ManuallyDrop};
+use std::{ffi, marker::PhantomData, mem::ManuallyDrop, panic::catch_unwind};
 
 use quickfix_ffi::{
     FixApplicationCallbacks_t, FixApplication_delete, FixApplication_new, FixApplication_t,
@@ -70,49 +70,70 @@ where
     };
 
     extern "C" fn on_create(data: *const ffi::c_void, session: FixSessionID_t) {
-        let this = unsafe { &*(data as *const C) };
         let session_id = ManuallyDrop::new(SessionId(session));
-        this.on_create(&session_id)
+
+        let _ = catch_unwind(|| {
+            let this = unsafe { &*(data as *const C) };
+            this.on_create(&session_id);
+        });
     }
 
     extern "C" fn on_logon(data: *const ffi::c_void, session: FixSessionID_t) {
-        let this = unsafe { &*(data as *const C) };
         let session_id = ManuallyDrop::new(SessionId(session));
-        this.on_logon(&session_id)
+
+        let _ = catch_unwind(|| {
+            let this = unsafe { &*(data as *const C) };
+            this.on_logon(&session_id);
+        });
     }
 
     extern "C" fn on_logout(data: *const ffi::c_void, session: FixSessionID_t) {
-        let this = unsafe { &*(data as *const C) };
         let session_id = ManuallyDrop::new(SessionId(session));
-        this.on_logout(&session_id)
+
+        let _ = catch_unwind(|| {
+            let this = unsafe { &*(data as *const C) };
+            this.on_logout(&session_id);
+        });
     }
 
     extern "C" fn to_admin(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
-        let this = unsafe { &*(data as *const C) };
-        let mut msg = ManuallyDrop::new(Message(msg));
         let session_id = ManuallyDrop::new(SessionId(session));
-        this.on_msg_to_admin(&mut msg, &session_id)
+
+        let _ = catch_unwind(|| {
+            let this = unsafe { &*(data as *const C) };
+            let mut msg = ManuallyDrop::new(Message(msg));
+            this.on_msg_to_admin(&mut msg, &session_id);
+        });
     }
 
     extern "C" fn to_app(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
-        let this = unsafe { &*(data as *const C) };
-        let mut msg = ManuallyDrop::new(Message(msg));
         let session_id = ManuallyDrop::new(SessionId(session));
-        this.on_msg_to_app(&mut msg, &session_id)
+
+        let _ = catch_unwind(|| {
+            let this = unsafe { &*(data as *const C) };
+            let mut msg = ManuallyDrop::new(Message(msg));
+            this.on_msg_to_app(&mut msg, &session_id);
+        });
     }
 
     extern "C" fn from_admin(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
-        let this = unsafe { &*(data as *const C) };
         let msg = ManuallyDrop::new(Message(msg));
         let session_id = ManuallyDrop::new(SessionId(session));
-        this.on_msg_from_admin(&msg, &session_id)
+
+        let _ = catch_unwind(|| {
+            let this = unsafe { &*(data as *const C) };
+            this.on_msg_from_admin(&msg, &session_id);
+        });
     }
 
     extern "C" fn from_app(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
-        let this = unsafe { &*(data as *const C) };
         let msg = ManuallyDrop::new(Message(msg));
         let session_id = ManuallyDrop::new(SessionId(session));
-        this.on_msg_from_app(&msg, &session_id)
+
+        let _ = catch_unwind(|| {
+            let this = unsafe { &*(data as *const C) };
+            this.on_msg_from_app(&msg, &session_id);
+        });
     }
 }
 
