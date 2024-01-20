@@ -18,7 +18,8 @@ Because it is the simplest one to setup and it has a sandbox to play with.
    - `COINBASE_API_PASSPHRASE`
    - `COINBASE_API_SECRET`
 5. Check the code and update to your need.
-6. Launch the `coinbase-example` app 🚀 !!!
+6. Add some fund to your [sandbox portfolio](https://public.sandbox.exchange.coinbase.com/portfolios).
+7. Launch the `coinbase-example` app 🚀 !!!
 
 ## Including code from github instead of crates.io
 

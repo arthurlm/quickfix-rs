@@ -12,3 +12,4 @@ quickfix = { path = "../../quickfix", features = [
     "print-ex",
 ] } # 👓 Please note with `print-ex` feature enabled, FIX engine message will be displayed on stdout.
 uuid = { version = "1.6.1", features = ["v4"] }
+parking_lot = "0.12.1"
