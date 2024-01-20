@@ -363,7 +363,7 @@ fn generate_message(output: &mut String, message: &MessageSpec) {
 
     // Generate main struct content.
     output.push_str(&format!(
-        r#" #[derive(Debug)]
+        r#" #[derive(Debug, Clone)]
             pub struct {struct_name} {{
                 inner: quickfix::Message,
             }}
@@ -504,7 +504,7 @@ fn generate_group(output: &mut String, group: &MessageGroup) {
     let new_setters = format_new_setters(&group.components);
 
     output.push_str(&format!(
-        r#" #[derive(Debug)]
+        r#" #[derive(Debug, Clone)]
             pub struct {struct_name} {{
                 pub(crate) inner: quickfix::Group,
             }}
@@ -733,7 +733,7 @@ fn generate_fn_add_group(output: &mut String, struct_name: &str, group: &Message
 fn generate_message_cracker(output: &mut String, messages: &[MessageSpec]) {
     // Generate enum with all possible messages.
     output.push_str(
-        r#" #[derive(Debug)]
+        r#" #[derive(Debug, Clone)]
             pub enum Messages {
             "#,
     );
