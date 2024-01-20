@@ -1,8 +1,8 @@
 use std::{ffi::CString, fmt};
 
 use quickfix_ffi::{
-    FixTrailer_addGroup, FixTrailer_copyGroup, FixTrailer_delete, FixTrailer_getField,
-    FixTrailer_new, FixTrailer_removeField, FixTrailer_setField, FixTrailer_t,
+    FixTrailer_addGroup, FixTrailer_copy, FixTrailer_copyGroup, FixTrailer_delete,
+    FixTrailer_getField, FixTrailer_new, FixTrailer_removeField, FixTrailer_setField, FixTrailer_t,
 };
 
 use crate::{
@@ -41,6 +41,12 @@ impl FieldMap for Trailer {
 
     fn clone_group(&self, index: i32, tag: i32) -> Option<Group> {
         unsafe { FixTrailer_copyGroup(self.0, index, tag) }.map(Group)
+    }
+}
+
+impl Clone for Trailer {
+    fn clone(&self) -> Self {
+        Self(unsafe { FixTrailer_copy(self.0) }.expect("Fail to clone Trailer"))
     }
 }
 

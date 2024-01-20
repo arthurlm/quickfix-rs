@@ -128,6 +128,7 @@ const char *FixSessionID_toString(const FixSessionID_t *session);
 void FixSessionID_delete(const FixSessionID_t *session);
 
 FixMessage_t *FixMessage_new();
+FixMessage_t *FixMessage_copy(const FixMessage_t *src);
 FixMessage_t *FixMessage_fromString(const char *text);
 FixMessage_t *FixMessage_fromStringAndDictionary(const char *text, const FixDataDictionary_t *dictionary);
 const char *FixMessage_getField(const FixMessage_t *obj, int32_t tag);
@@ -139,6 +140,7 @@ int8_t FixMessage_readString(const FixMessage_t *obj, char *buffer, int64_t buff
 void FixMessage_delete(const FixMessage_t *obj);
 
 FixHeader_t *FixHeader_new();
+FixHeader_t *FixHeader_copy(const FixHeader_t *src);
 FixHeader_t *FixMessage_copyHeader(const FixMessage_t *obj);
 FixHeader_t *FixMessage_getHeaderRef(FixMessage_t *obj);
 const char *FixHeader_getField(const FixHeader_t *obj, int32_t tag);
@@ -148,6 +150,7 @@ int8_t FixHeader_addGroup(FixHeader_t *obj, const FixGroup_t *group);
 void FixHeader_delete(const FixHeader_t *obj);
 
 FixTrailer_t *FixTrailer_new();
+FixTrailer_t *FixTrailer_copy(const FixTrailer_t *src);
 FixTrailer_t *FixMessage_copyTrailer(const FixMessage_t *obj);
 FixTrailer_t *FixMessage_getTrailerRef(FixMessage_t *obj);
 const char *FixTrailer_getField(const FixTrailer_t *obj, int32_t tag);
@@ -157,6 +160,7 @@ int8_t FixTrailer_addGroup(FixTrailer_t *obj, const FixGroup_t *group);
 void FixTrailer_delete(const FixTrailer_t *obj);
 
 FixGroup_t *FixGroup_new(int32_t fieldId, int32_t delim, const int32_t order[]);
+FixGroup_t *FixGroup_copy(const FixGroup_t *src);
 FixGroup_t *FixMessage_copyGroup(const FixMessage_t *obj, int32_t num, int32_t tag);
 FixGroup_t *FixHeader_copyGroup(const FixHeader_t *obj, int32_t num, int32_t tag);
 FixGroup_t *FixTrailer_copyGroup(const FixTrailer_t *obj, int32_t num, int32_t tag);

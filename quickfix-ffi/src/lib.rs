@@ -300,6 +300,8 @@ extern "C" {
 
     pub fn FixMessage_new() -> Option<FixMessage_t>;
 
+    pub fn FixMessage_copy(src: FixMessage_t) -> Option<FixMessage_t>;
+
     pub fn FixMessage_fromString(text: *const ffi::c_char) -> Option<FixMessage_t>;
 
     pub fn FixMessage_fromStringAndDictionary(
@@ -334,6 +336,8 @@ extern "C" {
 
     pub fn FixHeader_new() -> Option<FixHeader_t>;
 
+    pub fn FixHeader_copy(src: FixHeader_t) -> Option<FixHeader_t>;
+
     pub fn FixMessage_copyHeader(obj: FixMessage_t) -> Option<FixHeader_t>;
 
     pub fn FixMessage_getHeaderRef(obj: FixMessage_t) -> Option<FixHeader_t>;
@@ -355,6 +359,8 @@ extern "C" {
 
     pub fn FixTrailer_new() -> Option<FixTrailer_t>;
 
+    pub fn FixTrailer_copy(src: FixTrailer_t) -> Option<FixTrailer_t>;
+
     pub fn FixMessage_copyTrailer(obj: FixMessage_t) -> Option<FixTrailer_t>;
 
     pub fn FixMessage_getTrailerRef(obj: FixMessage_t) -> Option<FixTrailer_t>;
@@ -375,6 +381,8 @@ extern "C" {
     // Group
 
     pub fn FixGroup_new(fieldId: i32, delim: i32, order: *const i32) -> Option<FixGroup_t>;
+
+    pub fn FixGroup_copy(src: FixGroup_t) -> Option<FixGroup_t>;
 
     pub fn FixMessage_copyGroup(obj: FixMessage_t, num: i32, tag: i32) -> Option<FixGroup_t>;
 

@@ -562,6 +562,11 @@ Message *FixMessage_new() {
   CATCH_OR_RETURN_NULL({ return new Message(); });
 }
 
+Message *FixMessage_copy(const Message *src) {
+  RETURN_VAL_IF_NULL(src, NULL);
+  CATCH_OR_RETURN_NULL({ return new Message(*src); });
+}
+
 Message *FixMessage_fromString(const char *text) {
   RETURN_VAL_IF_NULL(text, NULL);
   CATCH_OR_RETURN_NULL({ return new Message(text, /* validate = */ false); });
@@ -637,6 +642,11 @@ Header *FixHeader_new() {
   CATCH_OR_RETURN_NULL({ return new Header(); });
 }
 
+Header *FixHeader_copy(const Header *src) {
+  RETURN_VAL_IF_NULL(src, NULL);
+  CATCH_OR_RETURN_NULL({ return new Header(*src); });
+}
+
 Header *FixMessage_copyHeader(const Message *obj) {
   RETURN_VAL_IF_NULL(obj, NULL);
   CATCH_OR_RETURN_NULL({ return new Header(obj->getHeader()); });
@@ -685,6 +695,11 @@ void FixHeader_delete(const Header *obj) {
 
 Trailer *FixTrailer_new() {
   CATCH_OR_RETURN_NULL({ return new Trailer(); });
+}
+
+Trailer *FixTrailer_copy(const Trailer *src) {
+  RETURN_VAL_IF_NULL(src, NULL);
+  CATCH_OR_RETURN_NULL({ return new Trailer(*src); });
 }
 
 Trailer *FixMessage_copyTrailer(const Message *obj) {
@@ -736,6 +751,11 @@ void FixTrailer_delete(const Trailer *obj) {
 Group *FixGroup_new(int32_t fieldId, int32_t delim, const int32_t order[]) {
   RETURN_VAL_IF_NULL(order, NULL);
   CATCH_OR_RETURN_NULL({ return new Group(fieldId, delim, order); });
+}
+
+Group *FixGroup_copy(const Group *src) {
+  RETURN_VAL_IF_NULL(src, NULL);
+  CATCH_OR_RETURN_NULL({ return new Group(*src); });
 }
 
 Group *FixMessage_copyGroup(const Message *obj, int32_t num, int32_t tag) {

@@ -1,8 +1,8 @@
 use std::{ffi::CString, fmt};
 
 use quickfix_ffi::{
-    FixHeader_addGroup, FixHeader_copyGroup, FixHeader_delete, FixHeader_getField, FixHeader_new,
-    FixHeader_removeField, FixHeader_setField, FixHeader_t,
+    FixHeader_addGroup, FixHeader_copy, FixHeader_copyGroup, FixHeader_delete, FixHeader_getField,
+    FixHeader_new, FixHeader_removeField, FixHeader_setField, FixHeader_t,
 };
 
 use crate::{
@@ -41,6 +41,12 @@ impl FieldMap for Header {
 
     fn clone_group(&self, index: i32, tag: i32) -> Option<Group> {
         unsafe { FixHeader_copyGroup(self.0, index, tag) }.map(Group)
+    }
+}
+
+impl Clone for Header {
+    fn clone(&self) -> Self {
+        Self(unsafe { FixHeader_copy(self.0) }.expect("Fail to clone Header"))
     }
 }
 

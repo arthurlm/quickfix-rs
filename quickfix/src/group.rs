@@ -1,8 +1,9 @@
 use std::{ffi::CString, fmt};
 
 use quickfix_ffi::{
-    FixGroup_addGroup, FixGroup_copyGroup, FixGroup_delete, FixGroup_getDelim, FixGroup_getField,
-    FixGroup_getFieldId, FixGroup_new, FixGroup_removeField, FixGroup_setField, FixGroup_t,
+    FixGroup_addGroup, FixGroup_copy, FixGroup_copyGroup, FixGroup_delete, FixGroup_getDelim,
+    FixGroup_getField, FixGroup_getFieldId, FixGroup_new, FixGroup_removeField, FixGroup_setField,
+    FixGroup_t,
 };
 
 use crate::{
@@ -68,6 +69,12 @@ impl FieldMap for Group {
 
     fn clone_group(&self, index: i32, tag: i32) -> Option<Group> {
         unsafe { FixGroup_copyGroup(self.0, index, tag) }.map(Group)
+    }
+}
+
+impl Clone for Group {
+    fn clone(&self) -> Self {
+        Self(unsafe { FixGroup_copy(self.0) }.expect("Fail to clone Group"))
     }
 }
 

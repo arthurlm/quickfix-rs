@@ -1,10 +1,11 @@
 use std::{ffi::CString, fmt, mem::ManuallyDrop};
 
 use quickfix_ffi::{
-    FixMessage_addGroup, FixMessage_copyGroup, FixMessage_copyHeader, FixMessage_copyTrailer,
-    FixMessage_delete, FixMessage_fromString, FixMessage_getField, FixMessage_getGroupRef,
-    FixMessage_getHeaderRef, FixMessage_getStringLen, FixMessage_getTrailerRef, FixMessage_new,
-    FixMessage_readString, FixMessage_removeField, FixMessage_setField, FixMessage_t,
+    FixMessage_addGroup, FixMessage_copy, FixMessage_copyGroup, FixMessage_copyHeader,
+    FixMessage_copyTrailer, FixMessage_delete, FixMessage_fromString, FixMessage_getField,
+    FixMessage_getGroupRef, FixMessage_getHeaderRef, FixMessage_getStringLen,
+    FixMessage_getTrailerRef, FixMessage_new, FixMessage_readString, FixMessage_removeField,
+    FixMessage_setField, FixMessage_t,
 };
 
 use crate::{
@@ -208,6 +209,12 @@ impl FieldMap for Message {
 
     fn clone_group(&self, index: i32, tag: i32) -> Option<Group> {
         unsafe { FixMessage_copyGroup(self.0, index, tag) }.map(Group)
+    }
+}
+
+impl Clone for Message {
+    fn clone(&self) -> Self {
+        Self(unsafe { FixMessage_copy(self.0) }.expect("Fail to clone Message"))
     }
 }
 
