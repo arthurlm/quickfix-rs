@@ -133,6 +133,7 @@ impl fmt::Debug for StdLogger {
 
 impl StdLogger {
     fn print(&self, text: &str) {
+        let text = text.replace('\x01', "|");
         let _ = match self {
             StdLogger::Stdout => writeln!(io::stdout(), "{text}"),
             StdLogger::Stderr => writeln!(io::stderr(), "{text}"),
@@ -162,14 +163,17 @@ pub struct RustLogger;
 #[cfg(feature = "log")]
 impl LogCallback for RustLogger {
     fn on_incoming(&self, session_id: Option<&SessionId>, msg: &str) {
+        let msg = msg.replace('\x01', "|");
         log::info!("FIX: Incoming: {session_id:?}: {msg}");
     }
 
     fn on_outgoing(&self, session_id: Option<&SessionId>, msg: &str) {
+        let msg = msg.replace('\x01', "|");
         log::info!("FIX: Outcoming: {session_id:?}: {msg}");
     }
 
     fn on_event(&self, session_id: Option<&SessionId>, msg: &str) {
+        let msg = msg.replace('\x01', "|");
         log::info!("FIX: Event: {session_id:?}: {msg}");
     }
 }
