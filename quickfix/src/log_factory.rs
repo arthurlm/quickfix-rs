@@ -3,6 +3,7 @@ use std::{
     io::{self, Write},
     marker::PhantomData,
     mem::ManuallyDrop,
+    panic::catch_unwind,
 };
 
 use quickfix_ffi::{
@@ -57,10 +58,13 @@ where
         session_id_ptr: Option<FixSessionID_t>,
         msg_ptr: *const ffi::c_char,
     ) {
-        let this = unsafe { &*(data as *const C) };
         let session_id = session_id_ptr.map(|ptr| ManuallyDrop::new(SessionId(ptr)));
         let msg = unsafe { from_ffi_str(msg_ptr) };
-        this.on_incoming(session_id.as_deref(), msg);
+
+        let _ = catch_unwind(|| {
+            let this = unsafe { &*(data as *const C) };
+            this.on_incoming(session_id.as_deref(), msg);
+        });
     }
 
     extern "C" fn on_outgoing(
@@ -68,10 +72,13 @@ where
         session_id_ptr: Option<FixSessionID_t>,
         msg_ptr: *const ffi::c_char,
     ) {
-        let this = unsafe { &*(data as *const C) };
         let session_id = session_id_ptr.map(|ptr| ManuallyDrop::new(SessionId(ptr)));
         let msg = unsafe { from_ffi_str(msg_ptr) };
-        this.on_outgoing(session_id.as_deref(), msg);
+
+        let _ = catch_unwind(|| {
+            let this = unsafe { &*(data as *const C) };
+            this.on_outgoing(session_id.as_deref(), msg);
+        });
     }
 
     extern "C" fn on_event(
@@ -79,10 +86,13 @@ where
         session_id_ptr: Option<FixSessionID_t>,
         msg_ptr: *const ffi::c_char,
     ) {
-        let this = unsafe { &*(data as *const C) };
         let session_id = session_id_ptr.map(|ptr| ManuallyDrop::new(SessionId(ptr)));
         let msg = unsafe { from_ffi_str(msg_ptr) };
-        this.on_event(session_id.as_deref(), msg);
+
+        let _ = catch_unwind(|| {
+            let this = unsafe { &*(data as *const C) };
+            this.on_event(session_id.as_deref(), msg);
+        });
     }
 }
 
