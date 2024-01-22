@@ -35,97 +35,97 @@
   try {                                                                                                                \
     _XXX_                                                                                                              \
   } catch (FIX::DataDictionaryNotFound & ex) {                                                                         \
-    Fix_setLastErrorMessage(ex, ERROR_DATA_DICTIONARY_NOT_FOUND);                                                      \
+    Fix_setLastError(ex, ERROR_DATA_DICTIONARY_NOT_FOUND);                                                             \
     return (_VAL_);                                                                                                    \
   } catch (FIX::FieldNotFound & ex) {                                                                                  \
-    Fix_setLastErrorMessage(ex, ERROR_FIELD_NOT_FOUND);                                                                \
+    Fix_setLastError(ex, ERROR_FIELD_NOT_FOUND);                                                                       \
     return (_VAL_);                                                                                                    \
   } catch (FIX::FieldConvertError & ex) {                                                                              \
-    Fix_setLastErrorMessage(ex, ERROR_FIELD_CONVERT_ERROR);                                                            \
+    Fix_setLastError(ex, ERROR_FIELD_CONVERT_ERROR);                                                                   \
     return (_VAL_);                                                                                                    \
   } catch (FIX::MessageParseError & ex) {                                                                              \
-    Fix_setLastErrorMessage(ex, ERROR_MESSAGE_PARSE_ERROR);                                                            \
+    Fix_setLastError(ex, ERROR_MESSAGE_PARSE_ERROR);                                                                   \
     return (_VAL_);                                                                                                    \
   } catch (FIX::InvalidMessage & ex) {                                                                                 \
-    Fix_setLastErrorMessage(ex, ERROR_INVALID_MESSAGE);                                                                \
+    Fix_setLastError(ex, ERROR_INVALID_MESSAGE);                                                                       \
     return (_VAL_);                                                                                                    \
   } catch (FIX::ConfigError & ex) {                                                                                    \
-    Fix_setLastErrorMessage(ex, ERROR_CONFIG_ERROR);                                                                   \
+    Fix_setLastError(ex, ERROR_CONFIG_ERROR);                                                                          \
     return (_VAL_);                                                                                                    \
   } catch (FIX::RuntimeError & ex) {                                                                                   \
-    Fix_setLastErrorMessage(ex, ERROR_RUNTIME_ERROR);                                                                  \
+    Fix_setLastError(ex, ERROR_RUNTIME_ERROR);                                                                         \
     return (_VAL_);                                                                                                    \
   } catch (FIX::InvalidTagNumber & ex) {                                                                               \
-    Fix_setLastErrorMessage(ex, ERROR_INVALID_TAG_NUMBER);                                                             \
+    Fix_setLastError(ex, ERROR_INVALID_TAG_NUMBER);                                                                    \
     return (_VAL_);                                                                                                    \
   } catch (FIX::RequiredTagMissing & ex) {                                                                             \
-    Fix_setLastErrorMessage(ex, ERROR_REQUIRED_TAG_MISSING);                                                           \
+    Fix_setLastError(ex, ERROR_REQUIRED_TAG_MISSING);                                                                  \
     return (_VAL_);                                                                                                    \
   } catch (FIX::TagNotDefinedForMessage & ex) {                                                                        \
-    Fix_setLastErrorMessage(ex, ERROR_TAG_NOT_DEFINED_FOR_MESSAGE);                                                    \
+    Fix_setLastError(ex, ERROR_TAG_NOT_DEFINED_FOR_MESSAGE);                                                           \
     return (_VAL_);                                                                                                    \
   } catch (FIX::NoTagValue & ex) {                                                                                     \
-    Fix_setLastErrorMessage(ex, ERROR_NO_TAG_VALUE);                                                                   \
+    Fix_setLastError(ex, ERROR_NO_TAG_VALUE);                                                                          \
     return (_VAL_);                                                                                                    \
   } catch (FIX::IncorrectTagValue & ex) {                                                                              \
-    Fix_setLastErrorMessage(ex, ERROR_INCORRECT_TAG_VALUE);                                                            \
+    Fix_setLastError(ex, ERROR_INCORRECT_TAG_VALUE);                                                                   \
     return (_VAL_);                                                                                                    \
   } catch (FIX::IncorrectDataFormat & ex) {                                                                            \
-    Fix_setLastErrorMessage(ex, ERROR_INCORRECT_DATA_FORMAT);                                                          \
+    Fix_setLastError(ex, ERROR_INCORRECT_DATA_FORMAT);                                                                 \
     return (_VAL_);                                                                                                    \
   } catch (FIX::IncorrectMessageStructure & ex) {                                                                      \
-    Fix_setLastErrorMessage(ex, ERROR_INCORRECT_MESSAGE_STRUCTURE);                                                    \
+    Fix_setLastError(ex, ERROR_INCORRECT_MESSAGE_STRUCTURE);                                                           \
     return (_VAL_);                                                                                                    \
   } catch (FIX::DuplicateFieldNumber & ex) {                                                                           \
-    Fix_setLastErrorMessage(ex, ERROR_DUPLICATE_FIELD_NUMBER);                                                         \
+    Fix_setLastError(ex, ERROR_DUPLICATE_FIELD_NUMBER);                                                                \
     return (_VAL_);                                                                                                    \
   } catch (FIX::InvalidMessageType & ex) {                                                                             \
-    Fix_setLastErrorMessage(ex, ERROR_INVALID_MESSAGE_TYPE);                                                           \
+    Fix_setLastError(ex, ERROR_INVALID_MESSAGE_TYPE);                                                                  \
     return (_VAL_);                                                                                                    \
   } catch (FIX::UnsupportedMessageType & ex) {                                                                         \
-    Fix_setLastErrorMessage(ex, ERROR_UNSUPPORTED_MESSAGE_TYPE);                                                       \
+    Fix_setLastError(ex, ERROR_UNSUPPORTED_MESSAGE_TYPE);                                                              \
     return (_VAL_);                                                                                                    \
   } catch (FIX::UnsupportedVersion & ex) {                                                                             \
-    Fix_setLastErrorMessage(ex, ERROR_UNSUPPORTED_VERSION);                                                            \
+    Fix_setLastError(ex, ERROR_UNSUPPORTED_VERSION);                                                                   \
     return (_VAL_);                                                                                                    \
   } catch (FIX::TagOutOfOrder & ex) {                                                                                  \
-    Fix_setLastErrorMessage(ex, ERROR_TAG_OUT_OF_ORDER);                                                               \
+    Fix_setLastError(ex, ERROR_TAG_OUT_OF_ORDER);                                                                      \
     return (_VAL_);                                                                                                    \
   } catch (FIX::RepeatedTag & ex) {                                                                                    \
-    Fix_setLastErrorMessage(ex, ERROR_REPEATED_TAG);                                                                   \
+    Fix_setLastError(ex, ERROR_REPEATED_TAG);                                                                          \
     return (_VAL_);                                                                                                    \
   } catch (FIX::RepeatingGroupCountMismatch & ex) {                                                                    \
-    Fix_setLastErrorMessage(ex, ERROR_REPEATING_GROUP_COUNT_MISMATCH);                                                 \
+    Fix_setLastError(ex, ERROR_REPEATING_GROUP_COUNT_MISMATCH);                                                        \
     return (_VAL_);                                                                                                    \
   } catch (FIX::DoNotSend & ex) {                                                                                      \
-    Fix_setLastErrorMessage(ex, ERROR_DO_NOT_SEND);                                                                    \
+    Fix_setLastError(ex, ERROR_DO_NOT_SEND);                                                                           \
     return (_VAL_);                                                                                                    \
   } catch (FIX::RejectLogon & ex) {                                                                                    \
-    Fix_setLastErrorMessage(ex, ERROR_REJECT_LOGON);                                                                   \
+    Fix_setLastError(ex, ERROR_REJECT_LOGON);                                                                          \
     return (_VAL_);                                                                                                    \
   } catch (FIX::SessionNotFound & ex) {                                                                                \
-    Fix_setLastErrorMessage(ex, ERROR_SESSION_NOT_FOUND);                                                              \
+    Fix_setLastError(ex, ERROR_SESSION_NOT_FOUND);                                                                     \
     return (_VAL_);                                                                                                    \
   } catch (FIX::IOException & ex) {                                                                                    \
-    Fix_setLastErrorMessage(ex, ERROR_IO_EXCEPTION);                                                                   \
+    Fix_setLastError(ex, ERROR_IO_EXCEPTION);                                                                          \
     return (_VAL_);                                                                                                    \
   } catch (FIX::SocketSendFailed & ex) {                                                                               \
-    Fix_setLastErrorMessage(ex, ERROR_SOCKET_SEND_FAILED);                                                             \
+    Fix_setLastError(ex, ERROR_SOCKET_SEND_FAILED);                                                                    \
     return (_VAL_);                                                                                                    \
   } catch (FIX::SocketRecvFailed & ex) {                                                                               \
-    Fix_setLastErrorMessage(ex, ERROR_SOCKET_RECV_FAILED);                                                             \
+    Fix_setLastError(ex, ERROR_SOCKET_RECV_FAILED);                                                                    \
     return (_VAL_);                                                                                                    \
   } catch (FIX::SocketCloseFailed & ex) {                                                                              \
-    Fix_setLastErrorMessage(ex, ERROR_SOCKET_CLOSE_FAILED);                                                            \
+    Fix_setLastError(ex, ERROR_SOCKET_CLOSE_FAILED);                                                                   \
     return (_VAL_);                                                                                                    \
   } catch (FIX::SocketException & ex) {                                                                                \
-    Fix_setLastErrorMessage(ex, ERROR_SOCKET_EXCEPTION);                                                               \
+    Fix_setLastError(ex, ERROR_SOCKET_EXCEPTION);                                                                      \
     return (_VAL_);                                                                                                    \
   } catch (std::exception & e) {                                                                                       \
     if (PRINT_QUICKFIX_EX_STDOUT) {                                                                                    \
       std::cout << "[ERROR: QUICKFIX] " << e.what() << std::endl;                                                      \
     }                                                                                                                  \
-    Fix_setLastErrorMessage(e, ERRNO_EXCEPTION);                                                                       \
+    Fix_setLastError(e, ERRNO_EXCEPTION);                                                                              \
     return (_VAL_);                                                                                                    \
   }
 
@@ -293,7 +293,7 @@ extern "C" {
 static thread_local char *lastError = nullptr;
 static thread_local int8_t lastErrorCode = 0;
 
-static void Fix_setLastErrorMessage(std::exception &ex, int8_t code) {
+static void Fix_setLastError(std::exception &ex, int8_t code) {
   // Release previously set error if any
   Fix_clearLastErrorMessage();
 
