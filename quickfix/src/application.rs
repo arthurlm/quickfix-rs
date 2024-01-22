@@ -55,7 +55,7 @@ where
             )
         } {
             Some(fix_application) => Ok(Self(fix_application, PhantomData)),
-            None => Err(QuickFixError::null()),
+            None => Err(QuickFixError::from_last_error()),
         }
     }
 

@@ -6,13 +6,13 @@ fn test_derive() {
     assert_eq!(
         format!(
             "{:?}",
-            QuickFixError::NullFunctionReturn("hello world".to_string())
+            QuickFixError::InvalidArgument("hello world".to_string())
         ),
-        "NullFunctionReturn(\"hello world\")"
+        "InvalidArgument(\"hello world\")"
     );
     assert_eq!(
-        format!("{}", QuickFixError::null()),
-        "null function return: Cannot get last error message from quickfix library"
+        format!("{}", QuickFixError::from_last_error()),
+        "invalid function return code: code=0, msg=Cannot get last error message from quickfix library"
     );
 
     // PartialEq + Eq
@@ -35,8 +35,9 @@ fn test_derive() {
 #[test]
 fn test_null() {
     assert_eq!(
-        QuickFixError::null(),
-        QuickFixError::NullFunctionReturn(
+        QuickFixError::from_last_error(),
+        QuickFixError::InvalidFunctionReturnCode(
+            0,
             "Cannot get last error message from quickfix library".to_string()
         )
     );

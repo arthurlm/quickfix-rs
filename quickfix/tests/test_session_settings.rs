@@ -4,7 +4,7 @@ use quickfix::*;
 fn test_from_file() {
     assert_eq!(
         SessionSettings::try_from_path("invalid_file.ini").unwrap_err(),
-        QuickFixError::NullFunctionReturn(
+        QuickFixError::ConfigError(
             "Configuration failed: File invalid_file.ini not found".to_string()
         )
     );

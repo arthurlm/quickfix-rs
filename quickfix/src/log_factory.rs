@@ -43,7 +43,7 @@ where
             )
         } {
             Some(fix_log_factory) => Ok(Self(fix_log_factory, PhantomData)),
-            None => Err(QuickFixError::null()),
+            None => Err(QuickFixError::from_last_error()),
         }
     }
 

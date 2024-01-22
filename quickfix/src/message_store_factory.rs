@@ -26,7 +26,7 @@ impl FileMessageStoreFactory {
     pub fn try_new(settings: &SessionSettings) -> Result<Self, QuickFixError> {
         unsafe { FixFileMessageStoreFactory_new(settings.0) }
             .map(Self)
-            .ok_or_else(QuickFixError::null)
+            .ok_or_else(QuickFixError::from_last_error)
     }
 }
 

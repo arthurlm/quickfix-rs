@@ -96,6 +96,8 @@ extern "C" {
 
     pub fn Fix_getLastErrorMessage() -> Option<NonNull<ffi::c_char>>;
 
+    pub fn Fix_getLastErrorCode() -> i8;
+
     pub fn Fix_clearLastErrorMessage();
 
     // Session settings

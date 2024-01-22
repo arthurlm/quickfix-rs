@@ -30,7 +30,7 @@ impl Message {
         let ffi_text = CString::new(text)?;
         unsafe { FixMessage_fromString(ffi_text.as_ptr()) }
             .map(Self)
-            .ok_or_else(QuickFixError::null)
+            .ok_or_else(QuickFixError::from_last_error)
     }
 
     /// Try reading underlying struct buffer as a string.

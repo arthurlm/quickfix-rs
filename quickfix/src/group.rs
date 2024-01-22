@@ -34,7 +34,7 @@ impl Group {
 
         unsafe { FixGroup_new(field_id, delim, safe_orders.as_ptr()) }
             .map(Self)
-            .ok_or_else(QuickFixError::null)
+            .ok_or_else(QuickFixError::from_last_error)
     }
 
     /// Get field ID.

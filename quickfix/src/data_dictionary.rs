@@ -26,7 +26,7 @@ impl DataDictionary {
 
         unsafe { FixDataDictionary_fromPath(ffi_path.as_ptr()) }
             .map(Self)
-            .ok_or_else(QuickFixError::null)
+            .ok_or_else(QuickFixError::from_last_error)
     }
 
     /// Create a new FIX messages using current dictionary.
@@ -34,7 +34,7 @@ impl DataDictionary {
         let ffi_text = CString::new(text)?;
         unsafe { FixMessage_fromStringAndDictionary(ffi_text.as_ptr(), self.0) }
             .map(Message)
-            .ok_or_else(QuickFixError::null)
+            .ok_or_else(QuickFixError::from_last_error)
     }
 }
 
