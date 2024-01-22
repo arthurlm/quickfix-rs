@@ -27,6 +27,11 @@ impl QuickFixError {
     pub fn invalid_argument<T: Into<String>>(msg: T) -> Self {
         Self::InvalidArgument(msg.into())
     }
+
+    /// Build a null function return and read associated error if any.
+    pub fn null() -> Self {
+        Self::NullFunctionReturn
+    }
 }
 
 impl From<NulError> for QuickFixError {

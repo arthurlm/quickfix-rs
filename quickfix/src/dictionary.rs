@@ -26,7 +26,7 @@ impl Dictionary {
         let c_name = CString::new(name)?;
         unsafe { FixDictionary_new(c_name.as_ptr()) }
             .map(Self)
-            .ok_or(QuickFixError::NullFunctionReturn)
+            .ok_or_else(QuickFixError::null)
     }
 
     /// Check if dictionary contains key.

@@ -53,7 +53,7 @@ where
                 phantom_message_store_factory: PhantomData,
                 phantom_log_factory: PhantomData,
             }),
-            None => Err(QuickFixError::NullFunctionReturn),
+            None => Err(QuickFixError::null()),
         }
     }
 }

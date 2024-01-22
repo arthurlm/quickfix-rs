@@ -13,7 +13,7 @@ impl MySqlMessageStoreFactory {
     pub fn try_new(settings: &SessionSettings) -> Result<Self, QuickFixError> {
         unsafe { FixMysqlMessageStoreFactory_new(settings.0) }
             .map(Self)
-            .ok_or(QuickFixError::NullFunctionReturn)
+            .ok_or_else(QuickFixError::null)
     }
 }
 

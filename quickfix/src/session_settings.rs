@@ -27,7 +27,7 @@ impl SessionSettings {
 
         unsafe { FixSessionSettings_fromPath(ffi_path.as_ptr()) }
             .map(Self)
-            .ok_or(QuickFixError::NullFunctionReturn)
+            .ok_or_else(QuickFixError::null)
     }
 
     /// Borrow inner dictionary for session or global configuration.

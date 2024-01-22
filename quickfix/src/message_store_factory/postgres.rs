@@ -13,7 +13,7 @@ impl PostgresMessageStoreFactory {
     pub fn try_new(settings: &SessionSettings) -> Result<Self, QuickFixError> {
         unsafe { FixPostgresMessageStoreFactory_new(settings.0) }
             .map(Self)
-            .ok_or(QuickFixError::NullFunctionReturn)
+            .ok_or_else(QuickFixError::null)
     }
 }
 
