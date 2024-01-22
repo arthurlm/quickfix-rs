@@ -1,0 +1,13 @@
+[package]
+name = "single-order-sender"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+anyhow = "1.0.79"
+chrono = "0.4.31"
+parking_lot = "0.12.1"
+quickfix = { path = "../../quickfix" }
+quickfix-msg44 = { path = "../../quickfix-msg44" }
+uuid = "1.7.0"

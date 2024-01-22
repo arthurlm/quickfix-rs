@@ -5,6 +5,7 @@ members = [
     "examples/coinbase-fix-utils",
     "examples/coinbase-fix42",
     "examples/executor",
+    "examples/single-order-sender",
     "quickfix-ffi",
     "quickfix-msg-gen",
     "quickfix-spec-parser",

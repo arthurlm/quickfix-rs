@@ -35,8 +35,16 @@ quickfix = { git = "https://github.com/arthurlm/quickfix-rs.git", features = [
 
 ## Other examples
 
+**NOTE**: Make sure to clean FIX file message store before running examples.
+
 Running executor (simple app that execute every order you sent to it):
 
 ```sh
 cargo r --bin=executor examples/configs/server.ini
+```
+
+Running single order sender:
+
+```sh
+cargo r --bin=single-order-sender  examples/configs/client.ini
 ```
