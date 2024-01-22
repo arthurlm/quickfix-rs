@@ -672,7 +672,7 @@
    <field name='Side' required='Y' />
    <field name='Symbol' required='Y' />
   </message>
-  <message name='OrderCancelBatchRequest' msgtype='U4'>
+  <message name='OrderCancelBatchRequest' msgtype='U4' msgcat='app'>
    <field name='BatchID' required='Y' />
    <group name='NoOrders' required='Y'>
     <field name='OrigClOrdID' required='Y' />
@@ -682,11 +682,11 @@
     <field name='TransactTime' required='N' />
    </group>
   </message>
-  <message name='OrderCancelBatchReject' msgtype='U5'>
+  <message name='OrderCancelBatchReject' msgtype='U5' msgcat='app'>
    <field name='BatchID' required='Y' />
    <field name='Text' required='N' />
   </message>
-  <message name='NewOrderBatch' msgtype='U6'>
+  <message name='NewOrderBatch' msgtype='U6' msgcat='app'>
    <field name='BatchID' required='Y' />
    <group name='NoOrders' required='Y'>
     <field name='ClOrdID' required='Y' />
@@ -703,7 +703,7 @@
     <field name='MaxFloor' required='N' />
    </group>
   </message>
-  <message name='NewOrderBatchReject' msgtype='U7'>
+  <message name='NewOrderBatchReject' msgtype='U7' msgcat='app'>
    <field name='BatchID' required='Y' />
    <field name='Text' required='Y' />
   </message>
