@@ -4,6 +4,7 @@ members = [
     "examples/coinbase-example",
     "examples/coinbase-fix-utils",
     "examples/coinbase-fix42",
+    "examples/executor",
     "quickfix-ffi",
     "quickfix-msg-gen",
     "quickfix-spec-parser",

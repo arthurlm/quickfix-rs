@@ -32,3 +32,11 @@ quickfix = { git = "https://github.com/arthurlm/quickfix-rs.git", features = [
     "print-ex",
 ] } # 👓 Please note with `print-ex` feature enabled, FIX engine message will be displayed on stdout.
 ```
+
+## Other examples
+
+Running executor (simple app that execute every order you sent to it):
+
+```sh
+cargo r --bin=executor examples/configs/server.ini
+```

@@ -1,0 +1,12 @@
+[package]
+name = "executor"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+quickfix = { path = "../../quickfix" }
+quickfix-msg40 = { path = "../../quickfix-msg40" }
+quickfix-msg41 = { path = "../../quickfix-msg41" }
+quickfix-msg42 = { path = "../../quickfix-msg42" }
+thiserror = "1.0.56"
