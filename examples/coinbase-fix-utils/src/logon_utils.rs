@@ -17,7 +17,7 @@ pub fn fill_message(msg: &mut Message, config: &CoinbaseConfig) -> Result<(), Qu
 /// Add signature to a `Logon` message.
 ///
 /// This function is a direct implementation of Coinbase signature spec.
-/// See: https://docs.cloud.coinbase.com/exchange/docs/fix-msg-order-entry#logon-a
+/// See: <https://docs.cloud.coinbase.com/exchange/docs/fix-msg-order-entry#logon-a>
 pub fn sign(msg: &mut Message, config: &CoinbaseConfig) -> Result<(), Box<dyn std::error::Error>> {
     // Add few macro to make it easier to work with `Message`.
     macro_rules! read_header {
