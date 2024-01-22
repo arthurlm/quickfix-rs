@@ -122,9 +122,6 @@
     Fix_setLastError(ex, ERROR_SOCKET_EXCEPTION);                                                                      \
     return (_VAL_);                                                                                                    \
   } catch (std::exception & e) {                                                                                       \
-    if (PRINT_QUICKFIX_EX_STDOUT) {                                                                                    \
-      std::cout << "[ERROR: QUICKFIX] " << e.what() << std::endl;                                                      \
-    }                                                                                                                  \
     Fix_setLastError(e, ERRNO_EXCEPTION);                                                                              \
     return (_VAL_);                                                                                                    \
   }

@@ -65,7 +65,6 @@ fn main() {
         .define("QUICKFIX_BIND_EXAMPLES", "OFF")
         .define("HAVE_MYSQL", read_cmake_opt("build-with-mysql"))
         .define("HAVE_POSTGRESQL", read_cmake_opt("build-with-postgres"))
-        .define("WITH_PRINT_EX_STDOUT", read_cmake_opt("print-ex"))
         .build();
 
     // Configure rustc.

@@ -28,9 +28,7 @@ That is so simple. Just add following lines to your `Cargo.toml` file:
 ```toml
 coinbase-fix42 = { git = "https://github.com/arthurlm/quickfix-rs.git" }
 coinbase-fix-utils = { git = "https://github.com/arthurlm/quickfix-rs.git" }
-quickfix = { git = "https://github.com/arthurlm/quickfix-rs.git", features = [
-    "print-ex",
-] } # 👓 Please note with `print-ex` feature enabled, FIX engine message will be displayed on stdout.
+quickfix = { git = "https://github.com/arthurlm/quickfix-rs.git" }
 ```
 
 ## Other examples

@@ -9,7 +9,6 @@ option(HAVE_MYSQL "Build with MySQL" OFF)
 option(HAVE_POSTGRESQL "Build with PostgreSQL" OFF)
 
 option(QUICKFIX_BIND_EXAMPLES "Build quickfix C binding examples" ON)
-option(WITH_PRINT_EX_STDOUT, "Enable exception printing to stdout" OFF)
 
 if (HAVE_MYSQL)
     find_package(MySQL REQUIRED)

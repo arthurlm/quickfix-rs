@@ -14,10 +14,6 @@ else()
 endif()
 
 # Add option if asked
-if (WITH_PRINT_EX_STDOUT)
-    target_compile_definitions(quickfixbind PRIVATE "PRINT_QUICKFIX_EX_STDOUT=1")
-endif()
-
 if (HAVE_MYSQL)
     target_compile_definitions(quickfixbind PRIVATE "HAVE_MYSQL=1")
 endif()

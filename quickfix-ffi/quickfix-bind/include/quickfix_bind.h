@@ -4,10 +4,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifndef PRINT_QUICKFIX_EX_STDOUT
-#define PRINT_QUICKFIX_EX_STDOUT 0
-#endif // PRINT_QUICKFIX_EX_STDOUT
-
 // #define HAVE_MYSQL
 // #define HAVE_POSTGRESQL
 

@@ -20,7 +20,6 @@ colored = "2.0.4"
 
 [features]
 default = ["log"]
-print-ex = ["quickfix-ffi/print-ex"]
 build-with-mysql = ["quickfix-ffi/build-with-mysql"]
 build-with-postgres = ["quickfix-ffi/build-with-postgres"]
 log = ["dep:log"]
