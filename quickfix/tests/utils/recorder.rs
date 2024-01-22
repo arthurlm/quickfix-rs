@@ -70,19 +70,34 @@ impl ApplicationCallback for FixRecorder {
         assert_session_id_equals(&self.expected_session_id, &session_id);
     }
 
-    fn on_msg_to_app(&self, _msg: &mut Message, session_id: &SessionId) {
+    fn on_msg_to_app(
+        &self,
+        _msg: &mut Message,
+        session_id: &SessionId,
+    ) -> Result<(), MsgToAppError> {
         self.sent_user.fetch_add(1, Ordering::Relaxed);
         assert_session_id_equals(&self.expected_session_id, &session_id);
+        Ok(())
     }
 
-    fn on_msg_from_admin(&self, _msg: &Message, session_id: &SessionId) {
+    fn on_msg_from_admin(
+        &self,
+        _msg: &Message,
+        session_id: &SessionId,
+    ) -> Result<(), MsgFromAdminError> {
         self.recv_admin.fetch_add(1, Ordering::Relaxed);
         assert_session_id_equals(&self.expected_session_id, &session_id);
+        Ok(())
     }
 
-    fn on_msg_from_app(&self, _msg: &Message, session_id: &SessionId) {
+    fn on_msg_from_app(
+        &self,
+        _msg: &Message,
+        session_id: &SessionId,
+    ) -> Result<(), MsgFromAppError> {
         self.recv_user.fetch_add(1, Ordering::Relaxed);
         assert_session_id_equals(&self.expected_session_id, &session_id);
+        Ok(())
     }
 }
 

@@ -86,15 +86,21 @@ impl ApplicationCallback for MyApplication {
         // print_decoded_msg("TO ADMIN", msg);
     }
 
-    // fn on_msg_to_app(&self, msg: &mut Message, _session: &SessionId) {
+    // fn on_msg_to_app(&self, msg: &mut Message, _session: &SessionId) -> Result<(), MsgToAppError> {
     //     print_decoded_msg("TO APP", msg);
+    //     Ok(())
     // }
 
-    // fn on_msg_from_admin(&self, msg: &Message, _session: &SessionId) {
+    // fn on_msg_from_admin(
+    //     &self,
+    //     msg: &Message,
+    //     _session: &SessionId,
+    // ) -> Result<(), MsgFromAdminError> {
     //     print_decoded_msg("FROM ADMIN", msg);
+    //     Ok(())
     // }
 
-    fn on_msg_from_app(&self, msg: &Message, _session: &SessionId) {
+    fn on_msg_from_app(&self, msg: &Message, _session: &SessionId) -> Result<(), MsgFromAppError> {
         println!();
         println!("==== FROM APP =====");
         match Messages::decode(msg.clone()) {
@@ -126,6 +132,8 @@ impl ApplicationCallback for MyApplication {
             Err(err) => eprintln!("Cannot decode message: {err:?}"),
         }
         println!("===================");
+
+        Ok(())
     }
 }
 

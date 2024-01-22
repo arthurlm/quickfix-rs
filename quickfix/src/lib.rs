@@ -106,7 +106,9 @@ mod utils;
 
 use std::ffi::CString;
 
-pub use application::{Application, ApplicationCallback};
+pub use application::{
+    Application, ApplicationCallback, MsgFromAdminError, MsgFromAppError, MsgToAppError,
+};
 pub use data_dictionary::DataDictionary;
 pub use days::DayOfWeek;
 pub use dictionary::Dictionary;

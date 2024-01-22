@@ -179,21 +179,46 @@ public:
   void toApp(Message &msg, const SessionID &session) EXCEPT(DoNotSend) override {
     RETURN_IF_NULL(callbacks);
     RETURN_IF_NULL(callbacks->toApp);
-    callbacks->toApp(data, &msg, &session);
+    int8_t result = callbacks->toApp(data, &msg, &session);
+
+    if (result == CALLBACK_RESULT_DO_NOT_SEND)
+      throw DoNotSend();
   }
 
   void fromAdmin(const Message &msg, const SessionID &session)
       EXCEPT(FieldNotFound, IncorrectDataFormat, IncorrectTagValue, RejectLogon) override {
     RETURN_IF_NULL(callbacks);
     RETURN_IF_NULL(callbacks->fromAdmin);
-    callbacks->fromAdmin(data, &msg, &session);
+    int8_t result = callbacks->fromAdmin(data, &msg, &session);
+
+    switch (result) {
+    case CALLBACK_RESULT_FIELD_NOT_FOUND:
+      throw FieldNotFound();
+    case CALLBACK_RESULT_INCORRECT_DATA_FORMAT:
+      throw IncorrectDataFormat();
+    case CALLBACK_RESULT_INCORRECT_TAG_VALUE:
+      throw IncorrectTagValue();
+    case CALLBACK_RESULT_REJECT_LOGON:
+      throw RejectLogon();
+    }
   }
 
   void fromApp(const Message &msg, const SessionID &session)
       EXCEPT(FieldNotFound, IncorrectDataFormat, IncorrectTagValue, UnsupportedMessageType) override {
     RETURN_IF_NULL(callbacks);
     RETURN_IF_NULL(callbacks->fromApp);
-    callbacks->fromApp(data, &msg, &session);
+    int8_t result = callbacks->fromApp(data, &msg, &session);
+
+    switch (result) {
+    case CALLBACK_RESULT_FIELD_NOT_FOUND:
+      throw FieldNotFound();
+    case CALLBACK_RESULT_INCORRECT_DATA_FORMAT:
+      throw IncorrectDataFormat();
+    case CALLBACK_RESULT_INCORRECT_TAG_VALUE:
+      throw IncorrectTagValue();
+    case CALLBACK_RESULT_REJECT_LOGON:
+      throw RejectLogon();
+    }
   }
 };
 

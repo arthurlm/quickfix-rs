@@ -45,6 +45,14 @@
 #define ERROR_SOCKET_RECV_FAILED -37
 #define ERROR_SOCKET_CLOSE_FAILED -38
 
+#define CALLBACK_OK 0
+#define CALLBACK_RESULT_DO_NOT_SEND -1
+#define CALLBACK_RESULT_FIELD_NOT_FOUND -2
+#define CALLBACK_RESULT_INCORRECT_DATA_FORMAT -3
+#define CALLBACK_RESULT_INCORRECT_TAG_VALUE -4
+#define CALLBACK_RESULT_REJECT_LOGON -5
+#define CALLBACK_RESULT_UNSUPPORTED_MESSAGE_TYPE -6
+
 #ifdef __cplusplus
 extern "C" {
 namespace FIX {
@@ -69,9 +77,9 @@ typedef struct ApplicationCallbacks {
   void (*onLogon)(const void *data, const FixSessionID_t *session);
   void (*onLogout)(const void *data, const FixSessionID_t *session);
   void (*toAdmin)(const void *data, FixMessage_t *msg, const FixSessionID_t *session);
-  void (*toApp)(const void *data, FixMessage_t *msg, const FixSessionID_t *session);
-  void (*fromAdmin)(const void *data, const FixMessage_t *msg, const FixSessionID_t *session);
-  void (*fromApp)(const void *data, const FixMessage_t *msg, const FixSessionID_t *session);
+  int8_t (*toApp)(const void *data, FixMessage_t *msg, const FixSessionID_t *session);
+  int8_t (*fromAdmin)(const void *data, const FixMessage_t *msg, const FixSessionID_t *session);
+  int8_t (*fromApp)(const void *data, const FixMessage_t *msg, const FixSessionID_t *session);
 } FixApplicationCallbacks_t;
 
 typedef struct LogCallbacks {

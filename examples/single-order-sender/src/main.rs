@@ -28,7 +28,7 @@ impl SingleOrderSender {
 }
 
 impl ApplicationCallback for SingleOrderSender {
-    fn on_msg_from_app(&self, msg: &Message, _session: &SessionId) {
+    fn on_msg_from_app(&self, msg: &Message, _session: &SessionId) -> Result<(), MsgFromAppError> {
         println!();
         println!("==== FROM APP =====");
         match Messages::decode(msg.clone()) {
@@ -59,6 +59,8 @@ impl ApplicationCallback for SingleOrderSender {
             Err(err) => eprintln!("Cannot decode message: {err:?}"),
         }
         println!("===================");
+
+        Ok(())
     }
 }
 

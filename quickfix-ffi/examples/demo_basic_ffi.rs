@@ -27,24 +27,31 @@ extern "C" fn custom_to_admin(
     println!("custom_to_admin: {data:?} {msg:?} {session:?}");
 }
 
-extern "C" fn custom_to_app(data: *const ffi::c_void, msg: FixMessage_t, session: FixSessionID_t) {
+extern "C" fn custom_to_app(
+    data: *const ffi::c_void,
+    msg: FixMessage_t,
+    session: FixSessionID_t,
+) -> i8 {
     println!("custom_to_app: {data:?} {msg:?} {session:?}");
+    CALLBACK_OK
 }
 
 extern "C" fn custom_from_admin(
     data: *const ffi::c_void,
     msg: FixMessage_t,
     session: FixSessionID_t,
-) {
+) -> i8 {
     println!("custom_from_admin: {data:?} {msg:?} {session:?}");
+    CALLBACK_OK
 }
 
 extern "C" fn custom_from_app(
     data: *const ffi::c_void,
     msg: FixMessage_t,
     session: FixSessionID_t,
-) {
+) -> i8 {
     println!("custom_from_app: {data:?} {msg:?} {session:?}");
+    CALLBACK_OK
 }
 
 const APP_CALLBACKS: FixApplicationCallbacks_t = FixApplicationCallbacks_t {

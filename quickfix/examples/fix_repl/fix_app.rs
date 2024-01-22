@@ -4,7 +4,7 @@ use std::{
 };
 
 use colored::Colorize;
-use quickfix::{ApplicationCallback, Message, SessionId};
+use quickfix::*;
 
 #[derive(Default)]
 pub struct MyApplication {
@@ -52,18 +52,25 @@ impl ApplicationCallback for MyApplication {
         self.print_callback("to_admin", session, Some(msg));
     }
 
-    fn on_msg_to_app(&self, msg: &mut Message, session: &SessionId) {
+    fn on_msg_to_app(&self, msg: &mut Message, session: &SessionId) -> Result<(), MsgToAppError> {
         self.inc_message_index();
         self.print_callback("to_app", session, Some(msg));
+        Ok(())
     }
 
-    fn on_msg_from_admin(&self, msg: &Message, session: &SessionId) {
+    fn on_msg_from_admin(
+        &self,
+        msg: &Message,
+        session: &SessionId,
+    ) -> Result<(), MsgFromAdminError> {
         self.inc_message_index();
         self.print_callback("from_admin", session, Some(msg));
+        Ok(())
     }
 
-    fn on_msg_from_app(&self, msg: &Message, session: &SessionId) {
+    fn on_msg_from_app(&self, msg: &Message, session: &SessionId) -> Result<(), MsgFromAppError> {
         self.inc_message_index();
         self.print_callback("from_app", session, Some(msg));
+        Ok(())
     }
 }

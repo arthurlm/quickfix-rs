@@ -119,12 +119,18 @@ impl FixExecutor {
 }
 
 impl ApplicationCallback for FixExecutor {
-    fn on_msg_from_app(&self, msg: &Message, session_id: &SessionId) {
+    fn on_msg_from_app(
+        &self,
+        msg: &Message,
+        session_id: &SessionId,
+    ) -> Result<(), MsgFromAppError> {
         let execution_report = self
             .generate_execution_report(msg)
-            .expect("Fail to generate execution report");
+            .map_err(|_err| MsgFromAppError::IncorrectDataFormat)?;
 
         send_to_target(execution_report, session_id).expect("Fail to send message to target");
+
+        Ok(())
     }
 }
 

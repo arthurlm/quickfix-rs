@@ -1,6 +1,16 @@
 use quickfix::*;
 
 #[test]
+fn test_application() {
+    let obj = MsgToAppError::DoNotSend;
+    assert_eq!(format!("{obj:?}"), "DoNotSend");
+    let obj = MsgFromAdminError::RejectLogon;
+    assert_eq!(format!("{obj:?}"), "RejectLogon");
+    let obj = MsgFromAppError::UnsupportedMessageType;
+    assert_eq!(format!("{obj:?}"), "UnsupportedMessageType");
+}
+
+#[test]
 fn test_data_dictionary() {
     let obj = DataDictionary::new();
     assert_eq!(format!("{obj:?}"), "DataDictionary");

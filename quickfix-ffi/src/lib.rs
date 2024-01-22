@@ -3,6 +3,14 @@
 
 use std::{ffi, ptr::NonNull};
 
+pub const CALLBACK_OK: i8 = 0;
+pub const CALLBACK_RESULT_DO_NOT_SEND: i8 = -1;
+pub const CALLBACK_RESULT_FIELD_NOT_FOUND: i8 = -2;
+pub const CALLBACK_RESULT_INCORRECT_DATA_FORMAT: i8 = -3;
+pub const CALLBACK_RESULT_INCORRECT_TAG_VALUE: i8 = -4;
+pub const CALLBACK_RESULT_REJECT_LOGON: i8 = -5;
+pub const CALLBACK_RESULT_UNSUPPORTED_MESSAGE_TYPE: i8 = -6;
+
 pub type NullableCStr = Option<NonNull<ffi::c_char>>;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -64,9 +72,9 @@ pub struct FixApplicationCallbacks_t {
     pub onLogon: extern "C" fn(*const ffi::c_void, FixSessionID_t),
     pub onLogout: extern "C" fn(*const ffi::c_void, FixSessionID_t),
     pub toAdmin: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t),
-    pub toApp: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t),
-    pub fromAdmin: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t),
-    pub fromApp: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t),
+    pub toApp: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t) -> i8,
+    pub fromAdmin: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t) -> i8,
+    pub fromApp: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t) -> i8,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
