@@ -10,8 +10,12 @@ pub enum QuickFixError {
     NullFunctionReturn,
 
     /// Foreign function as return an invalid return code.
-    #[error("invalid function return code")]
+    #[error("invalid function return code: {0}")]
     InvalidFunctionReturnCode(i8),
+
+    /// Cannot compute required buffer len to move data from cpp to rust.
+    #[error("invalid buffer len")]
+    InvalidBufferLen,
 
     /// Cannot pass function argument to quickfix.
     #[error("Invalid argument: {0}")]
@@ -28,5 +32,11 @@ impl QuickFixError {
 impl From<NulError> for QuickFixError {
     fn from(value: NulError) -> Self {
         Self::InvalidArgument(value.to_string())
+    }
+}
+
+impl From<i8> for QuickFixError {
+    fn from(value: i8) -> Self {
+        Self::InvalidFunctionReturnCode(value)
     }
 }

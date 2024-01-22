@@ -22,7 +22,7 @@ pub unsafe fn from_ffi_str<'a>(ptr: *const ffi::c_char) -> &'a str {
 pub fn ffi_code_to_result(code: i8) -> Result<(), QuickFixError> {
     match code {
         0 => Ok(()),
-        code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+        code => Err(code.into()),
     }
 }
 
@@ -31,6 +31,6 @@ pub fn ffi_code_to_bool(code: i8) -> Result<bool, QuickFixError> {
     match code {
         1 => Ok(true),
         0 => Ok(false),
-        code => Err(QuickFixError::InvalidFunctionReturnCode(code)),
+        code => Err(code.into()),
     }
 }
