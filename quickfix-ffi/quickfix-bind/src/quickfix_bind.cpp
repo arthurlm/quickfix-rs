@@ -38,6 +38,7 @@
     if (PRINT_QUICKFIX_EX_STDOUT) {                                                                                    \
       std::cout << "[ERROR: QUICKFIX] " << e.what() << std::endl;                                                      \
     }                                                                                                                  \
+    Fix_setLastErrorMessage(e);                                                                                        \
     return (_VAL_);                                                                                                    \
   }
 
@@ -176,6 +177,27 @@ public:
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+static thread_local char *lastError = nullptr;
+
+static void Fix_setLastErrorMessage(std::exception &ex) {
+  // Release previously set error if any
+  Fix_clearLastErrorMessage();
+
+  // Get error message and copy it to thread local storage.
+  std::string msg = ex.what();
+  lastError = new char[msg.size() + 1];
+  strcpy(lastError, msg.c_str());
+}
+
+const char *Fix_getLastErrorMessage() { return lastError; }
+
+void Fix_clearLastErrorMessage() {
+  if (lastError) {
+    delete[] lastError;
+    lastError = nullptr;
+  }
+}
 
 SessionSettings *FixSessionSettings_new() {
   CATCH_OR_RETURN_NULL({ return new SessionSettings(); });

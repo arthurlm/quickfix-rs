@@ -92,6 +92,12 @@ pub struct FixLogCallbacks_t {
 #[link(name = "quickfixbind")]
 extern "C" {
 
+    // Error management
+
+    pub fn Fix_getLastErrorMessage() -> Option<NonNull<ffi::c_char>>;
+
+    pub fn Fix_clearLastErrorMessage();
+
     // Session settings
 
     pub fn FixSessionSettings_new() -> Option<FixSessionSettings_t>;

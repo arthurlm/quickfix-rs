@@ -50,6 +50,9 @@ typedef struct LogCallbacks {
   void (*onEvent)(const void *data, const FixSessionID_t *sessionId, const char *msg);
 } FixLogCallbacks_t;
 
+const char *Fix_getLastErrorMessage();
+void Fix_clearLastErrorMessage();
+
 FixSessionSettings_t *FixSessionSettings_new();
 FixSessionSettings_t *FixSessionSettings_fromPath(const char *configPath);
 const FixDictionary_t *FixSessionSettings_getGlobalRef(const FixSessionSettings_t *obj);

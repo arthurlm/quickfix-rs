@@ -4,12 +4,15 @@ use quickfix::*;
 fn test_derive() {
     // Debug + Display
     assert_eq!(
-        format!("{:?}", QuickFixError::NullFunctionReturn),
-        "NullFunctionReturn"
+        format!(
+            "{:?}",
+            QuickFixError::NullFunctionReturn("hello world".to_string())
+        ),
+        "NullFunctionReturn(\"hello world\")"
     );
     assert_eq!(
-        format!("{}", QuickFixError::NullFunctionReturn),
-        "null function return"
+        format!("{}", QuickFixError::null()),
+        "null function return: Cannot get last error message from quickfix library"
     );
 
     // PartialEq + Eq
@@ -26,5 +29,15 @@ fn test_derive() {
     assert_eq!(
         QuickFixError::invalid_argument("Hello").clone(),
         QuickFixError::InvalidArgument("Hello".to_string())
+    );
+}
+
+#[test]
+fn test_null() {
+    assert_eq!(
+        QuickFixError::null(),
+        QuickFixError::NullFunctionReturn(
+            "Cannot get last error message from quickfix library".to_string()
+        )
     );
 }
