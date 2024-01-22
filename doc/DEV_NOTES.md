@@ -65,6 +65,36 @@ Few more words on `quickfix-spec-parser`: this crate is agnostic from **any** pr
 It is a pure representation of the XML spec file as rust struct and enums.
 It can be used to generate code, doc, whatever you want to.
 
+## A note about exceptions
+
+Rust `std::error::Error` and C++ exceptions cannot be match together.
+
+Moreover:
+
+- Rust `panic` [should not leak](https://doc.rust-lang.org/std/panic/fn.catch_unwind.html#notes) into C++ code.
+- C++ `throw` should not leak into Rust code.
+
+So we have to:
+
+1. Catch **EVERY** exceptions that can occurs in C++ code and convert them to error code.
+
+   - That is the purpose of the C macro: `CATCH_OR_RETURN`.
+   - Error code can be converted back to text / code using `Fix_getLastErrorCode` and `Fix_getLastErrorMessage`.
+
+2. Catch **EVERY** `panic` that can occurs in Rust code.
+
+    - For this we are using `std::panic::catch_unwind` to wrap every user callbacks.
+    - Sadly we do not cancel the control flow if this occurs.
+    - panic message will be displayed on screen but that's all... User can still register a new panic hook if needed.
+
+Wait, what about intentional control flow change (like `DoNotSend`) ?
+
+Here is how it works:
+
+1. User return `MsgToAppError::DoNotSend` from its callback.
+2. enum is converted to an integer that will be passed to C code.
+3. depending on the integer code, exception will be throw from C++ in `ApplicationBind`.
+
 ## Other way to bind C++ library to rust
 
 [Rust bindgen](https://github.com/rust-lang/rust-bindgen)
