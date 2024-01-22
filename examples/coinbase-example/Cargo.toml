@@ -8,8 +8,6 @@ publish = false
 anyhow = "1.0.79"
 coinbase-fix42 = { path = "../coinbase-fix42" }
 coinbase-fix-utils = { path = "../coinbase-fix-utils" }
-quickfix = { path = "../../quickfix", features = [
-    "print-ex",
-] } # 👓 Please note with `print-ex` feature enabled, FIX engine message will be displayed on stdout.
+quickfix = { path = "../../quickfix" }
 uuid = { version = "1.6.1", features = ["v4"] }
 parking_lot = "0.12.1"
