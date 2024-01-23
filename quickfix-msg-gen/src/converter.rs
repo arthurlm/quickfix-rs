@@ -4,12 +4,12 @@ use quickfix_spec_parser::{FieldValue, FixSpec, Message};
 
 use crate::{FixCodeSpec, MessageField, MessageGroup, MessageSpec, SubComponent};
 
-pub fn convert_spec(src: &FixSpec) -> FixCodeSpec {
+pub fn convert_spec(src: FixSpec) -> FixCodeSpec {
     FixCodeSpec {
-        field_specs: src.field_specs.clone(),
-        headers: convert_field_value_list(src, &src.headers),
-        trailers: convert_field_value_list(src, &src.trailers),
-        messages: convert_messages(src, &src.messages),
+        headers: convert_field_value_list(&src, &src.headers),
+        trailers: convert_field_value_list(&src, &src.trailers),
+        messages: convert_messages(&src, &src.messages),
+        field_specs: src.field_specs,
     }
 }
 

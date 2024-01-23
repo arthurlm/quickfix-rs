@@ -76,7 +76,7 @@ impl FixExecutor {
 
         let mut execution_report = Message::new();
         execution_report.with_header_mut(|h| {
-            h.set_field(fix40_id::BEGIN_STRING, begin_string.clone())?;
+            h.set_field(fix40_id::BEGIN_STRING, begin_string.as_str())?;
             h.set_field(fix40_id::MSG_TYPE, MsgType::ExecutionReport)?;
 
             Ok::<_, QuickFixError>(())
@@ -87,9 +87,9 @@ impl FixExecutor {
         execution_report.set_field(fix40_id::ORD_STATUS, OrdStatus::Filled)?;
         execution_report.set_field(fix40_id::SYMBOL, symbol)?;
         execution_report.set_field(fix40_id::SIDE, side)?;
-        execution_report.set_field(fix40_id::CUM_QTY, order_qty.clone())?;
-        execution_report.set_field(fix40_id::AVG_PX, price.clone())?;
-        execution_report.set_field(fix40_id::LAST_SHARES, order_qty.clone())?;
+        execution_report.set_field(fix40_id::CUM_QTY, order_qty.as_str())?;
+        execution_report.set_field(fix40_id::AVG_PX, price.as_str())?;
+        execution_report.set_field(fix40_id::LAST_SHARES, order_qty.as_str())?;
         execution_report.set_field(fix40_id::LAST_PX, price)?;
         execution_report.set_field(fix40_id::CL_ORD_ID, cl_ord_id)?;
         execution_report.set_field(fix40_id::ORDER_QTY, order_qty)?;

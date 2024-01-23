@@ -30,7 +30,7 @@ pub fn generate<S: AsRef<Path>, D: AsRef<Path>>(
 ) -> io::Result<()> {
     let spec_data = fs::read(src)?;
     let spec = quickfix_spec_parser::parse_spec(&spec_data).expect("Cannot parse FIX spec");
-    let spec = convert_spec(&spec);
+    let spec = convert_spec(spec);
 
     // Generate the code.
     println!("Generating code ...");
