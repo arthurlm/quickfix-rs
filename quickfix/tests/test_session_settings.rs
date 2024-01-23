@@ -19,9 +19,7 @@ fn test_from_file() {
 #[test]
 fn test_getter_and_setter() {
     let mut dict_global = Dictionary::with_name("DEFAULT").unwrap();
-    dict_global
-        .set("ConnectionType", "initiator".to_string())
-        .unwrap();
+    dict_global.set("ConnectionType", "initiator").unwrap();
     dict_global.set("foo", 60).unwrap();
 
     let session_id = SessionId::try_new("FIX.4.4", "CLIENT1", "SERVER1", "").unwrap();

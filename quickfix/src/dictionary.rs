@@ -9,7 +9,7 @@ use quickfix_ffi::{
 
 use crate::{
     utils::{ffi_code_to_bool, ffi_code_to_result},
-    DayOfWeek, PropertyContainer, QuickFixError,
+    DayOfWeek, ForeignPropertyGetter, ForeignPropertySetter, QuickFixError,
 };
 
 /// For storage and retrieval of key/value pairs.
@@ -38,7 +38,7 @@ impl Dictionary {
     /// Read value from dictionary for a given key.
     pub fn get<T>(&self, key: &str) -> Result<T, QuickFixError>
     where
-        Self: PropertyContainer<T>,
+        Self: ForeignPropertyGetter<T>,
     {
         let c_key = CString::new(key)?;
         self.ffi_get(c_key)
@@ -47,14 +47,14 @@ impl Dictionary {
     /// Write value into dictionary for a given key.
     pub fn set<T>(&mut self, key: &str, value: T) -> Result<(), QuickFixError>
     where
-        Self: PropertyContainer<T>,
+        Self: ForeignPropertySetter<T>,
     {
         let c_key = CString::new(key)?;
         self.ffi_set(c_key, value)
     }
 }
 
-impl PropertyContainer<String> for Dictionary {
+impl ForeignPropertyGetter<String> for Dictionary {
     fn ffi_get(&self, key: CString) -> Result<String, QuickFixError> {
         unsafe {
             // Prepare output buffer
@@ -84,8 +84,16 @@ impl PropertyContainer<String> for Dictionary {
             Ok(text.to_string_lossy().to_string())
         }
     }
+}
 
+impl ForeignPropertySetter<String> for Dictionary {
     fn ffi_set(&mut self, key: CString, value: String) -> Result<(), QuickFixError> {
+        self.ffi_set(key, value.as_str())
+    }
+}
+
+impl ForeignPropertySetter<&str> for Dictionary {
+    fn ffi_set(&mut self, key: CString, value: &str) -> Result<(), QuickFixError> {
         let c_value = CString::new(value)?;
         ffi_code_to_result(unsafe {
             FixDictionary_setString(self.0, key.as_ptr(), c_value.as_ptr())
@@ -93,41 +101,49 @@ impl PropertyContainer<String> for Dictionary {
     }
 }
 
-impl PropertyContainer<i32> for Dictionary {
+impl ForeignPropertyGetter<i32> for Dictionary {
     fn ffi_get(&self, key: CString) -> Result<i32, QuickFixError> {
         Ok(unsafe { FixDictionary_getInt(self.0, key.as_ptr()) })
     }
+}
 
+impl ForeignPropertySetter<i32> for Dictionary {
     fn ffi_set(&mut self, key: CString, value: i32) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixDictionary_setInt(self.0, key.as_ptr(), value) })
     }
 }
 
-impl PropertyContainer<f64> for Dictionary {
+impl ForeignPropertyGetter<f64> for Dictionary {
     fn ffi_get(&self, key: CString) -> Result<f64, QuickFixError> {
         Ok(unsafe { FixDictionary_getDouble(self.0, key.as_ptr()) })
     }
+}
 
+impl ForeignPropertySetter<f64> for Dictionary {
     fn ffi_set(&mut self, key: CString, value: f64) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixDictionary_setDouble(self.0, key.as_ptr(), value) })
     }
 }
 
-impl PropertyContainer<bool> for Dictionary {
+impl ForeignPropertyGetter<bool> for Dictionary {
     fn ffi_get(&self, key: CString) -> Result<bool, QuickFixError> {
         ffi_code_to_bool(unsafe { FixDictionary_getBool(self.0, key.as_ptr()) })
     }
+}
 
+impl ForeignPropertySetter<bool> for Dictionary {
     fn ffi_set(&mut self, key: CString, value: bool) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixDictionary_setBool(self.0, key.as_ptr(), value as i8) })
     }
 }
 
-impl PropertyContainer<DayOfWeek> for Dictionary {
+impl ForeignPropertyGetter<DayOfWeek> for Dictionary {
     fn ffi_get(&self, key: CString) -> Result<DayOfWeek, QuickFixError> {
         DayOfWeek::try_from(unsafe { FixDictionary_getDay(self.0, key.as_ptr()) })
     }
+}
 
+impl ForeignPropertySetter<DayOfWeek> for Dictionary {
     fn ffi_set(&mut self, key: CString, value: DayOfWeek) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixDictionary_setDay(self.0, key.as_ptr(), value as i32) })
     }

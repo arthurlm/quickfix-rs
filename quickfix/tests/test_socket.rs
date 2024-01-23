@@ -9,20 +9,20 @@ fn build_settings(connection_type: &str) -> Result<SessionSettings, QuickFixErro
 
     settings.set(None, {
         let mut params = Dictionary::new();
-        params.set("ConnectionType", connection_type.to_string())?;
-        params.set("FileStorePath", "store".to_string())?;
+        params.set("ConnectionType", connection_type)?;
+        params.set("FileStorePath", "store")?;
         params
     })?;
 
     settings.set(Some(SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?), {
         let mut params = Dictionary::new();
-        params.set("StartTime", "12:30:00".to_string())?;
-        params.set("EndTime", "23:30:00".to_string())?;
+        params.set("StartTime", "12:30:00")?;
+        params.set("EndTime", "23:30:00")?;
         params.set("HeartBtInt", 20)?;
         params.set("SocketAcceptPort", 4000)?;
         params.set(
             "DataDictionary",
-            "../quickfix-ffi/libquickfix/spec/FIX41.xml".to_string(),
+            "../quickfix-ffi/libquickfix/spec/FIX41.xml",
         )?;
         params
     })?;

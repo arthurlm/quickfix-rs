@@ -39,16 +39,16 @@ let mut settings = SessionSettings::new();
 
 settings.set(None, {
     let mut params = Dictionary::new();
-    params.set("ConnectionType", "acceptor".to_string())?;
+    params.set("ConnectionType", "acceptor")?;
     params
 })?;
 
 settings.set(Some(SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?), {
     let mut params = Dictionary::new();
-    params.set("StartTime", "12:30:00".to_string())?;
-    params.set("EndTime", "23:30:00".to_string())?;
+    params.set("StartTime", "12:30:00")?;
+    params.set("EndTime", "23:30:00")?;
     params.set("SocketAcceptPort", 4000)?;
-    params.set("DataDictionary", "../quickfix-ffi/libquickfix/spec/FIX41.xml".to_string())?;
+    params.set("DataDictionary", "../quickfix-ffi/libquickfix/spec/FIX41.xml")?;
     params
 })?;
 
@@ -219,11 +219,14 @@ pub trait FieldMap {
     fn clone_group(&self, index: i32, tag: i32) -> Option<Group>;
 }
 
-/// Allow reading / writing value (aka property) from an object.
-pub trait PropertyContainer<T> {
-    /// Read value from object.
+/// Allow reading value (aka property) from a foreign (C++) object.
+pub trait ForeignPropertyGetter<T> {
+    /// Read foreign value from object.
     fn ffi_get(&self, key: CString) -> Result<T, QuickFixError>;
+}
 
-    /// Write value into object.
+/// Allow writing value (aka property) into a foreign (C++) object.
+pub trait ForeignPropertySetter<T> {
+    /// Write foreign value into object.
     fn ffi_set(&mut self, key: CString, value: T) -> Result<(), QuickFixError>;
 }

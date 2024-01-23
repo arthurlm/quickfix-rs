@@ -23,7 +23,7 @@ fn test_set_invalid_text() {
     let mut dict = Dictionary::new();
 
     assert_eq!(
-        dict.set("\0invalid", "foo".to_string()).unwrap_err(),
+        dict.set("\0invalid", "foo").unwrap_err(),
         QuickFixError::invalid_argument("nul byte found in provided data at position: 0")
     );
     assert_eq!(

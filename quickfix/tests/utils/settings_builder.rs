@@ -28,7 +28,7 @@ impl ServerType {
             }
             ServerType::Sender => {
                 params.set("SocketConnectPort", port as i32)?;
-                params.set("SocketConnectHost", "127.0.0.1".to_string())?;
+                params.set("SocketConnectHost", "127.0.0.1")?;
             }
         }
         Ok(())
@@ -43,19 +43,19 @@ pub fn build_settings(
 
     settings.set(None, {
         let mut params = Dictionary::new();
-        params.set("ConnectionType", server_type.name().to_string())?;
+        params.set("ConnectionType", server_type.name())?;
         params.set("ReconnectInterval", 60)?;
         params
     })?;
 
     settings.set(Some(server_type.session_id()), {
         let mut params = Dictionary::new();
-        params.set("StartTime", "00:00:00".to_string())?;
-        params.set("EndTime", "23:59:59".to_string())?;
+        params.set("StartTime", "00:00:00")?;
+        params.set("EndTime", "23:59:59")?;
         params.set("HeartBtInt", 20)?;
         params.set(
             "DataDictionary",
-            "../quickfix-ffi/libquickfix/spec/FIX44.xml".to_string(),
+            "../quickfix-ffi/libquickfix/spec/FIX44.xml",
         )?;
         server_type.fill_settings(&mut params, port)?;
         params
