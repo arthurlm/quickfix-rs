@@ -30,16 +30,12 @@ fn test_getter_and_setter() {
 
     // Read settings without configure it
     assert!(settings
-        .with_dictionary(Some(session_id.clone()), |dict| dict
-            .get::<String>("foo")
-            .unwrap())
+        .with_dictionary(Some(&session_id), |dict| dict.get::<String>("foo").unwrap())
         .is_none(),);
 
     // Configure settings
     settings.set(None, dict_global).unwrap();
-    settings
-        .set(Some(session_id.clone()), dict_session)
-        .unwrap();
+    settings.set(Some(&session_id), dict_session).unwrap();
 
     // Read settings back
     assert_eq!(
@@ -56,17 +52,13 @@ fn test_getter_and_setter() {
     );
     assert_eq!(
         settings
-            .with_dictionary(Some(session_id.clone()), |dict| dict
-                .get::<String>("foo")
-                .unwrap())
+            .with_dictionary(Some(&session_id), |dict| dict.get::<String>("foo").unwrap())
             .unwrap(),
         "45"
     );
     assert_eq!(
         settings
-            .with_dictionary(Some(session_id.clone()), |dict| dict
-                .get::<String>("bar ")
-                .ok())
+            .with_dictionary(Some(&session_id), |dict| dict.get::<String>("bar ").ok())
             .unwrap(),
         None,
     );

@@ -48,7 +48,7 @@ pub fn build_settings(
         params
     })?;
 
-    settings.set(Some(server_type.session_id()), {
+    settings.set(Some(&server_type.session_id()), {
         let mut params = Dictionary::new();
         params.set("StartTime", "00:00:00")?;
         params.set("EndTime", "23:59:59")?;

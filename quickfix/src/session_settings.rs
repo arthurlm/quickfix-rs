@@ -31,7 +31,7 @@ impl SessionSettings {
     }
 
     /// Borrow inner dictionary for session or global configuration.
-    pub fn with_dictionary<T, F>(&self, session_id: Option<SessionId>, f: F) -> Option<T>
+    pub fn with_dictionary<T, F>(&self, session_id: Option<&SessionId>, f: F) -> Option<T>
     where
         F: FnOnce(&Dictionary) -> T,
     {
@@ -55,7 +55,7 @@ impl SessionSettings {
     /// Set dictionary parameter for session or global configuration.
     pub fn set(
         &mut self,
-        session_id: Option<SessionId>,
+        session_id: Option<&SessionId>,
         value: Dictionary,
     ) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe {

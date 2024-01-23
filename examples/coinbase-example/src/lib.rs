@@ -13,7 +13,7 @@ pub fn build_session_settings(config: &CoinbaseConfig) -> anyhow::Result<Session
         params
     })?;
 
-    settings.set(Some(config.session_id()), {
+    settings.set(Some(&config.session_id()), {
         let mut params = Dictionary::new();
         params.set("StartTime", "00:00:01")?;
         params.set("EndTime", "23:59:59")?;

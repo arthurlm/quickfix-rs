@@ -28,7 +28,7 @@ fn build_settings() -> Result<SessionSettings, QuickFixError> {
         params
     })?;
 
-    settings.set(Some(SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?), {
+    settings.set(Some(&SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?), {
         let mut params = Dictionary::new();
         params.set("StartTime", "12:30:00")?;
         params.set("EndTime", "23:30:00")?;
