@@ -8,7 +8,7 @@ mod utils;
 fn test_build_with_simple_group() {
     let msg = build_news("Simple news", &[]).unwrap();
     assert_eq!(
-        msg.as_string().unwrap(),
+        msg.to_fix_string().unwrap(),
         "9=26\u{1}35=B\u{1}33=0\u{1}148=Simple news\u{1}10=189\u{1}"
     );
 
@@ -18,7 +18,7 @@ fn test_build_with_simple_group() {
     )
     .unwrap();
     assert_eq!(
-        msg.as_string().unwrap(),
+        msg.to_fix_string().unwrap(),
         "9=101\u{1}35=B\u{1}\
          33=2\u{1}\
          58=Release soon\u{1}\
@@ -40,7 +40,7 @@ fn test_build_with_complex_group() {
     .unwrap();
 
     assert_eq!(
-        msg.as_string().unwrap(),
+        msg.to_fix_string().unwrap(),
         "9=81\u{1}66=foo\u{1}73=3\u{1}\
          11=a1\u{1}14=b1\u{1}84=c1\u{1}6=d1\u{1}8=e1\u{1}\
          11=a2\u{1}14=b2\u{1}84=c2\u{1}6=d2\u{1}\
@@ -120,7 +120,7 @@ fn test_build_custom_with_recursive_groups() -> Result<(), QuickFixError> {
 
     // Compare FIX text output.
     assert_eq!(
-        msg.as_string()?,
+        msg.to_fix_string()?,
         "\
             9=133\u{1}\
             40=2\u{1}\
@@ -254,7 +254,7 @@ fn test_modify_group() {
 
     // Check before
     assert_eq!(
-        msg.as_string().unwrap(),
+        msg.to_fix_string().unwrap(),
         "9=70\u{1}35=B\u{1}33=3\u{1}\
          58=Some new library\u{1}\
          58=are available\u{1}\
@@ -279,7 +279,7 @@ fn test_modify_group() {
 
     // Check after
     assert_eq!(
-        msg.as_string().unwrap(),
+        msg.to_fix_string().unwrap(),
         "9=74\u{1}35=B\u{1}33=3\u{1}\
          58=Some new library\u{1}\
          58=will be available\u{1}\

@@ -401,9 +401,9 @@ fn generate_message(output: &mut String, message: &MessageSpec) {
                 /// This method is only here for debug / tests purposes. Do not use this
                 /// in real production code.
                 #[inline(never)]
-                pub fn as_fix_string(&self) -> String {{
+                pub fn to_fix_string(&self) -> String {{
                     self.inner
-                        .as_string()
+                        .to_fix_string()
                         .expect("Fail to format {struct_name} message as FIX string")
                 }}
             }}

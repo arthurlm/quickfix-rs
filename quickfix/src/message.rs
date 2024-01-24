@@ -33,7 +33,7 @@ impl Message {
             .ok_or_else(QuickFixError::from_last_error)
     }
 
-    /// Try reading underlying struct buffer as a string.
+    /// Try reading underlying struct buffer as a FIX string.
     ///
     /// # Performances
     ///
@@ -42,7 +42,7 @@ impl Message {
     /// String will be generated twice in C++ code:
     /// - Once for getting a safe buffer length.
     /// - Then to copy buffer to rust "memory".
-    pub fn as_string(&self) -> Result<String, QuickFixError> {
+    pub fn to_fix_string(&self) -> Result<String, QuickFixError> {
         unsafe {
             // Prepare output buffer
             let buffer_len = FixMessage_getStringLen(self.0);
@@ -222,7 +222,7 @@ impl fmt::Debug for Message {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut printer = f.debug_tuple("Message");
 
-        if let Ok(txt) = self.as_string() {
+        if let Ok(txt) = self.to_fix_string() {
             printer.field(&txt.replace(1 as char, "|"));
         }
 

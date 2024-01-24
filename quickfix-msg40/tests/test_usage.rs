@@ -14,7 +14,7 @@ fn test_build_order_status_request() -> Result<(), QuickFixError> {
 
     // Check FIX message contains valid value.
     assert_eq!(
-        obj.as_fix_string(),
+        obj.to_fix_string(),
         "8=FIX.4.0\u{1}9=35\u{1}35=H\u{1}\
          11=foo\u{1}54=1\u{1}55=AAPL US Equity\u{1}\
          10=213\u{1}"
@@ -68,7 +68,7 @@ fn test_build_order_status_request() -> Result<(), QuickFixError> {
     assert_eq!(obj.get_issuer(), None);
 
     // Trigger recompute checksum and check it.
-    let _ = obj.as_fix_string();
+    let _ = obj.to_fix_string();
     assert_eq!(obj.trailer().get_check_sum(), "198");
 
     // Convert struct to and from message.
@@ -91,7 +91,7 @@ fn test_build_list_status() -> Result<(), QuickFixError> {
 
     // Check FIX message contains valid value.
     assert_eq!(
-        obj.as_fix_string(),
+        obj.to_fix_string(),
         "8=FIX.4.0\u{1}9=26\u{1}35=N\u{1}\
          66=My list\u{1}82=0\u{1}83=0\u{1}\
          10=237\u{1}"
@@ -119,7 +119,7 @@ fn test_build_list_status() -> Result<(), QuickFixError> {
     )?)?;
 
     assert_eq!(
-        obj.as_fix_string(),
+        obj.to_fix_string(),
         "8=FIX.4.0\u{1}9=133\u{1}35=N\u{1}\
          66=My list\u{1}73=3\u{1}\
          11=Order:10000\u{1}14=100\u{1}84=50\u{1}6=18.5\u{1}\
