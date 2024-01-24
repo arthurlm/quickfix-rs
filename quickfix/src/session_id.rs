@@ -41,13 +41,6 @@ impl SessionId {
         .expect("Fail to allocate SessionId"))
     }
 
-    /// Try cloning the struct.
-    ///
-    /// It may fail as the foreign function allocation fail.
-    pub fn try_clone(&self) -> Option<Self> {
-        unsafe { FixSessionID_copy(self.0) }.map(Self)
-    }
-
     /// Get beginning string.
     pub fn get_begin_string(&self) -> Option<String> {
         unsafe { FixSessionID_getBeginString(self.0) }.map(read_checked_cstr)
@@ -84,7 +77,7 @@ impl SessionId {
 
 impl Clone for SessionId {
     fn clone(&self) -> Self {
-        self.try_clone().expect("Fail to copy SessionID")
+        Self(unsafe { FixSessionID_copy(self.0) }.expect("Fail to copy SessionID"))
     }
 }
 
