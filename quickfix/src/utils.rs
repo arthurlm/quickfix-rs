@@ -8,7 +8,7 @@ use crate::QuickFixError;
 #[inline(always)]
 pub fn read_checked_cstr(val: NonNull<ffi::c_char>) -> String {
     let cstr = unsafe { CStr::from_ptr(val.as_ptr()) };
-    String::from_utf8_lossy(cstr.to_bytes()).to_string()
+    cstr.to_string_lossy().to_string()
 }
 
 #[inline(always)]
