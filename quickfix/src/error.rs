@@ -195,9 +195,9 @@ fn last_quickfix_error_message_or_default() -> String {
 fn last_quickfix_error_message() -> Option<String> {
     unsafe {
         let raw_error = Fix_getLastErrorMessage()?;
-        let error = CStr::from_ptr(raw_error.as_ptr().cast());
-        let msg = error.to_string_lossy().to_string();
+        let error = CStr::from_ptr(raw_error.as_ptr());
+        let error_msg = error.to_string_lossy().to_string();
         Fix_clearLastErrorMessage();
-        Some(msg)
+        Some(error_msg)
     }
 }
