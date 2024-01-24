@@ -1,4 +1,4 @@
-use std::{ffi::CString, fmt};
+use std::fmt;
 
 use quickfix_ffi::{
     FixGroup_addGroup, FixGroup_copy, FixGroup_copyGroup, FixGroup_delete, FixGroup_getDelim,
@@ -54,8 +54,8 @@ impl FieldMap for Group {
     }
 
     fn set_field<V: ToFixValue>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError> {
-        let ffi_value = CString::new(value.to_fix_value())?;
-        ffi_code_to_result(unsafe { FixGroup_setField(self.0, tag, ffi_value.as_ptr()) })
+        let fix_value = value.to_fix_value()?;
+        ffi_code_to_result(unsafe { FixGroup_setField(self.0, tag, fix_value.as_ptr()) })
     }
 
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError> {

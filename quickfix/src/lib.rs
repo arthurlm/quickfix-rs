@@ -104,7 +104,7 @@ mod trailer;
 
 mod utils;
 
-use std::ffi::CString;
+use std::ffi::{CString, NulError};
 
 pub use application::{
     Application, ApplicationCallback, MsgFromAdminError, MsgFromAppError, MsgToAppError,
@@ -162,22 +162,20 @@ pub trait ConnectionHandler {
 ///
 /// This is why it exists.
 pub trait ToFixValue {
-    /// Convert implementer to a printable FIX value.
-    fn to_fix_value(&self) -> String;
+    /// Convert implementer to a printable null terminated FIX value.
+    fn to_fix_value(&self) -> Result<CString, NulError>;
 }
 
 macro_rules! impl_to_fix_value {
     ($t:ty) => {
         impl ToFixValue for $t {
-            fn to_fix_value(&self) -> String {
-                self.to_string()
+            fn to_fix_value(&self) -> Result<CString, NulError> {
+                CString::new(self.to_string())
             }
         }
     };
 }
 
-impl_to_fix_value!(String);
-impl_to_fix_value!(&str);
 impl_to_fix_value!(u8);
 impl_to_fix_value!(u16);
 impl_to_fix_value!(u32);
@@ -191,10 +189,22 @@ impl_to_fix_value!(isize);
 impl_to_fix_value!(f32);
 impl_to_fix_value!(f64);
 
+impl ToFixValue for String {
+    fn to_fix_value(&self) -> Result<CString, NulError> {
+        CString::new(self.as_str())
+    }
+}
+
+impl ToFixValue for &str {
+    fn to_fix_value(&self) -> Result<CString, NulError> {
+        CString::new(*self)
+    }
+}
+
 impl ToFixValue for bool {
-    fn to_fix_value(&self) -> String {
+    fn to_fix_value(&self) -> Result<CString, NulError> {
         // Check reference here: https://www.onixs.biz/fix-dictionary/4.3/tagNum_575.html
-        if *self { "Y" } else { "N" }.to_string()
+        CString::new(if *self { "Y" } else { "N" })
     }
 }
 
