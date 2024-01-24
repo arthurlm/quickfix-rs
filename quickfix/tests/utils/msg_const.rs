@@ -17,7 +17,7 @@ pub fn build_news(headline: &str, lines: &[&str]) -> Result<Message, QuickFixErr
     msg.with_header_mut(|h| h.set_field(MSG_TYPE, "B"))?;
 
     msg.set_field(MSG_HEADLINE, headline)?;
-    msg.set_field(MSG_NO_LINES_OF_TEXT, lines.len().to_string())?; // Not required but always nice
+    msg.set_field(MSG_NO_LINES_OF_TEXT, lines.len())?; // Not required but always nice
 
     for line in lines {
         let mut group = Group::try_new(MSG_NO_LINES_OF_TEXT, MSG_TEXT)?;
