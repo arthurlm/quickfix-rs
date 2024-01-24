@@ -108,5 +108,5 @@ pub struct MsgCounter {
 }
 
 fn assert_session_id_equals(a: &SessionId, b: &SessionId) {
-    assert_eq!(a.as_string(), b.as_string());
+    assert_eq!(a.to_repr(), b.to_repr());
 }

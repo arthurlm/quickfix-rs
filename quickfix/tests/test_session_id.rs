@@ -7,7 +7,7 @@ fn test_new() {
     assert_eq!(session.get_sender_comp_id().as_deref(), Some("FOO"));
     assert_eq!(session.get_target_comp_id().as_deref(), Some("BAR"));
     assert_eq!(session.get_session_qualifier().as_deref(), Some(""));
-    assert_eq!(session.as_string(), "FIX.4.1:FOO->BAR");
+    assert_eq!(session.to_repr(), "FIX.4.1:FOO->BAR");
 }
 
 #[test]
@@ -37,12 +37,12 @@ fn test_fixt() {
 #[test]
 fn test_clone() {
     let session1 = SessionId::try_new("FIX.4.1", "FOO", "BAR", "").unwrap();
-    assert_eq!(session1.as_string(), "FIX.4.1:FOO->BAR");
+    assert_eq!(session1.to_repr(), "FIX.4.1:FOO->BAR");
 
     let session2 = session1.clone();
-    assert_eq!(session2.as_string(), "FIX.4.1:FOO->BAR");
+    assert_eq!(session2.to_repr(), "FIX.4.1:FOO->BAR");
 
     // Test do not crash after drop
     drop(session1);
-    assert_eq!(session2.as_string(), "FIX.4.1:FOO->BAR");
+    assert_eq!(session2.to_repr(), "FIX.4.1:FOO->BAR");
 }

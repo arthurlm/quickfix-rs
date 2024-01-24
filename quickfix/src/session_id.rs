@@ -68,7 +68,7 @@ impl SessionId {
     }
 
     /// Convert session ID to a nicely printable string.
-    pub fn as_string(&self) -> String {
+    pub fn to_repr(&self) -> String {
         unsafe { FixSessionID_toString(self.0) }
             .map(read_checked_cstr)
             .unwrap_or_default()
@@ -83,7 +83,7 @@ impl Clone for SessionId {
 
 impl fmt::Debug for SessionId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_tuple("SessionId").field(&self.as_string()).finish()
+        f.debug_tuple("SessionId").field(&self.to_repr()).finish()
     }
 }
 
@@ -103,6 +103,6 @@ mod tests {
 
         let session2 = session1.clone();
         assert_ne!(session1.0, session2.0);
-        assert_eq!(session1.as_string(), session2.as_string());
+        assert_eq!(session1.to_repr(), session2.to_repr());
     }
 }
