@@ -369,8 +369,9 @@ fn generate_message(output: &mut String, message: &MessageSpec) {
             }}
 
             impl {struct_name} {{
+                pub const MSG_TYPE_BYTES: &'static str = "{msg_type}";
                 pub const MSG_TYPE: crate::field_types::MsgType =
-                    match crate::field_types::MsgType::from_const_bytes(b"{msg_type}") {{
+                    match crate::field_types::MsgType::from_const_bytes(Self::MSG_TYPE_BYTES.as_bytes()) {{
                         Ok(value) => value,
                         Err(_) => panic!("Invalid message type for {struct_name}"),
                     }};

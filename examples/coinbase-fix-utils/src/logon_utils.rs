@@ -30,7 +30,7 @@ pub fn sign(msg: &mut Message, config: &CoinbaseConfig) -> Result<(), Box<dyn st
     // Build pre-sign message by extracting everything from auto-generated FIX message.
     let pre_sign = [
         &read_header!(field_id::SENDING_TIME),
-        &Logon::MSG_TYPE.as_fix_value(),
+        Logon::MSG_TYPE_BYTES,
         &read_header!(field_id::MSG_SEQ_NUM),
         &config.api_key,
         "Coinbase",
