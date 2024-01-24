@@ -418,8 +418,8 @@ fn generate_message(output: &mut String, message: &MessageSpec) {
                     assert_eq!(
                         input
                             .with_header(|h| h.get_field(field_id::MSG_TYPE))
-                            .expect("Missing message type"),
-                        Self::MSG_TYPE.as_fix_value(),
+                            .and_then(|x| crate::field_types::MsgType::from_const_bytes(x.as_bytes()).ok()),
+                        Some(Self::MSG_TYPE),
                     );
                     Self {{ inner: input }}
                 }}

@@ -57,13 +57,13 @@ impl FixExecutor {
             };
         }
 
-        let msg_type = get_header!(fix40_id::MSG_TYPE)?;
-        if msg_type != MsgType::NewOrderSingle.as_fix_value() {
+        let msg_type = MsgType::from_const_bytes(get_header!(fix40_id::MSG_TYPE)?.as_bytes());
+        if msg_type != Ok(MsgType::NewOrderSingle) {
             return Err(ExecutorError::InvalidMessageType);
         }
 
-        let ord_type = get_field!(fix40_id::ORD_TYPE)?;
-        if ord_type != OrdType::Limit.as_fix_value() {
+        let ord_type = OrdType::from_const_bytes(get_field!(fix40_id::ORD_TYPE)?.as_bytes());
+        if ord_type != Ok(OrdType::Limit) {
             return Err(ExecutorError::InvalidOrderType);
         }
 

@@ -73,9 +73,11 @@ impl MyApplication {
 impl ApplicationCallback for MyApplication {
     fn on_msg_to_admin(&self, msg: &mut Message, _session: &SessionId) {
         // Intercept login message automatically sent by quickfix library
-        if msg.with_header(|h| h.get_field(field_id::MSG_TYPE))
-            == Some(MsgType::Logon.as_fix_value())
-        {
+        let msg_type = msg
+            .with_header(|h| h.get_field(field_id::MSG_TYPE))
+            .and_then(|x| MsgType::from_const_bytes(x.as_bytes()).ok());
+
+        if msg_type == Some(MsgType::Logon) {
             // Complete missing required fields.
             logon_utils::fill_message(msg, &self.config).expect("Fail to complete logon message");
 
