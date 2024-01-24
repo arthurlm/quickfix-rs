@@ -211,10 +211,10 @@ fn generate_field_type_values(output: &mut String, field_spec: &FieldSpec) {
             "#
     ));
 
-    // Generate `AsFixValue`.
+    // Generate `ToFixValue`.
     output.push_str(&format!(
-        r#" impl quickfix::AsFixValue for {type_name} {{
-                fn as_fix_value(&self) -> String {{
+        r#" impl quickfix::ToFixValue for {type_name} {{
+                fn to_fix_value(&self) -> String {{
                     match self {{
                     "#
     ));
