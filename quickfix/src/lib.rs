@@ -161,50 +161,50 @@ pub trait ConnectionHandler {
 /// Using `AsRef<str>` feel also like mixing different thing together that does not match.
 ///
 /// This is why it exists.
-pub trait ToFixValue {
+pub trait IntoFixValue {
     /// Convert implementer to a printable null terminated FIX value.
-    fn to_fix_value(&self) -> Result<CString, NulError>;
+    fn into_fix_value(self) -> Result<CString, NulError>;
 }
 
-macro_rules! impl_to_fix_value {
+macro_rules! impl_into_fix_value {
     ($t:ty) => {
-        impl ToFixValue for $t {
-            fn to_fix_value(&self) -> Result<CString, NulError> {
+        impl IntoFixValue for $t {
+            fn into_fix_value(self) -> Result<CString, NulError> {
                 CString::new(self.to_string())
             }
         }
     };
 }
 
-impl_to_fix_value!(u8);
-impl_to_fix_value!(u16);
-impl_to_fix_value!(u32);
-impl_to_fix_value!(u64);
-impl_to_fix_value!(usize);
-impl_to_fix_value!(i8);
-impl_to_fix_value!(i16);
-impl_to_fix_value!(i32);
-impl_to_fix_value!(i64);
-impl_to_fix_value!(isize);
-impl_to_fix_value!(f32);
-impl_to_fix_value!(f64);
+impl_into_fix_value!(u8);
+impl_into_fix_value!(u16);
+impl_into_fix_value!(u32);
+impl_into_fix_value!(u64);
+impl_into_fix_value!(usize);
+impl_into_fix_value!(i8);
+impl_into_fix_value!(i16);
+impl_into_fix_value!(i32);
+impl_into_fix_value!(i64);
+impl_into_fix_value!(isize);
+impl_into_fix_value!(f32);
+impl_into_fix_value!(f64);
 
-impl ToFixValue for String {
-    fn to_fix_value(&self) -> Result<CString, NulError> {
-        CString::new(self.as_str())
+impl IntoFixValue for String {
+    fn into_fix_value(self) -> Result<CString, NulError> {
+        CString::new(self)
     }
 }
 
-impl ToFixValue for &str {
-    fn to_fix_value(&self) -> Result<CString, NulError> {
-        CString::new(*self)
+impl IntoFixValue for &str {
+    fn into_fix_value(self) -> Result<CString, NulError> {
+        CString::new(self)
     }
 }
 
-impl ToFixValue for bool {
-    fn to_fix_value(&self) -> Result<CString, NulError> {
+impl IntoFixValue for bool {
+    fn into_fix_value(self) -> Result<CString, NulError> {
         // Check reference here: https://www.onixs.biz/fix-dictionary/4.3/tagNum_575.html
-        CString::new(if *self { "Y" } else { "N" })
+        CString::new(if self { "Y" } else { "N" })
     }
 }
 
@@ -217,7 +217,7 @@ pub trait FieldMap {
     fn get_field(&self, tag: i32) -> Option<String>;
 
     /// Set field value for a given tag number.
-    fn set_field<V: ToFixValue>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError>;
+    fn set_field<V: IntoFixValue>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError>;
 
     /// Remove a field from  collection.
     fn remove_field(&mut self, tag: i32) -> Result<(), QuickFixError>;

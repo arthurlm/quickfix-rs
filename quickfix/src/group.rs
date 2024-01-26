@@ -8,7 +8,7 @@ use quickfix_ffi::{
 
 use crate::{
     utils::{ffi_code_to_result, read_checked_cstr},
-    FieldMap, QuickFixError, ToFixValue,
+    FieldMap, IntoFixValue, QuickFixError,
 };
 
 /// Base class for all FIX repeating groups.
@@ -53,8 +53,8 @@ impl FieldMap for Group {
         unsafe { FixGroup_getField(self.0, tag) }.map(read_checked_cstr)
     }
 
-    fn set_field<V: ToFixValue>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError> {
-        let fix_value = value.to_fix_value()?;
+    fn set_field<V: IntoFixValue>(&mut self, tag: i32, value: V) -> Result<(), QuickFixError> {
+        let fix_value = value.into_fix_value()?;
         ffi_code_to_result(unsafe { FixGroup_setField(self.0, tag, fix_value.as_ptr()) })
     }
 

@@ -211,10 +211,10 @@ fn generate_field_type_values(output: &mut String, field_spec: &FieldSpec) {
             "#
     ));
 
-    // Generate `ToFixValue`.
+    // Generate `IntoFixValue`.
     output.push_str(&format!(
-        r#" impl quickfix::ToFixValue for {type_name} {{
-                fn to_fix_value(&self) -> Result<std::ffi::CString, std::ffi::NulError> {{
+        r#" impl quickfix::IntoFixValue for {type_name} {{
+                fn into_fix_value(self) -> Result<std::ffi::CString, std::ffi::NulError> {{
                     std::ffi::CString::new(match self {{
                     "#
     ));
