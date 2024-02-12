@@ -1,6 +1,6 @@
 [package]
 name = "quickfix-msg-gen"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Arthur LE MOIGNE"]
 edition = "2021"
 description = "FIX code generator from XML spec file"
