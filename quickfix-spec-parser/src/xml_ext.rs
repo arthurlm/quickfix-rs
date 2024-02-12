@@ -2,6 +2,7 @@ use quick_xml::events::{BytesStart, Event};
 
 use crate::{FixSpecError, XmlReader, XmlWriter};
 
+#[doc(hidden)]
 pub fn read_attribute(item: &BytesStart, name: &str) -> Result<String, FixSpecError> {
     let attr = item
         .attributes()

@@ -1,6 +1,11 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+/*! Low level binding for [quickfix](https://github.com/quickfix/quickfix) library.
+ *
+ * Please consider using higher level rust library for your application development.
+ */
+
 use std::{ffi, ptr::NonNull};
 
 pub const CALLBACK_OK: i8 = 0;

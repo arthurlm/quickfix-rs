@@ -19,6 +19,16 @@
 - Session state storage options: SQL, File, In Memory.
 - Logging options: stdout, stderr, [log](https://crates.io/crates/log) or any other crate if you implement your own trait.
 
+## Project status
+
+Project is working and most of the source library features are available.
+
+It is ready for production and real application use cases.
+
+**API MAY CHANGE IN FUTURE VERSION**\
+Crate is still in the [reviewing process](https://github.com/quickfix/quickfix/issues/533).
+Feel free to participate and share your point of view on this github issue.
+
 ## Build requirements
 
 Following package must be install to build the library:

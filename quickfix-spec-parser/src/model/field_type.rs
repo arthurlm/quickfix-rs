@@ -2,8 +2,10 @@ use std::str::FromStr;
 
 use crate::FixSpecError;
 
+/// Known FIX value type.
 #[derive(Debug, Clone, Copy)]
 #[non_exhaustive]
+#[allow(missing_docs)]
 pub enum FieldType {
     // ⬆️ Add in FIX 4.0
     Char,
@@ -53,6 +55,7 @@ pub enum FieldType {
 }
 
 impl FieldType {
+    /// Convert value as FIX dictionary value type.
     pub const fn as_static_str(&self) -> &'static str {
         match self {
             Self::Char => "CHAR",

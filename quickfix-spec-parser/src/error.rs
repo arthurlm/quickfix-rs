@@ -2,7 +2,9 @@ use std::{num::ParseIntError, string::FromUtf8Error};
 
 use thiserror::Error;
 
+/// Represent all possible error that can occurs when parsing XML spec file.
 #[derive(Debug, Error, PartialEq, Eq, Clone)]
+#[allow(missing_docs)]
 pub enum FixSpecError {
     #[error("invalid document: {0}")]
     InvalidDocument(&'static str),

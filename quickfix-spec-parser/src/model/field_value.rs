@@ -5,15 +5,19 @@ use crate::{
     XmlWriter,
 };
 
+/// Sub component possible value.
 #[derive(Debug, Clone)]
 pub enum FieldValue {
+    /// Sub component is a field.
     Field(Field),
+    /// Sub component is a group.
     Group(Group),
+    /// Sub component is a factorized component.
     Component(Component),
 }
 
 impl FieldValue {
-    pub fn parse_xml_tree(
+    pub(crate) fn parse_xml_tree(
         reader: &mut XmlReader,
         end_tag: &str,
     ) -> Result<Vec<Self>, FixSpecError> {

@@ -2,9 +2,12 @@ use quick_xml::events::BytesStart;
 
 use crate::{read_attribute, FixSpecError, XmlObject, XmlReadable, XmlWritable, XmlWriter};
 
+/// XML `<field><value ...>` representation.
 #[derive(Debug, Clone)]
 pub struct FieldAllowedValue {
+    /// Associated value.
     pub value: String,
+    /// Associated description / name.
     pub description: String,
 }
 

@@ -1,3 +1,5 @@
+/*! Code generator from XML FIX dictionary spec file. */
+
 use std::{
     fs,
     io::{self, Write},
@@ -23,6 +25,7 @@ trait FieldAccessorGenerator {
     fn caller_suffix_text(&self) -> &'static str;
 }
 
+/// Take a FIX XML spec file as `src` parameter and generated code to `dst` parameter.
 pub fn generate<S: AsRef<Path>, D: AsRef<Path>>(
     src: S,
     dst: D,

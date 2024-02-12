@@ -5,11 +5,16 @@ use crate::{
     XmlObject, XmlReadable, XmlReader, XmlWritable, XmlWriter,
 };
 
+/// XML `<field>` description.
 #[derive(Debug, Clone)]
 pub struct FieldSpec {
+    /// FIX technical tag number.
     pub number: u32,
+    /// FIX dictionary tag name.
     pub name: String,
+    /// Value type.
     pub r#type: FieldType,
+    /// Possible values in case there is a restricted list.
     pub values: Vec<FieldAllowedValue>,
 }
 

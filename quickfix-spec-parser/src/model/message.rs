@@ -5,11 +5,16 @@ use crate::{
     XmlReadable, XmlReader, XmlWritable, XmlWriter,
 };
 
+/// XML `<message>` description.
 #[derive(Debug, Clone)]
 pub struct Message {
+    /// Message name.
     pub name: String,
+    /// `msgtype`.
     pub msg_type: String,
+    /// Category level.
     pub category: MessageCategory,
+    /// Possible sub-components.
     pub values: Vec<FieldValue>,
 }
 

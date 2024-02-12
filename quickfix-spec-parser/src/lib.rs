@@ -1,3 +1,12 @@
+#![warn(missing_docs)]
+
+/*! FIX XML file spec parser.
+ *
+ * Allow reading official FIX XML dictionary and convert it to a struct / enum model.
+ *
+ * **NOTE** This crate is not a code generator. It only help having a clear representation of what FIX dictionary are.
+ */
+
 use bytes::Bytes;
 use quick_xml::{events::Event, Reader, Writer};
 
@@ -31,11 +40,15 @@ mod xml_ext;
 
 pub use error::*;
 pub use model::*;
-pub use xml_ext::*;
+use xml_ext::*;
+
+#[doc(hidden)] // For testing
+pub use xml_ext::read_attribute;
 
 type XmlWriter = Writer<Vec<u8>>;
 type XmlReader<'a> = Reader<&'a [u8]>;
 
+/// Try converting byte array into a FIX spec tree.
 pub fn parse_spec(input: &[u8]) -> Result<FixSpec, FixSpecError> {
     let mut reader = Reader::from_reader(input);
     reader.trim_text(true);
@@ -50,6 +63,7 @@ pub fn parse_spec(input: &[u8]) -> Result<FixSpec, FixSpecError> {
     }
 }
 
+/// Convert FIX spec tree into a byte array.
 pub fn write_spec(spec: &FixSpec) -> Result<Bytes, FixSpecError> {
     let mut writer = Writer::new_with_indent(Vec::new(), b' ', 1);
 

@@ -24,6 +24,7 @@ This project is an **unofficial** binding between [quickfix](https://github.com/
 - [What is it, what it is not ?](./doc/ABOUT.md)
 - [FAQ](./doc/FAQ.md)
 - [Internal design](./doc/DEV_NOTES.md)
+- [Examples](./examples/)
 
 ## Examples
 
@@ -86,13 +87,9 @@ You may consider checking out this [directory](./examples/) for more examples.
 Yes. But keep in mind that not every feature of the original FIX library are available.
 If some of your needs are missing: PR / feedbacks are welcomed 😁!
 
-Crate is not published (yet), because it is still in the [reviewing process](https://github.com/quickfix/quickfix/issues/533).
-If you want to use it in your project, just add this to your `Cargo.toml` config file:
-
-```toml
-[dependencies]
-quickfix = { git = "https://github.com/arthurlm/quickfix-rs.git" }
-```
+**API MAY CHANGE IN FUTURE VERSION**\
+Crate is still in the [reviewing process](https://github.com/quickfix/quickfix/issues/533).
+Feel free to participate and share your point of view on this github issue.
 
 **NOTE**: I am personally not using for now the generated message struct.
 I know they works fine thanks to unit tests and can be used in production code.

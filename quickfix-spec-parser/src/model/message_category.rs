@@ -4,13 +4,19 @@ use quick_xml::events::BytesStart;
 
 use crate::{read_attribute, FixSpecError};
 
+/// Message dest.
 #[derive(Debug, Clone, Copy)]
 pub enum MessageCategory {
+    /// Message is targeting application level.
     App,
+    /// Message is related to protocol / admin / technical task.
     Admin,
 }
 
 impl MessageCategory {
+    /// Convert value to a static string.
+    ///
+    /// Mostly useful for debugging / display purpose.
     pub const fn as_static_str(&self) -> &'static str {
         match self {
             MessageCategory::App => "app",
@@ -18,7 +24,7 @@ impl MessageCategory {
         }
     }
 
-    pub fn parse_xml_element(element: &BytesStart) -> Result<Self, FixSpecError> {
+    pub(crate) fn parse_xml_element(element: &BytesStart) -> Result<Self, FixSpecError> {
         let item = read_attribute(element, "msgcat")?.parse()?;
         Ok(item)
     }

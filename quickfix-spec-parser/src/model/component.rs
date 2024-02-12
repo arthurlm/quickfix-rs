@@ -2,9 +2,12 @@ use quick_xml::events::BytesStart;
 
 use crate::{read_attribute, FixSpecError, XmlObject, XmlReadable, XmlWritable, XmlWriter};
 
+/// XML `<component>` link.
 #[derive(Debug, Clone)]
 pub struct Component {
+    /// Component name.
     pub name: String,
+    /// Component is required.
     pub required: bool,
 }
 

@@ -5,10 +5,14 @@ use crate::{
     XmlWritable, XmlWriter,
 };
 
+/// XML `<group>` description.
 #[derive(Debug, Clone)]
 pub struct Group {
+    /// Group name.
     pub name: String,
+    /// Group is required to have a valid message.
     pub required: bool,
+    /// Group sub components.
     pub values: Vec<FieldValue>,
 }
 

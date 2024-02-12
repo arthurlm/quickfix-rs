@@ -2,9 +2,12 @@ use quick_xml::events::BytesStart;
 
 use crate::{read_attribute, FixSpecError, XmlObject, XmlReadable, XmlWritable, XmlWriter};
 
+/// XML `<field>` link.
 #[derive(Debug, Clone)]
 pub struct Field {
+    /// Field name.
     pub name: String,
+    /// Field is required.
     pub required: bool,
 }
 

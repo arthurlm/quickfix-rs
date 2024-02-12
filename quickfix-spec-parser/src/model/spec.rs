@@ -7,14 +7,22 @@ use crate::{
 
 use super::message::Message;
 
+/// XML FIX dictionary description.
 #[derive(Debug, Clone)]
 pub struct FixSpec {
+    /// FIX version number.
     pub version: (u8, u8, u8),
+    /// Is FIXT ?
     pub is_fixt: bool,
+    /// Message shared headers.
     pub headers: Vec<FieldValue>,
+    /// Known FIX messages.
     pub messages: Vec<Message>,
+    /// Message shared trailers.
     pub trailers: Vec<FieldValue>,
+    /// Factorized components specs.
     pub component_specs: Vec<ComponentSpec>,
+    /// Regular fields specs.
     pub field_specs: Vec<FieldSpec>,
 }
 
