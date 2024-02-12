@@ -9,7 +9,22 @@ license = "MIT"
 keywords = ["quickfix", "fix-protocol", "finance"]
 categories = ["external-ffi-bindings"]
 rust-version = "1.70.0"
-exclude = ["examples"]
+exclude = [
+    "examples",
+    "libquickfix/.github",
+    "libquickfix/bin",
+    "libquickfix/doc",
+    "libquickfix/examples",
+    "libquickfix/m4",
+    "libquickfix/scripts",
+    "libquickfix/src/python",
+    "libquickfix/src/python3",
+    "libquickfix/src/ruby",
+    "libquickfix/src/sql",
+    "libquickfix/src/swig",
+    "libquickfix/src/at*",
+    "libquickfix/test",
+]
 
 [dependencies]
 
