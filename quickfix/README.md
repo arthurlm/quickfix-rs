@@ -26,6 +26,29 @@ This project is an **unofficial** binding between [quickfix](https://github.com/
 - [Internal design](./doc/DEV_NOTES.md)
 - [Examples](./examples/)
 
+External website:
+
+- crates.io:
+  [QuickFix](https://crates.io/crates/quickfix),
+  [QuickFix FFI](https://crates.io/crates/quickfix-ffi)
+  [QuickFix spec parser](https://crates.io/crates/quickfix-spec-parser)
+  [QuickFix message generator](https://crates.io/crates/quickfix-msg-gen)
+  [QuickFix message FIX4.0](https://crates.io/crates/quickfix-msg40)
+  [QuickFix message FIX4.1](https://crates.io/crates/quickfix-msg41)
+  [QuickFix message FIX4.2](https://crates.io/crates/quickfix-msg42)
+  [QuickFix message FIX4.3](https://crates.io/crates/quickfix-msg43)
+  [QuickFix message FIX4.4](https://crates.io/crates/quickfix-msg44)
+- docs.rs:
+  [QuickFix](https://docs.rs/quickfix/latest/quickfix/)
+  [QuickFix FFI](https://docs.rs/quickfix-ffi/latest/quickfix_ffi/)
+  [QuickFix spec parser](https://docs.rs/quickfix-spec-parser/latest/quickfix_spec_parser/)
+  [QuickFix message generator](https://docs.rs/quickfix-msg-gen/latest/quickfix_msg_gen/)
+  [QuickFix message FIX4.0](https://docs.rs/quickfix-msg40/latest/quickfix_msg40/)
+  [QuickFix message FIX4.1](https://docs.rs/quickfix-msg41/latest/quickfix_msg41/)
+  [QuickFix message FIX4.2](https://docs.rs/quickfix-msg42/latest/quickfix_msg42/)
+  [QuickFix message FIX4.3](https://docs.rs/quickfix-msg43/latest/quickfix_msg43/)
+  [QuickFix message FIX4.4](https://docs.rs/quickfix-msg44/latest/quickfix_msg44/)
+
 ## Examples
 
 Here is the minimal application you can write to getting started with quickfix:
