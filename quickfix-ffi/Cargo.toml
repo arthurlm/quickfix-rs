@@ -15,6 +15,7 @@ include = [
     "/libquickfix/src/CMakeLists.txt",
     "/libquickfix/cmake_config.h.in",
     "/libquickfix/CMakeLists.txt",
+    "/libquickfix/LICENSE",            # Used by build script
     "/quickfix-bind",
     "/src",
     "/build.rs",
