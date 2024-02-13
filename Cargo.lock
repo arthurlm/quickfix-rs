@@ -102,7 +102,7 @@ dependencies = [
 
 [[package]]
 name = "coinbase-example"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "coinbase-fix-utils",
@@ -114,7 +114,7 @@ dependencies = [
 
 [[package]]
 name = "coinbase-fix-utils"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "base64",
  "coinbase-fix42",
@@ -125,7 +125,7 @@ dependencies = [
 
 [[package]]
 name = "coinbase-fix42"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -194,7 +194,7 @@ checksum = "a26ae43d7bcc3b814de94796a5e736d4029efb0ee900c12e2d54c993ad1a1e07"
 
 [[package]]
 name = "executor"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "quickfix",
  "quickfix-msg40",
@@ -372,7 +372,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "colored",
  "log",
@@ -382,7 +382,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-ffi"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "cmake",
  "fs_extra",
@@ -390,7 +390,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg-gen"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "bytes",
  "convert_case",
@@ -401,7 +401,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg40"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -409,7 +409,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg41"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -417,7 +417,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg42"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -425,7 +425,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg43"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -433,7 +433,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg44"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -441,7 +441,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-spec-parser"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "bytes",
  "quick-xml",
@@ -485,7 +485,7 @@ dependencies = [
 
 [[package]]
 name = "single-order-sender"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "chrono",
