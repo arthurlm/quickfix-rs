@@ -9,21 +9,41 @@ license = "MIT"
 keywords = ["quickfix", "fix-protocol", "finance"]
 categories = ["external-ffi-bindings"]
 rust-version = "1.70.0"
-exclude = [
-    "examples",
-    "libquickfix/.github",
-    "libquickfix/bin",
-    "libquickfix/doc",
-    "libquickfix/examples",
-    "libquickfix/m4",
-    "libquickfix/scripts",
-    "libquickfix/src/python",
-    "libquickfix/src/python3",
-    "libquickfix/src/ruby",
-    "libquickfix/src/sql",
-    "libquickfix/src/swig",
-    "libquickfix/src/at*",
-    "libquickfix/test",
+include = [
+    "/libquickfix/cmake/",
+    "/libquickfix/src/C++",
+    "/libquickfix/src/CMakeLists.txt",
+    "/libquickfix/cmake_config.h.in",
+    "/libquickfix/CMakeLists.txt",
+    "/quickfix-bind",
+    "/src",
+    "/build.rs",
+    "/CMakeLists.txt",
+    # Do not include auto generated message files.
+    "!/libquickfix/src/C++/fix40",
+    "!/libquickfix/src/C++/fix41",
+    "!/libquickfix/src/C++/fix42",
+    "!/libquickfix/src/C++/fix43",
+    "!/libquickfix/src/C++/fix44",
+    "!/libquickfix/src/C++/fix50",
+    "!/libquickfix/src/C++/fix50sp1",
+    "!/libquickfix/src/C++/fix50sp2",
+    "!/libquickfix/src/C++/fixt11",
+    # NOTE: We still have to include at least one file (let's take the smallest one), to make CMake build
+    #       script happy.
+    "/libquickfix/src/C++/fix40/Heartbeat.h",
+    "/libquickfix/src/C++/fix41/Heartbeat.h",
+    "/libquickfix/src/C++/fix42/Heartbeat.h",
+    "/libquickfix/src/C++/fix43/Heartbeat.h",
+    "/libquickfix/src/C++/fix44/Heartbeat.h",
+    "/libquickfix/src/C++/fix50/ListStatusRequest.h",
+    "/libquickfix/src/C++/fix50sp1/ListStatusRequest.h",
+    "/libquickfix/src/C++/fix50sp2/ListStatusRequest.h",
+    "/libquickfix/src/C++/fixt11/Heartbeat.h",
+    # Do not include test: we will not build them.
+    # We still have to include the CMakeLists even if everything is disabled.
+    "!/libquickfix/src/C++/test",
+    "/libquickfix/src/C++/test/CMakeLists.txt",
 ]
 
 [dependencies]
