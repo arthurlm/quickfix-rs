@@ -1,6 +1,6 @@
 [package]
 name = "quickfix-msg41"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Arthur LE MOIGNE"]
 edition = "2021"
 description = "FIX 4.1 messages generated from official XML spec file"
