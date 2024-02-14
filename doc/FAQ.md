@@ -1,5 +1,59 @@
 # Frequently Asked Questions
 
+## What is the rust library overhead vs C++ quickfix
+
+I have not benchmark it.
+
+I have try to design rust wrapper with the minimal footprint as possible.
+My guess is (if [LTO](https://doc.rust-lang.org/cargo/reference/profiles.html#lto) is enabled) overhead will be pretty low.
+
+For example, if we look at `quickfix::Message`:
+
+- it is a wrapper of `quickfix_ffi::FixMessage_t`
+- which is a wrapper of `std::ptr::NonNull<ffi::c_void>`
+- which will be used in `quickfix-bind` library to directly call quickfix c++ functions.
+
+Moreover you can check `quickfix::Message` size is the size of a pointer.
+
+## How can I use my own FIX XML spec file ?
+
+You can take for example what I have done to generate [coinbase FIX 4.2](../examples/coinbase-fix42/) package:
+
+1. Crate a new sub-package in your workspace (ex: `my-fix51`)
+2. Add the FIX XML spec file in your `src` folder
+3. Add `quickfix` to your dependency
+4. Add `quickfix-msg-gen` to your **build** dependency
+5. Add `src/lib.rs` with following content:
+
+```rust
+include!(concat!(env!("OUT_DIR"), "/code.rs"));
+```
+
+6. Add `build.rs` with following content:
+
+```rust
+use std::{env, io};
+
+use quickfix_msg_gen::*;
+
+const SPEC_FILENAME: &str = "src/my-spec-fix51.xml";
+const BEGIN_STRING: &str = "FIX.5.1";
+
+fn main() -> io::Result<()> {
+    let out_dir = env::var("OUT_DIR").expect("Missing OUT_DIR");
+    generate(SPEC_FILENAME, format!("{out_dir}/code.rs"), BEGIN_STRING)?;
+    Ok(())
+}
+```
+
+## Why coinbase example are not published ?
+
+I do not own the "coinbase" name and do not own their XML spec file.\
+I am also  not working for / with them.
+
+So, I legally cannot publish theses examples.\
+They are just there to show you how to make your own package from an XML spec file.
+
 ## How do I ?
 
 Build C binding library:
@@ -33,18 +87,3 @@ cargo r --example fix_getting_started -- examples/configs/server.ini
 cargo r --example fix_repl -- acceptor examples/configs/server.ini
 cargo r --example fix_repl -- initiator examples/configs/client.ini
 ```
-
-## What is the rust library overhead vs C++ quickfix
-
-I have not benchmark it.
-
-I have try to design rust wrapper with the minimal footprint as possible.
-My guess is (if [LTO](https://doc.rust-lang.org/cargo/reference/profiles.html#lto) is enabled) overhead will be pretty low.
-
-For example, if we look at `quickfix::Message`:
-
-- it is a wrapper of `quickfix_ffi::FixMessage_t`
-- which is a wrapper of `std::ptr::NonNull<ffi::c_void>`
-- which will be used in `quickfix-bind` library to directly call quickfix c++ functions.
-
-Moreover you can check `quickfix::Message` size is the size of a pointer.
