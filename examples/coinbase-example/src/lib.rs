@@ -22,7 +22,7 @@ pub fn build_session_settings(config: &CoinbaseConfig) -> anyhow::Result<Session
         params.set("SocketConnectHost", "127.0.0.1")?;
         params.set(
             "DataDictionary",
-            "../coinbase-fix42/src/cb-FIX42-prod-sand.xml",
+            "../coinbase-fix42-order-entry/src/cb-FIX42-prod-sand.xml",
         )?;
         params
     })?;

@@ -1,5 +1,5 @@
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine as _};
-use coinbase_fix42::{field_id, Logon};
+use coinbase_fix42_order_entry::{field_id, Logon};
 use hmac::{Hmac, Mac};
 use quickfix::*;
 use sha2::Sha256;

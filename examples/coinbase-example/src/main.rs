@@ -5,7 +5,7 @@ use std::{
 };
 
 use coinbase_example::*;
-use coinbase_fix42::{
+use coinbase_fix42_order_entry::{
     field_types::{MsgType, OrdStatus, OrdType, SelfTradePrevention, Side, TimeInForce},
     *,
 };

@@ -26,7 +26,7 @@ impl CoinbaseConfig {
 
     pub fn session_id(&self) -> SessionId {
         SessionId::try_new(
-            coinbase_fix42::FIX_BEGIN_STRING,
+            coinbase_fix42_order_entry::FIX_BEGIN_STRING,
             &self.api_key,
             "Coinbase",
             "",
