@@ -159,15 +159,15 @@
         <field number='15' name='Currency' type='CURRENCY' />
         <field number='34' name='MsgSeqNum' type='SEQNUM' />
         <field number='37' name='OrderID' type='STRING' />
-        <field number="40" name="OrdType" type="CHAR">
-            <value enum="1" description="MARKET" />
-            <value enum="2" description="LIMIT" />
+        <field number='40' name='OrdType' type='CHAR'>
+            <value enum='1' description='MARKET' />
+            <value enum='2' description='LIMIT' />
         </field>
         <field number='45' name='RefSeqNum' type='SEQNUM' />
         <field number='55' name='Symbol' type='STRING' />
         <field number='58' name='Text' type='STRING' />
         <field number='60' name='TransactTime' type='UTCTIMESTAMP' />
-        <field number='83' name='RptSeq' type='LONG' />
+        <field number='83' name='RptSeq' type='INT' />
         <field number='107' name='SecurityDesc' type='STRING' />
         <field number='110' name='MinQty' type='QTY' />
         <field number='120' name='SettlCurrency' type='CURRENCY' />
