@@ -118,6 +118,7 @@ version = "0.1.3"
 dependencies = [
  "base64",
  "coinbase-fix42-order-entry",
+ "coinbase-fix50-market-data",
  "hmac",
  "quickfix",
  "sha2",

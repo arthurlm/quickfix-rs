@@ -174,7 +174,7 @@ fn main() -> anyhow::Result<()> {
 
     // Send new order
     let order = new_order(&my_app)?;
-    let session_id = my_app.config.session_id();
+    let session_id = my_app.config.order_entry_session_id();
 
     println!(">> Sending order 💸");
     send_to_target(order.into(), &session_id)?;
