@@ -26,6 +26,21 @@ pub struct FixSpec {
     pub field_specs: Vec<FieldSpec>,
 }
 
+impl FixSpec {
+    /// Generate a new empty FIXT spec.
+    pub fn new_fixt() -> Self {
+        Self {
+            version: (1, 1, 0),
+            is_fixt: true,
+            headers: vec![],
+            messages: vec![],
+            trailers: vec![],
+            component_specs: vec![],
+            field_specs: vec![],
+        }
+    }
+}
+
 impl XmlObject for FixSpec {
     const TAG_NAME: &'static str = "fix";
 }
