@@ -21,10 +21,10 @@ This project is an **unofficial** binding between [quickfix](https://github.com/
 
 ## Documentation
 
-- [What is it, what it is not ?](./doc/ABOUT.md)
-- [FAQ](./doc/FAQ.md)
-- [Internal design](./doc/DEV_NOTES.md)
-- [Examples](./examples/)
+- [What is it, what it is not ?](https://github.com/arthurlm/quickfix-rs/blob/main/doc/ABOUT.md)
+- [FAQ](https://github.com/arthurlm/quickfix-rs/blob/main/doc/FAQ.md)
+- [Internal design](https://github.com/arthurlm/quickfix-rs/blob/main/doc/DEV_NOTES.md)
+- [Examples](https://github.com/arthurlm/quickfix-rs/blob/main/examples/)
 
 External website:
 
@@ -33,21 +33,23 @@ External website:
   [QuickFix FFI](https://crates.io/crates/quickfix-ffi)
   [QuickFix spec parser](https://crates.io/crates/quickfix-spec-parser)
   [QuickFix message generator](https://crates.io/crates/quickfix-msg-gen)
-  [QuickFix message FIX4.0](https://crates.io/crates/quickfix-msg40)
-  [QuickFix message FIX4.1](https://crates.io/crates/quickfix-msg41)
-  [QuickFix message FIX4.2](https://crates.io/crates/quickfix-msg42)
-  [QuickFix message FIX4.3](https://crates.io/crates/quickfix-msg43)
-  [QuickFix message FIX4.4](https://crates.io/crates/quickfix-msg44)
+  [FIX 4.0](https://crates.io/crates/quickfix-msg40)
+  [FIX 4.1](https://crates.io/crates/quickfix-msg41)
+  [FIX 4.2](https://crates.io/crates/quickfix-msg42)
+  [FIX 4.3](https://crates.io/crates/quickfix-msg43)
+  [FIX 4.4](https://crates.io/crates/quickfix-msg44)
+  [FIX 5.0](https://crates.io/crates/quickfix-msg50)
 - docs.rs:
   [QuickFix](https://docs.rs/quickfix/latest/quickfix/)
   [QuickFix FFI](https://docs.rs/quickfix-ffi/latest/quickfix_ffi/)
   [QuickFix spec parser](https://docs.rs/quickfix-spec-parser/latest/quickfix_spec_parser/)
   [QuickFix message generator](https://docs.rs/quickfix-msg-gen/latest/quickfix_msg_gen/)
-  [QuickFix message FIX4.0](https://docs.rs/quickfix-msg40/latest/quickfix_msg40/)
-  [QuickFix message FIX4.1](https://docs.rs/quickfix-msg41/latest/quickfix_msg41/)
-  [QuickFix message FIX4.2](https://docs.rs/quickfix-msg42/latest/quickfix_msg42/)
-  [QuickFix message FIX4.3](https://docs.rs/quickfix-msg43/latest/quickfix_msg43/)
-  [QuickFix message FIX4.4](https://docs.rs/quickfix-msg44/latest/quickfix_msg44/)
+  [FIX 4.0](https://docs.rs/quickfix-msg40/latest/quickfix_msg40/)
+  [FIX 4.1](https://docs.rs/quickfix-msg41/latest/quickfix_msg41/)
+  [FIX 4.2](https://docs.rs/quickfix-msg42/latest/quickfix_msg42/)
+  [FIX 4.3](https://docs.rs/quickfix-msg43/latest/quickfix_msg43/)
+  [FIX 4.4](https://docs.rs/quickfix-msg44/latest/quickfix_msg44/)
+  [FIX 5.0](https://docs.rs/quickfix-msg50/latest/quickfix_msg50/)
 
 ## Examples
 
@@ -103,7 +105,7 @@ fn main() -> Result<(), QuickFixError> {
 }
 ```
 
-You may consider checking out this [directory](./examples/) for more examples.
+You may consider checking out this [directory](https://github.com/arthurlm/quickfix-rs/blob/main/examples/) for more examples.
 
 ## Is it ready for production ?
 
