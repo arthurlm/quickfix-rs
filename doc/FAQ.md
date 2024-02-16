@@ -46,6 +46,18 @@ fn main() -> io::Result<()> {
 }
 ```
 
+## I am using FIX 5.0+ so I have multiple spec file, how can I build struct from it ?
+
+Generating `struct` / `enum` from multiple XML spec file is hard.\
+How do you track the source XML file ?\
+How to deal with duplicated definition and message order ?
+
+To resolve this issue it is simple: **you have to work with only one XML spec file**.\
+I have few utilities in [`quickfix-spec-parser`](../quickfix-spec-parser/examples/) to help you merging multiple XML spec files.
+It will not solve every problem, so you might still have to double check output XML on your own.
+
+PR about improving this utilities are always welcomed 😁.
+
 ## Why coinbase example are not published ?
 
 I do not own the "coinbase" name and do not own their XML spec file.\
