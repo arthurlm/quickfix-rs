@@ -6,7 +6,7 @@ publish = false
 
 [dependencies]
 anyhow = "1.0.79"
-coinbase-fix42 = { path = "../coinbase-fix42", version = "0.1.0" }
+coinbase-fix42-order-entry = { path = "../coinbase-fix42-order-entry", version = "0.1.0" }
 coinbase-fix-utils = { path = "../coinbase-fix-utils", version = "0.1.0" }
 quickfix = { path = "../../quickfix", version = "0.1.0" }
 uuid = { version = "1.6.1", features = ["v4"] }

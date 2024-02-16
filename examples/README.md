@@ -26,7 +26,7 @@ Because it is the simplest one to setup and it has a sandbox to play with.
 That is so simple. Just add following lines to your `Cargo.toml` file:
 
 ```toml
-coinbase-fix42 = { git = "https://github.com/arthurlm/quickfix-rs.git" }
+coinbase-fix42-order-entry = { git = "https://github.com/arthurlm/quickfix-rs.git" }
 coinbase-fix-utils = { git = "https://github.com/arthurlm/quickfix-rs.git" }
 quickfix = { git = "https://github.com/arthurlm/quickfix-rs.git" }
 ```

@@ -1,5 +1,9 @@
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine as _};
-use coinbase_fix42::{field_id, Logon};
+use coinbase_fix42_order_entry::{
+    field_id::{self, PASSWORD},
+    Logon,
+};
+use coinbase_fix50_market_data::field_id::USERNAME;
 use hmac::{Hmac, Mac};
 use quickfix::*;
 use sha2::Sha256;
@@ -8,7 +12,9 @@ use crate::config::CoinbaseConfig;
 
 pub fn fill_message(msg: &mut Message, config: &CoinbaseConfig) -> Result<(), QuickFixError> {
     // Set password
-    msg.set_field(field_id::PASSWORD, config.api_passphrase.as_str())
+    msg.set_field(USERNAME, "s.nakamoto")
+        .expect("Fail to set password");
+    msg.set_field(PASSWORD, config.api_passphrase.as_str())
         .expect("Fail to set password");
 
     Ok(())

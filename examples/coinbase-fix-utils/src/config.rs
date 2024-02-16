@@ -24,12 +24,22 @@ impl CoinbaseConfig {
         }
     }
 
-    pub fn session_id(&self) -> SessionId {
+    pub fn order_entry_session_id(&self) -> SessionId {
         SessionId::try_new(
-            coinbase_fix42::FIX_BEGIN_STRING,
+            coinbase_fix42_order_entry::FIX_BEGIN_STRING,
             &self.api_key,
             "Coinbase",
-            "",
+            "order-entry",
+        )
+        .expect("Fail to build session ID")
+    }
+
+    pub fn market_data_session_id(&self) -> SessionId {
+        SessionId::try_new(
+            coinbase_fix50_market_data::FIX_BEGIN_STRING,
+            &self.api_key,
+            "Coinbase",
+            "market-data",
         )
         .expect("Fail to build session ID")
     }
