@@ -56,6 +56,12 @@ To resolve this issue it is simple: **you have to work with only one XML spec fi
 I have few utilities in [`quickfix-spec-parser`](../quickfix-spec-parser/examples/) to help you merging multiple XML spec files.
 It will not solve every problem, so you might still have to double check output XML on your own.
 
+For example, here is the command I used to generated FIX 5.0 spec from its source files:
+
+```sh
+cargo r --example spec-merger -- ./quickfix-msg50/src/FIX{T11,50}.xml > ./quickfix-msg50/src/spec.xml
+```
+
 PR about improving this utilities are always welcomed 😁.
 
 ## Why coinbase example are not published ?

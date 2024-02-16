@@ -449,6 +449,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "quickfix-msg50"
+version = "0.1.3"
+dependencies = [
+ "quickfix",
+ "quickfix-msg-gen",
+]
+
+[[package]]
 name = "quickfix-spec-parser"
 version = "0.1.3"
 dependencies = [
