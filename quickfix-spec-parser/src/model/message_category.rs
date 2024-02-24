@@ -5,7 +5,7 @@ use quick_xml::events::BytesStart;
 use crate::{read_attribute, FixSpecError};
 
 /// Message dest.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MessageCategory {
     /// Message is targeting application level.
     App,

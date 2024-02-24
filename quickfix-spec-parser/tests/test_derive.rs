@@ -115,3 +115,9 @@ fn test_debug() {
         "FixSpec { version: (4, 8, 3), is_fixt: false, headers: [], messages: [], trailers: [], component_specs: [], field_specs: [] }",
     );
 }
+
+#[test]
+fn test_message_category() {
+    assert_eq!(MessageCategory::Admin.clone(), MessageCategory::Admin);
+    assert_ne!(MessageCategory::App.clone(), MessageCategory::Admin);
+}
