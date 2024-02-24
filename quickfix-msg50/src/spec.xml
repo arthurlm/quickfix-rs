@@ -2798,7 +2798,6 @@
     <field name='HopRefID' required='N'/>
    </group>
   </component>
-  <component name='MsgTypeGrp'/>
   <component name='CommissionData'>
    <field name='Commission' required='N'/>
    <field name='CommType' required='N'/>
