@@ -120,6 +120,13 @@ Feel free to participate and share your point of view on this github issue.
 I know they works fine thanks to unit tests and can be used in production code.
 Feedback on this part are welcomed !
 
+## Project status
+
+I am not actively developing many more features to this project.\
+To me it is actually pretty completed !
+
+If something is missing to you, feel free to open an issue / create PR. Contribution are welcomed.
+
 ## Build requirements
 
 Following package must be install to build the library:
