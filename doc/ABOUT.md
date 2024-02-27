@@ -43,10 +43,10 @@ What I do **not** plan to bind from this crate:
     For example:
     - In [MatchType](https://www.onixs.biz/fix-dictionary/5.0/tagNum_574.html) some tag is defined multiple times.
       Generated enum are so inconsistent and cannot be safely generated.
-    - There is no header / trailer in spec files (see: [FIX50.xml](https://github.com/quickfix/quickfix/blob/0b88788710b6b9767440cd430bf24c6b6e2080a2/spec/FIX50.xml#L2)).
     - There are probably other incompatibility but I stopped here ...
 
-    You can edit XML spec to your need and create a package with desired spec locally.
+    You can edit XML spec to your need and create a package with desired spec locally.\
+    Check FAQ for more info on this.
 
 6. All binding of `LogFactory`.
 

@@ -1,4 +1,4 @@
-# Quick fix binding for Rust
+# QuickFIX Rust
 
 ![CI workflow](https://github.com/arthurlm/quickfix-rs/actions/workflows/ci.yml/badge.svg)
 ![MSRV](https://img.shields.io/badge/MSRV-1.70.0-blue)
