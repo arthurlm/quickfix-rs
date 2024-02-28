@@ -1,4 +1,4 @@
-# Quickfix message generator
+# QuickFIX message generator
 
 Code generator from XML FIX dictionary spec file.
 

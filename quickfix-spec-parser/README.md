@@ -1,4 +1,4 @@
-# Quickfix XML spec parser
+# QuickFIX XML spec parser
 
 Parse XML FIX spec file to rust struct / enum model.
 

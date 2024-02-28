@@ -1,4 +1,4 @@
-# Quickfix FFI
+# QuickFIX FFI
 
 Low level binding for [quickfix](https://github.com/quickfix/quickfix) library.
 

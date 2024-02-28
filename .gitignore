@@ -4,7 +4,7 @@ target
 # IDE
 .vscode
 
-# Quickfix output path
+# QuickFIX output path
 store
 log
 

@@ -1,4 +1,4 @@
-# Quickfix message FIX 4.2
+# QuickFIX message FIX 4.2
 
 Auto-generated messages for `FIX42.xml` dictionary.
 
