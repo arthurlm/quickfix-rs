@@ -118,7 +118,7 @@ fn generate_field_types(output: &mut String, field_specs: &[FieldSpec]) {
     for field_spec in field_specs {
         if !field_spec.values.is_empty() {
             match &field_spec.r#type {
-                FieldType::Int => {
+                FieldType::Int | FieldType::Long => {
                     generate_field_type_int_values(output, field_spec);
                 }
                 _ => {
@@ -135,7 +135,10 @@ fn generate_field_types(output: &mut String, field_specs: &[FieldSpec]) {
 
 fn generate_field_type_int_values(output: &mut String, field_spec: &FieldSpec) {
     assert!(!field_spec.values.is_empty());
-    assert!(matches!(field_spec.r#type, FieldType::Int));
+    assert!(matches!(
+        field_spec.r#type,
+        FieldType::Int | FieldType::Long
+    ));
 
     let enum_name = field_spec.name.as_str();
 
@@ -243,6 +246,7 @@ fn generate_field_type_alias(output: &mut String, field_spec: &FieldSpec) {
     let type_name = field_spec.name.as_str();
     let rust_type = match &field_spec.r#type {
         FieldType::Int => "i64",
+        FieldType::Long => "i128",
         FieldType::Length => "u32",
         FieldType::SequenceNumber => "u32",
         FieldType::NumberInGroup => "i32",
