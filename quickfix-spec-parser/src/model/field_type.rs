@@ -52,6 +52,8 @@ pub enum FieldType {
     XidRef,
     Xid,
     LocalMarketTime,
+    // ⬆️ Not part of any FIX spec but known types.
+    Long,
 }
 
 impl FieldType {
@@ -60,6 +62,7 @@ impl FieldType {
         match self {
             Self::Char => "CHAR",
             Self::Int => "INT",
+            Self::Long => "LONG",
             Self::Float => "FLOAT",
             Self::Time => "TIME",
             Self::Date => "DATE",
@@ -106,6 +109,7 @@ impl FromStr for FieldType {
         match input {
             "CHAR" => Ok(Self::Char),
             "INT" => Ok(Self::Int),
+            "LONG" => Ok(Self::Long),
             "FLOAT" => Ok(Self::Float),
             "TIME" => Ok(Self::Time),
             "DATE" => Ok(Self::Date),

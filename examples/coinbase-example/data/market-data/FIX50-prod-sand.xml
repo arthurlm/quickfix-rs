@@ -167,7 +167,7 @@
         <field number='55' name='Symbol' type='STRING' />
         <field number='58' name='Text' type='STRING' />
         <field number='60' name='TransactTime' type='UTCTIMESTAMP' />
-        <field number='83' name='RptSeq' type='INT' />
+        <field number='83' name='RptSeq' type='LONG' />
         <field number='107' name='SecurityDesc' type='STRING' />
         <field number='110' name='MinQty' type='QTY' />
         <field number='120' name='SettlCurrency' type='CURRENCY' />
