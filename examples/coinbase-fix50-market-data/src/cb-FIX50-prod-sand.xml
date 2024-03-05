@@ -361,7 +361,7 @@
         <field number='57' name='TargetSubID' type='STRING'/>
         <field number='58' name='Text' type='STRING'/>
         <field number='60' name='TransactTime' type='UTCTIMESTAMP'/>
-        <field number='83' name='RptSeq' type='INT'/>
+        <field number='83' name='RptSeq' type='LONG'/>
         <field number='89' name='Signature' type='DATA'/>
         <field number='90' name='SecureDataLen' type='LENGTH'/>
         <field number='91' name='SecureData' type='DATA'/>
