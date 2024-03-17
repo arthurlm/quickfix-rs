@@ -1,4 +1,4 @@
 [submodule "quickfix-ffi/libquickfix"]
 	path = quickfix-ffi/libquickfix
-	url = https://github.com/arthurlm/quickfix.git
-	branch = release
+	url = https://github.com/quickfix/quickfix.git
+	branch = master
