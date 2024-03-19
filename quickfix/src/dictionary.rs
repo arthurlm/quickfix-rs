@@ -60,7 +60,7 @@ impl ForeignPropertyGetter<String> for Dictionary {
             // Prepare output buffer
             let buffer_len = FixDictionary_getStringLen(self.0, key.as_ptr());
             if buffer_len < 0 {
-                return Err(QuickFixError::InvalidBufferLen);
+                return Err(QuickFixError::from_last_error());
             }
 
             // Allocate buffer on rust side

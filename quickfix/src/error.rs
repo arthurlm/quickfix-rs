@@ -10,10 +10,6 @@ pub enum QuickFixError {
     #[error("invalid function return code: code={0}, msg={1}")]
     InvalidFunctionReturnCode(i8, String),
 
-    /// Cannot compute required buffer len to move data from cpp to rust.
-    #[error("invalid buffer len")]
-    InvalidBufferLen,
-
     /// Cannot pass function argument to quickfix.
     #[error("Invalid argument: {0}")]
     InvalidArgument(String),
