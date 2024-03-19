@@ -16,6 +16,7 @@ fn test_build() {
         &DataDictionary("foo/FIX50.xml"),
         &TransportDataDictionary("bar/FIXT11.xml"),
         &FileStorePath("my_store"),
+        &("foo", "bar"),
     ])
     .unwrap();
 
@@ -55,4 +56,5 @@ fn test_build() {
         dict.get::<String>("FileStorePath").as_deref(),
         Ok("my_store")
     );
+    assert_eq!(dict.get::<String>("foo").as_deref(), Ok("bar"));
 }

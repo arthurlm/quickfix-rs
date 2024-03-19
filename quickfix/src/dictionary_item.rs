@@ -102,6 +102,12 @@ impl_dictionary_item!(DataDictionary);
 impl_dictionary_item!(TransportDataDictionary);
 impl_dictionary_item!(FileStorePath);
 
+impl DictionaryItem for (&'static str, &str) {
+    fn apply_param(&self, dict: &mut Dictionary) -> Result<(), QuickFixError> {
+        dict.set(self.0, self.1.to_string())
+    }
+}
+
 impl Dictionary {
     /// Build dictionary parameters from multiple items.
     pub fn try_from_items(items: &[&dyn DictionaryItem]) -> Result<Self, QuickFixError> {
