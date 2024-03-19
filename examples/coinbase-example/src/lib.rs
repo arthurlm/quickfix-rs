@@ -1,5 +1,5 @@
 use coinbase_fix_utils::config::CoinbaseConfig;
-use quickfix::{Dictionary, SessionSettings};
+use quickfix::{dictionary_item::*, Dictionary, SessionSettings};
 
 /// Minimal configuration builder to setup FIX engine.
 ///
@@ -7,38 +7,37 @@ use quickfix::{Dictionary, SessionSettings};
 pub fn build_session_settings(config: &CoinbaseConfig) -> anyhow::Result<SessionSettings> {
     let mut settings = SessionSettings::new();
 
-    settings.set(None, {
-        let mut params = Dictionary::new();
-        params.set("ConnectionType", "initiator")?;
-        params
-    })?;
+    settings.set(
+        None,
+        Dictionary::try_from_items(&[&ConnectionType::Initiator])?,
+    )?;
 
-    settings.set(Some(&config.order_entry_session_id()), {
-        let mut params = Dictionary::new();
-        params.set("StartTime", "00:00:01")?;
-        params.set("EndTime", "23:59:59")?;
-        params.set("HeartBtInt", 30)?;
-        params.set("SocketConnectPort", 5298)?; // ⚠️ This port should match what you have in your stunnel configuration file.
-        params.set("SocketConnectHost", "127.0.0.1")?;
-        params.set("DataDictionary", "data/order-entry/FIX42-prod-sand.xml")?;
-        params
-    })?;
+    settings.set(
+        Some(&config.order_entry_session_id()),
+        Dictionary::try_from_items(&[
+            &StartTime("00:00:01"),
+            &EndTime("23:59:59"),
+            &HeartBtInt(30),
+            &SocketConnectPort(5298), // ⚠️ This port should match what you have in your stunnel configuration file.
+            &SocketConnectHost("127.0.0.1"),
+            &DataDictionary("data/order-entry/FIX42-prod-sand.xml"),
+        ])?,
+    )?;
 
-    settings.set(Some(&config.market_data_session_id()), {
-        let mut params = Dictionary::new();
-        params.set("StartTime", "00:00:01")?;
-        params.set("EndTime", "23:59:59")?;
-        params.set("HeartBtInt", 30)?;
-        params.set("SocketConnectPort", 7221)?; // ⚠️ This port should match what you have in your stunnel configuration file.
-        params.set("SocketConnectHost", "127.0.0.1")?;
-        params.set("DefaultApplVerID", "9" /* FIX 5.0 SP2 */)?;
-        params.set("DataDictionary", "data/market-data/FIX50-prod-sand.xml")?;
-        params.set(
-            "TransportDataDictionary",
-            "data/market-data/FIXT11-prod-sand.xml",
-        )?;
-        params
-    })?;
+    settings.set(
+        Some(&config.market_data_session_id()),
+        Dictionary::try_from_items(&[
+            &StartTime("00:00:01"),
+            &EndTime("23:59:59"),
+            &HeartBtInt(30),
+            &SocketConnectPort(7221), // ⚠️ This port should match what you have in your stunnel configuration file.
+            &SocketConnectHost("127.0.0.1"),
+            &DataDictionary("data/order-entry/FIX42-prod-sand.xml"),
+            &DefaultApplVerID("9" /* FIX 5.0 SP2 */),
+            &DataDictionary("data/market-data/FIX50-prod-sand.xml"),
+            &TransportDataDictionary("data/market-data/FIXT11-prod-sand.xml"),
+        ])?,
+    )?;
 
     Ok(settings)
 }

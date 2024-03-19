@@ -44,23 +44,26 @@ Here some minimal code sample to getting started:
 
 ```rust
 # use quickfix::*;
+# use quickfix::dictionary_item::*;
 // Configure FIX engine.
 let mut settings = SessionSettings::new();
 
-settings.set(None, {
-    let mut params = Dictionary::new();
-    params.set("ConnectionType", "acceptor")?;
-    params
-})?;
+settings.set(
+    None,
+    Dictionary::try_from_items(&[
+        &ConnectionType::Acceptor,
+    ])?
+)?;
 
-settings.set(Some(&SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?), {
-    let mut params = Dictionary::new();
-    params.set("StartTime", "12:30:00")?;
-    params.set("EndTime", "23:30:00")?;
-    params.set("SocketAcceptPort", 4000)?;
-    params.set("DataDictionary", "../quickfix-ffi/libquickfix/spec/FIX41.xml")?;
-    params
-})?;
+settings.set(
+    Some(&SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?),
+    Dictionary::try_from_items(&[
+        &StartTime("12:30:00"),
+        &EndTime("23:30:00"),
+        &SocketAcceptPort(4000),
+        &DataDictionary("../quickfix-ffi/libquickfix/spec/FIX41.xml"),
+    ])?
+)?;
 
 // Configure FIX callbacks.
 pub struct MyApplication;
@@ -99,6 +102,8 @@ mod application;
 mod data_dictionary;
 mod days;
 mod dictionary;
+/// Common dictionary configuration parameters.
+pub mod dictionary_item;
 mod error;
 mod group;
 mod header;

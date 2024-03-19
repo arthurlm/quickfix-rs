@@ -1,9 +1,9 @@
 use std::io::{stdin, Read};
 
 use quickfix::{
-    Application, ApplicationCallback, ConnectionHandler, Dictionary, LogFactory,
-    MemoryMessageStoreFactory, QuickFixError, SessionId, SessionSettings, SocketAcceptor,
-    StdLogger,
+    dictionary_item::*, Application, ApplicationCallback, ConnectionHandler, Dictionary,
+    LogFactory, MemoryMessageStoreFactory, QuickFixError, SessionId, SessionSettings,
+    SocketAcceptor, StdLogger,
 };
 
 #[derive(Default)]
@@ -20,23 +20,25 @@ impl ApplicationCallback for MyApplication {
 fn build_settings() -> Result<SessionSettings, QuickFixError> {
     let mut settings = SessionSettings::new();
 
-    settings.set(None, {
-        let mut params = Dictionary::new();
-        params.set("ConnectionType", "acceptor")?;
-        params.set("ReconnectInterval", 60)?;
-        params.set("FileStorePath", "store")?;
-        params
-    })?;
+    settings.set(
+        None,
+        Dictionary::try_from_items(&[
+            &ConnectionType::Acceptor,
+            &ReconnectInterval(60),
+            &FileStorePath("store"),
+        ])?,
+    )?;
 
-    settings.set(Some(&SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?), {
-        let mut params = Dictionary::new();
-        params.set("StartTime", "12:30:00")?;
-        params.set("EndTime", "23:30:00")?;
-        params.set("HeartBtInt", 20)?;
-        params.set("SocketAcceptPort", 4000)?;
-        params.set("DataDictionary", "quickfix-ffi/libquickfix/spec/FIX41.xml")?;
-        params
-    })?;
+    settings.set(
+        Some(&SessionId::try_new("FIX.4.4", "ME", "THEIR", "")?),
+        Dictionary::try_from_items(&[
+            &StartTime("12:30:00"),
+            &EndTime("23:30:00"),
+            &HeartBtInt(20),
+            &SocketAcceptPort(4000),
+            &DataDictionary("quickfix-ffi/libquickfix/spec/FIX41.xml"),
+        ])?,
+    )?;
 
     Ok(settings)
 }
