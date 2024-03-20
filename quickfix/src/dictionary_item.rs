@@ -66,11 +66,11 @@ impl DictionaryItem for ConnectionType {
 }
 
 /// Acceptor port.
-pub struct SocketAcceptPort(pub u32);
+pub struct SocketAcceptPort(pub u16);
 impl_dictionary_item!(SocketAcceptPort as i32);
 
 /// Initiator port to connect to.
-pub struct SocketConnectPort(pub u32);
+pub struct SocketConnectPort(pub u16);
 impl_dictionary_item!(SocketConnectPort as i32);
 
 /// Initiator host to connect to.
@@ -78,7 +78,7 @@ pub struct SocketConnectHost<'a>(pub &'a str);
 impl_dictionary_item!(SocketConnectHost as String);
 
 /// Initiator port to connect from.
-pub struct SocketConnectSourcePort(pub u32);
+pub struct SocketConnectSourcePort(pub u16);
 impl_dictionary_item!(SocketConnectSourcePort as i32);
 
 /// Initiator host to connect from.
@@ -234,7 +234,7 @@ pub struct RefreshOnLogon(pub bool);
 impl_dictionary_item!(RefreshOnLogon);
 
 /// Built-in HTTP server main port.
-pub struct HttpAcceptPort(pub u32);
+pub struct HttpAcceptPort(pub u16);
 impl_dictionary_item!(HttpAcceptPort as i32);
 
 /// Persist FIX messages.
