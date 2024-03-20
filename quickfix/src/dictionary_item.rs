@@ -1,6 +1,6 @@
 #![allow(missing_debug_implementations)]
 
-use crate::{Dictionary, QuickFixError};
+use crate::{DayOfWeek, Dictionary, QuickFixError};
 
 /// Trait that represent quickfix configuration parameter.
 ///
@@ -77,6 +77,30 @@ impl_dictionary_item!(SocketConnectPort as i32);
 pub struct SocketConnectHost<'a>(pub &'a str);
 impl_dictionary_item!(SocketConnectHost as String);
 
+/// Initiator port to connect from.
+pub struct SocketConnectSourcePort(pub u32);
+impl_dictionary_item!(SocketConnectSourcePort as i32);
+
+/// Initiator host to connect from.
+pub struct SocketConnectSourceHost<'a>(pub &'a str);
+impl_dictionary_item!(SocketConnectSourceHost as String);
+
+/// Set SO_REUSEADDR flag when creating socket.
+pub struct SocketReuseAddress(pub bool);
+impl_dictionary_item!(SocketReuseAddress);
+
+/// Set TCP_NODELAY flag when creating socket.
+pub struct SocketNodelay(pub bool);
+impl_dictionary_item!(SocketNodelay);
+
+/// Configure SO_SNDBUF socket parameter.
+pub struct SocketSendBufferSize(pub u16);
+impl_dictionary_item!(SocketSendBufferSize as i32);
+
+/// Configure SO_RCVBUF socket parameter.
+pub struct SocketReceiveBufferSize(pub u16);
+impl_dictionary_item!(SocketReceiveBufferSize as i32);
+
 /// Time in second to wait before reconnect.
 pub struct ReconnectInterval(pub u16);
 impl_dictionary_item!(ReconnectInterval as i32);
@@ -85,17 +109,65 @@ impl_dictionary_item!(ReconnectInterval as i32);
 pub struct HeartBtInt(pub u16);
 impl_dictionary_item!(HeartBtInt as i32);
 
+/// Send redundant resend requests.
+pub struct SendRedundantResendRequests(pub bool);
+impl_dictionary_item!(SendRedundantResendRequests);
+
+/// Send next expected message sequence number.
+pub struct SendNextExpectedMsgSeqNum(pub bool);
+impl_dictionary_item!(SendNextExpectedMsgSeqNum);
+
+/// Use local time.
+pub struct UseLocalTime(pub bool);
+impl_dictionary_item!(UseLocalTime);
+
 /// Session start time.
 pub struct StartTime<'a>(pub &'a str);
 impl_dictionary_item!(StartTime as String);
+
+/// Session start day.
+pub struct StartDay(pub DayOfWeek);
+impl_dictionary_item!(StartDay);
 
 /// Session end time.
 pub struct EndTime<'a>(pub &'a str);
 impl_dictionary_item!(EndTime as String);
 
+/// Session end day.
+pub struct EndDay(pub DayOfWeek);
+impl_dictionary_item!(EndDay);
+
+/// Logon time.
+pub struct LogonTime<'a>(pub &'a str);
+impl_dictionary_item!(LogonTime as String);
+
+/// Logon day.
+pub struct LogonDay(pub DayOfWeek);
+impl_dictionary_item!(LogonDay);
+
+/// Logon timeout.
+pub struct LogonTimeout(pub u16);
+impl_dictionary_item!(LogonTimeout as i32);
+
+/// Logout time.
+pub struct LogoutTime<'a>(pub &'a str);
+impl_dictionary_item!(LogoutTime as String);
+
+/// Logout day.
+pub struct LogoutDay(pub DayOfWeek);
+impl_dictionary_item!(LogoutDay);
+
+/// Logout timeout.
+pub struct LogoutTimeout(pub u16);
+impl_dictionary_item!(LogoutTimeout as i32);
+
 /// Application version ID.
 pub struct DefaultApplVerID<'a>(pub &'a str);
 impl_dictionary_item!(DefaultApplVerID as String);
+
+/// Parse and use data dictionary.
+pub struct UseDataDictionary(pub bool);
+impl_dictionary_item!(UseDataDictionary);
 
 /// Data dictionary XML spec path.
 pub struct DataDictionary<'a>(pub &'a str);
@@ -108,6 +180,66 @@ impl_dictionary_item!(TransportDataDictionary as String);
 /// Message store path.
 pub struct FileStorePath<'a>(pub &'a str);
 impl_dictionary_item!(FileStorePath as String);
+
+/// Validate message comp ID.
+pub struct CheckCompID(pub bool);
+impl_dictionary_item!(CheckCompID);
+
+/// Validate message latency.
+pub struct CheckLatency(pub bool);
+impl_dictionary_item!(CheckLatency);
+
+/// Max allowed latency.
+pub struct MaxLatency(pub i32);
+impl_dictionary_item!(MaxLatency);
+
+/// Validate message header length and checksum.
+pub struct ValidateLengthAndChecksum(pub bool);
+impl_dictionary_item!(ValidateLengthAndChecksum);
+
+/// Validate message fields sent in wrong order.
+pub struct ValidateFieldsOutOfOrder(pub bool);
+impl_dictionary_item!(ValidateFieldsOutOfOrder);
+
+/// Validate message fields inner values.
+pub struct ValidateFieldsHaveValues(pub bool);
+impl_dictionary_item!(ValidateFieldsHaveValues);
+
+/// Validate user custom fields.
+pub struct ValidateUserDefinedFields(pub bool);
+impl_dictionary_item!(ValidateUserDefinedFields);
+
+/// Allow unknown message fields.
+pub struct AllowUnknownMsgFields(pub bool);
+impl_dictionary_item!(AllowUnknownMsgFields);
+
+/// Preserve message fields order.
+pub struct PreserveMessageFieldsOrder(pub bool);
+impl_dictionary_item!(PreserveMessageFieldsOrder);
+
+/// Reset FIX session on logon.
+pub struct ResetOnLogon(pub bool);
+impl_dictionary_item!(ResetOnLogon);
+
+/// Reset FIX session on logout.
+pub struct ResetOnLogout(pub bool);
+impl_dictionary_item!(ResetOnLogout);
+
+/// Reset FIX session on disconnection.
+pub struct ResetOnDisconnect(pub bool);
+impl_dictionary_item!(ResetOnDisconnect);
+
+/// Refresh FIX session on logon.
+pub struct RefreshOnLogon(pub bool);
+impl_dictionary_item!(RefreshOnLogon);
+
+/// Built-in HTTP server main port.
+pub struct HttpAcceptPort(pub u32);
+impl_dictionary_item!(HttpAcceptPort as i32);
+
+/// Persist FIX messages.
+pub struct PersistMessages(pub bool);
+impl_dictionary_item!(PersistMessages);
 
 impl DictionaryItem for (&'static str, &str) {
     fn apply_param(&self, dict: &mut Dictionary) -> Result<(), QuickFixError> {
