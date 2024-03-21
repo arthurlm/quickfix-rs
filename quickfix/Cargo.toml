@@ -1,6 +1,6 @@
 [package]
 name = "quickfix"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Arthur LE MOIGNE"]
 edition = "2021"
 description = "High level binding to quickfix C++ library"
