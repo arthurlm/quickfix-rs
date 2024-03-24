@@ -1,16 +1,18 @@
 [workspace]
 resolver = "2"
 members = [
+    # Not published packages.
     "examples/coinbase-example",
     "examples/coinbase-fix-utils",
     "examples/coinbase-fix42-order-entry",
     "examples/coinbase-fix50-market-data",
     "examples/executor",
     "examples/single-order-sender",
+    # Package registered in order of publication.
     "quickfix-ffi",
-    "quickfix-msg-gen",
-    "quickfix-spec-parser",
     "quickfix",
+    "quickfix-spec-parser",
+    "quickfix-msg-gen",
     "quickfix-msg40",
     "quickfix-msg41",
     "quickfix-msg42",
