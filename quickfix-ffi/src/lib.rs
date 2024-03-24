@@ -204,6 +204,8 @@ extern "C" {
 
     pub fn FixMemoryMessageStoreFactory_new() -> Option<FixMessageStoreFactory_t>;
 
+    pub fn FixNullMessageStoreFactory_new() -> Option<FixMessageStoreFactory_t>;
+
     #[cfg(feature = "build-with-mysql")]
     pub fn FixMysqlMessageStoreFactory_new(
         settings: FixSessionSettings_t,

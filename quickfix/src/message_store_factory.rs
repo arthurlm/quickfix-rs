@@ -1,6 +1,6 @@
 use quickfix_ffi::{
     FixFileMessageStoreFactory_new, FixMemoryMessageStoreFactory_new,
-    FixMessageStoreFactory_delete, FixMessageStoreFactory_t,
+    FixMessageStoreFactory_delete, FixMessageStoreFactory_t, FixNullMessageStoreFactory_new,
 };
 
 use crate::{QuickFixError, SessionSettings};
@@ -68,6 +68,39 @@ impl Default for MemoryMessageStoreFactory {
 }
 
 impl Drop for MemoryMessageStoreFactory {
+    fn drop(&mut self) {
+        unsafe { FixMessageStoreFactory_delete(self.0) }
+    }
+}
+
+/// Null implementation of MessageStore.
+///
+/// Will not actually store messages. Useful for admin-only or market data-only applications.
+#[derive(Debug)]
+pub struct NullMessageStoreFactory(FixMessageStoreFactory_t);
+
+impl NullMessageStoreFactory {
+    /// Create new struct.
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+impl FfiMessageStoreFactory for NullMessageStoreFactory {
+    fn as_ffi_ptr(&self) -> FixMessageStoreFactory_t {
+        self.0
+    }
+}
+
+impl Default for NullMessageStoreFactory {
+    fn default() -> Self {
+        unsafe { FixNullMessageStoreFactory_new() }
+            .map(Self)
+            .expect("Fail to allocate NullMessageStore")
+    }
+}
+
+impl Drop for NullMessageStoreFactory {
     fn drop(&mut self) {
         unsafe { FixMessageStoreFactory_delete(self.0) }
     }

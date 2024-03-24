@@ -9,6 +9,7 @@
 #include <quickfix/Group.h>
 #include <quickfix/Log.h>
 #include <quickfix/Message.h>
+#include <quickfix/NullStore.h>
 #include <quickfix/Session.h>
 #include <quickfix/SessionID.h>
 #include <quickfix/SessionSettings.h>
@@ -498,6 +499,10 @@ MessageStoreFactory *FixFileMessageStoreFactory_new(const SessionSettings *setti
 
 MessageStoreFactory *FixMemoryMessageStoreFactory_new() {
   CATCH_OR_RETURN_NULL({ return new MemoryStoreFactory(); });
+}
+
+FixMessageStoreFactory_t *FixNullMessageStoreFactory_new() {
+  CATCH_OR_RETURN_NULL({ return new NullStoreFactory(); });
 }
 
 #ifdef HAVE_MYSQL

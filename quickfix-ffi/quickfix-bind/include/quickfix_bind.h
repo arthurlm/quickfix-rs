@@ -117,6 +117,7 @@ void FixDataDictionary_delete(const FixDataDictionary_t *obj);
 
 FixMessageStoreFactory_t *FixFileMessageStoreFactory_new(const FixSessionSettings_t *settings);
 FixMessageStoreFactory_t *FixMemoryMessageStoreFactory_new();
+FixMessageStoreFactory_t *FixNullMessageStoreFactory_new();
 
 #ifdef HAVE_MYSQL
 FixMessageStoreFactory_t *FixMysqlMessageStoreFactory_new(const FixSessionSettings_t *settings);
