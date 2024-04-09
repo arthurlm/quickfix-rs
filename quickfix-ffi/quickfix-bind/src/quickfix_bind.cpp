@@ -135,6 +135,7 @@
 
 #define RETURN_CXX_BOOL_CALL(_CALL_) CATCH_OR_RETURN_ERRNO({ return _CALL_ ? 1 : 0; })
 
+extern "C" {
 namespace FIX {
 
 class ApplicationBind : public Application {
@@ -283,10 +284,6 @@ public:
 
   void destroy(Log *log) override { delete log; }
 };
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 static thread_local char *lastError = nullptr;
 static thread_local int8_t lastErrorCode = 0;
@@ -994,7 +991,4 @@ int8_t FixSession_sendToTarget(Message *msg, const SessionID *session_id) {
 }
 
 } // namespace FIX
-
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+} // extern C
