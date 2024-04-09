@@ -146,8 +146,11 @@ static void Fix_setLastError(std::exception &ex, int8_t code) {
 
   // Get error message and copy it to thread local storage.
   std::string msg = ex.what();
-  lastError = new char[msg.size() + 1];
-  strcpy(lastError, msg.c_str());
+  size_t bufferLen = msg.size() + 1;
+
+  lastError = new char[bufferLen];
+  memset(lastError, 0, bufferLen);
+  strncpy(lastError, msg.c_str(), msg.size());
 }
 
 const char *Fix_getLastErrorMessage() { return lastError; }
