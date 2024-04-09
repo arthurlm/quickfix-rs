@@ -131,10 +131,6 @@
 
 #define CATCH_OR_RETURN_ERRNO(_XXX_) CATCH_OR_RETURN(ERRNO_EXCEPTION, _XXX_)
 
-#define RETURN_CXX_TO_C_STR(_CALL_) CATCH_OR_RETURN_NULL({ return (_CALL_).c_str(); })
-
-#define RETURN_CXX_BOOL_CALL(_CALL_) CATCH_OR_RETURN_ERRNO({ return _CALL_ ? 1 : 0; })
-
 extern "C" {
 namespace FIX {
 
@@ -468,7 +464,7 @@ int32_t FixDictionary_getDay(const Dictionary *obj, const char *key) {
 int8_t FixDictionary_hasKey(const Dictionary *obj, const char *key) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(obj->has(key));
+  CATCH_OR_RETURN_ERRNO({ return obj->has(key); });
 }
 
 void FixDictionary_delete(const Dictionary *obj) {
@@ -568,7 +564,7 @@ int8_t FixSocketAcceptor_block(SocketAcceptor *obj) {
 
 int8_t FixSocketAcceptor_poll(SocketAcceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(obj->poll());
+  CATCH_OR_RETURN_ERRNO({ return obj->poll(); });
 }
 
 int8_t FixSocketAcceptor_stop(SocketAcceptor *obj) {
@@ -581,12 +577,12 @@ int8_t FixSocketAcceptor_stop(SocketAcceptor *obj) {
 
 int8_t FixSocketAcceptor_isLoggedOn(const SocketAcceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(obj->isLoggedOn());
+  CATCH_OR_RETURN_ERRNO({ return obj->isLoggedOn(); });
 }
 
 int8_t FixSocketAcceptor_isStopped(const SocketAcceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(obj->isStopped());
+  CATCH_OR_RETURN_ERRNO({ return obj->isStopped(); });
 }
 
 void FixSocketAcceptor_delete(const SocketAcceptor *obj) {
@@ -622,7 +618,7 @@ int8_t FixSocketInitiator_block(SocketInitiator *obj) {
 
 int8_t FixSocketInitiator_poll(SocketInitiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(obj->poll());
+  CATCH_OR_RETURN_ERRNO({ return obj->poll(); });
 }
 
 int8_t FixSocketInitiator_stop(SocketInitiator *obj) {
@@ -635,12 +631,12 @@ int8_t FixSocketInitiator_stop(SocketInitiator *obj) {
 
 int8_t FixSocketInitiator_isLoggedOn(const SocketInitiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(obj->isLoggedOn());
+  CATCH_OR_RETURN_ERRNO({ return obj->isLoggedOn(); });
 }
 
 int8_t FixSocketInitiator_isStopped(const SocketInitiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(obj->isStopped());
+  CATCH_OR_RETURN_ERRNO({ return obj->isStopped(); });
 }
 
 void FixSocketInitiator_delete(const SocketInitiator *obj) {
@@ -664,27 +660,27 @@ SessionID *FixSessionID_copy(const SessionID *src) {
 
 const char *FixSessionID_getBeginString(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, NULL);
-  RETURN_CXX_TO_C_STR(session->getBeginString().getString())
+  CATCH_OR_RETURN_NULL({ return session->getBeginString().getString().c_str(); })
 }
 
 const char *FixSessionID_getSenderCompID(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, NULL);
-  RETURN_CXX_TO_C_STR(session->getSenderCompID().getString())
+  CATCH_OR_RETURN_NULL({ return session->getSenderCompID().getString().c_str(); })
 }
 
 const char *FixSessionID_getTargetCompID(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, NULL);
-  RETURN_CXX_TO_C_STR(session->getTargetCompID().getString())
+  CATCH_OR_RETURN_NULL({ return session->getTargetCompID().getString().c_str(); })
 }
 
 const char *FixSessionID_getSessionQualifier(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, NULL);
-  RETURN_CXX_TO_C_STR(session->getSessionQualifier())
+  CATCH_OR_RETURN_NULL({ return session->getSessionQualifier().c_str(); })
 }
 
 int8_t FixSessionID_isFIXT(const SessionID *session) {
   RETURN_VAL_IF_NULL(session, ERRNO_INVAL);
-  RETURN_CXX_BOOL_CALL(session->isFIXT());
+  CATCH_OR_RETURN_ERRNO({ return session->isFIXT(); });
 }
 
 const char *FixSessionID_toString(const SessionID *session) {
