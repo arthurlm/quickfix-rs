@@ -134,6 +134,33 @@
 extern "C" {
 namespace FIX {
 
+static thread_local char *lastError = nullptr;
+static thread_local int8_t lastErrorCode = 0;
+
+static void Fix_setLastError(std::exception &ex, int8_t code) {
+  // Release previously set error if any
+  Fix_clearLastErrorMessage();
+
+  // Update last error code
+  lastErrorCode = code;
+
+  // Get error message and copy it to thread local storage.
+  std::string msg = ex.what();
+  lastError = new char[msg.size() + 1];
+  strcpy(lastError, msg.c_str());
+}
+
+const char *Fix_getLastErrorMessage() { return lastError; }
+
+int8_t Fix_getLastErrorCode() { return lastErrorCode; }
+
+void Fix_clearLastErrorMessage() {
+  if (lastError) {
+    delete[] lastError;
+    lastError = nullptr;
+  }
+}
+
 class ApplicationBind : public Application {
 private:
   const ApplicationCallbacks *callbacks;
@@ -280,33 +307,6 @@ public:
 
   void destroy(Log *log) override { delete log; }
 };
-
-static thread_local char *lastError = nullptr;
-static thread_local int8_t lastErrorCode = 0;
-
-static void Fix_setLastError(std::exception &ex, int8_t code) {
-  // Release previously set error if any
-  Fix_clearLastErrorMessage();
-
-  // Update last error code
-  lastErrorCode = code;
-
-  // Get error message and copy it to thread local storage.
-  std::string msg = ex.what();
-  lastError = new char[msg.size() + 1];
-  strcpy(lastError, msg.c_str());
-}
-
-const char *Fix_getLastErrorMessage() { return lastError; }
-
-int8_t Fix_getLastErrorCode() { return lastErrorCode; }
-
-void Fix_clearLastErrorMessage() {
-  if (lastError) {
-    delete[] lastError;
-    lastError = nullptr;
-  }
-}
 
 SessionSettings *FixSessionSettings_new() {
   CATCH_OR_RETURN_NULL({ return new SessionSettings(); });
