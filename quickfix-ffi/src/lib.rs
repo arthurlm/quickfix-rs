@@ -171,7 +171,7 @@ extern "C" {
         obj: FixDictionary_t,
         key: *const ffi::c_char,
         buffer: *mut ffi::c_char,
-        buffer_len: i64,
+        buffer_len: u64,
     ) -> i8;
 
     pub fn FixDictionary_getInt(obj: FixDictionary_t, key: *const ffi::c_char) -> i32;
@@ -350,7 +350,7 @@ extern "C" {
     pub fn FixMessage_readString(
         obj: FixMessage_t,
         buffer: *mut ffi::c_char,
-        buffer_len: i64,
+        buffer_len: u64,
     ) -> i8;
 
     pub fn FixMessage_delete(obj: FixMessage_t);

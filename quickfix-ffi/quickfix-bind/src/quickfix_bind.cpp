@@ -415,7 +415,7 @@ int64_t FixDictionary_getStringLen(const Dictionary *obj, const char *key) {
   CATCH_OR_RETURN_ERRNO({ return obj->getString(key).size() + 1; })
 }
 
-int8_t FixDictionary_readString(const Dictionary *obj, const char *key, char *buffer, int64_t buffer_len) {
+int8_t FixDictionary_readString(const Dictionary *obj, const char *key, char *buffer, uint64_t buffer_len) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(key, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(buffer, ERRNO_INVAL);
@@ -751,7 +751,7 @@ int64_t FixMessage_getStringLen(const FixMessage_t *obj) {
   CATCH_OR_RETURN_ERRNO({ return obj->toString().size() + 1; });
 }
 
-int8_t FixMessage_readString(const FixMessage_t *obj, char *buffer, int64_t buffer_len) {
+int8_t FixMessage_readString(const FixMessage_t *obj, char *buffer, uint64_t buffer_len) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   RETURN_VAL_IF_NULL(buffer, ERRNO_INVAL);
 

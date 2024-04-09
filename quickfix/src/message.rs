@@ -45,10 +45,9 @@ impl Message {
     pub fn to_fix_string(&self) -> Result<String, QuickFixError> {
         unsafe {
             // Prepare output buffer
-            let buffer_len = FixMessage_getStringLen(self.0);
-            if buffer_len < 0 {
-                return Err(QuickFixError::from_last_error());
-            }
+            let buffer_len = FixMessage_getStringLen(self.0)
+                .try_into()
+                .map_err(|_err| QuickFixError::from_last_error())?;
 
             // Allocate buffer on rust side
             let mut buffer = vec![0_u8; buffer_len as usize];

@@ -103,7 +103,7 @@ int8_t FixDictionary_setDouble(FixDictionary_t *obj, const char *key, double val
 int8_t FixDictionary_setBool(FixDictionary_t *obj, const char *key, int8_t value);
 int8_t FixDictionary_setDay(FixDictionary_t *obj, const char *key, int32_t value);
 int64_t FixDictionary_getStringLen(const FixDictionary_t *obj, const char *key);
-int8_t FixDictionary_readString(const FixDictionary_t *obj, const char *key, char *buffer, int64_t buffer_len);
+int8_t FixDictionary_readString(const FixDictionary_t *obj, const char *key, char *buffer, uint64_t buffer_len);
 int32_t FixDictionary_getInt(const FixDictionary_t *obj, const char *key);
 double FixDictionary_getDouble(const FixDictionary_t *obj, const char *key);
 int8_t FixDictionary_getBool(const FixDictionary_t *obj, const char *key);
@@ -175,7 +175,7 @@ int8_t FixMessage_setField(FixMessage_t *obj, int32_t tag, const char *value);
 int8_t FixMessage_removeField(FixMessage_t *obj, int32_t tag);
 int8_t FixMessage_addGroup(FixMessage_t *obj, const FixGroup_t *group);
 int64_t FixMessage_getStringLen(const FixMessage_t *obj);
-int8_t FixMessage_readString(const FixMessage_t *obj, char *buffer, int64_t buffer_len);
+int8_t FixMessage_readString(const FixMessage_t *obj, char *buffer, uint64_t buffer_len);
 void FixMessage_delete(const FixMessage_t *obj);
 
 FixHeader_t *FixHeader_new();
