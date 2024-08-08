@@ -10,3 +10,5 @@ log
 
 # Code coverage
 lcov.info
+
+.direnv/

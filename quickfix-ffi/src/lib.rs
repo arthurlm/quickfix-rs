@@ -2,11 +2,12 @@
 #![allow(non_snake_case)]
 
 /*! Low level binding for [quickfix](https://github.com/quickfix/quickfix) library.
- *
- * Please consider using higher level rust library for your application development.
+*
+* Please consider using higher level rust library for your application development.
  */
 
 use std::{ffi, ptr::NonNull};
+use std::iter::Filter;
 
 pub const CALLBACK_OK: i8 = 0;
 pub const CALLBACK_RESULT_DO_NOT_SEND: i8 = -1;
@@ -33,6 +34,10 @@ pub struct FixDataDictionary_t(NonNull<ffi::c_void>);
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FixMessageStoreFactory_t(NonNull<ffi::c_void>);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
+pub struct FixMessageStore_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
@@ -71,6 +76,14 @@ pub struct FixTrailer_t(NonNull<ffi::c_void>);
 pub struct FixGroup_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
+pub struct FixMemoryStore_t(NonNull<ffi::c_void>);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
+pub struct FixUtcTimeStamp_t(NonNull<ffi::c_void>);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(C)]
 pub struct FixApplicationCallbacks_t {
     pub onCreate: extern "C" fn(*const ffi::c_void, FixSessionID_t),
@@ -100,6 +113,54 @@ pub struct FixLogCallbacks_t {
         sessionId: Option<FixSessionID_t>,
         msg: *const ffi::c_char,
     ),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
+pub struct FixFactoryMemoryStoreCallbacks_t {
+    pub onCreate: extern "C" fn(
+        data: *const ffi::c_void,
+        sessionId: FixSessionID_t,
+    ) -> Option<FixMessageStore_t>,
+    pub onDelete: extern "C" fn(
+        data: *const ffi::c_void,
+        store: Option<FixMessageStore_t>,
+    ),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
+pub struct FixMessageStoreCallbacks_t {
+    pub set: extern "C" fn(
+        data: *const ffi::c_void,
+        seq_num: i32,
+        data: *const ffi::c_char,
+    ) -> i8,
+    pub get: extern "C" fn(
+        data: *const ffi::c_void,
+        begin: i32,
+        end: i32,
+    ) -> *const *const ffi::c_char,
+    pub getNextSenderMsgSeqNum: extern "C" fn(
+        data: *const ffi::c_void) -> i32,
+    pub getNextTargetMsgSeqNum: extern "C" fn(
+        data: *const ffi::c_void) -> i32,
+    pub setNextSenderMsgSeqNum: extern "C" fn(
+        data: *const ffi::c_void,
+        seq_num: i32),
+    pub setNextTargetMsgSeqNum: extern "C" fn(
+        data: *const ffi::c_void, seq_num: i32),
+    pub incrNextSenderMsgSeqNum: extern "C" fn(
+        data: *const ffi::c_void),
+    pub incrNextTargetMsgSeqNum: extern "C" fn(
+        data: *const ffi::c_void),
+    pub getCreationTime: extern "C" fn(
+        data: *const ffi::c_void) -> FixUtcTimeStamp_t,
+    pub reset: extern "C" fn(
+        data: *const ffi::c_void,
+        now: FixUtcTimeStamp_t),
+    pub refresh: extern "C" fn(
+        data: *const ffi::c_void),
 }
 
 #[link(name = "quickfixbind")]
@@ -156,7 +217,7 @@ extern "C" {
 
     #[must_use]
     pub fn FixDictionary_setDouble(obj: FixDictionary_t, key: *const ffi::c_char, value: f64)
-        -> i8;
+                                   -> i8;
 
     #[must_use]
     pub fn FixDictionary_setBool(obj: FixDictionary_t, key: *const ffi::c_char, value: i8) -> i8;
@@ -437,4 +498,17 @@ extern "C" {
     // Session
 
     pub fn FixSession_sendToTarget(msg: FixMessage_t, session_id: FixSessionID_t) -> i8;
+
+    #[must_use]
+    pub fn FixApplicationFactoryMessageStore_new(data: *const ffi::c_void,
+                                                 callbacks: *const FixFactoryMemoryStoreCallbacks_t) -> Option<FixMessageStoreFactory_t>;
+    pub fn FixApplicationFactoryMessageStore_delete(obj: FixMessageStoreFactory_t);
+
+    pub fn FixMessageStore_new(data: *const ffi::c_void,
+                               callbacks: *const FixMessageStoreCallbacks_t
+    ) -> Option<FixMessageStore_t>;
+    pub fn FixMessageStore_delete(obj: FixMessageStoreCallbacks_t);
+
+    pub fn FixUtcTimeStamp_new(hour: i32, minute: i32, second: i32, millisecond: i32, day: i32, month: i32, year: i32) -> Option<FixUtcTimeStamp_t>;
+    pub fn FixUtcTimeStamp_delete(obj: FixUtcTimeStamp_t);
 }

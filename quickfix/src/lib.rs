@@ -134,7 +134,8 @@ pub use log_factory::{LogCallback, LogFactory, NullLogger, StdLogger};
 pub use message::Message;
 pub use message_store_factory::{
     FfiMessageStoreFactory, FileMessageStoreFactory, MemoryMessageStoreFactory,
-    NullMessageStoreFactory,
+    NullMessageStoreFactory, MessageFactoryTrait, MessageFactory,
+    MessageStoreTrait, MessageStore, FixUtcTimeStamp, FfiMessageStore
 };
 pub use session::send_to_target;
 pub use session_id::SessionId;

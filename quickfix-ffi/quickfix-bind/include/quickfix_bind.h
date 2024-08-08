@@ -58,6 +58,8 @@ typedef struct SessionSettings FixSessionSettings_t;
 typedef struct Dictionary FixDictionary_t;
 typedef struct DataDictionary FixDataDictionary_t;
 typedef struct MessageStoreFactory FixMessageStoreFactory_t;
+typedef struct MessageStore FixMessageStore_t;
+typedef struct MemoryStore FixMemoryMessageStore_t;
 typedef struct LogFactory FixLogFactory_t;
 typedef struct Application FixApplication_t;
 typedef struct SocketAcceptor FixSocketAcceptor_t;
@@ -67,6 +69,7 @@ typedef struct Message FixMessage_t;
 typedef struct Header FixHeader_t;
 typedef struct Trailer FixTrailer_t;
 typedef struct Group FixGroup_t;
+typedef struct UtcTimeStamp FixUtcTimeStamp_t;
 
 typedef struct ApplicationCallbacks {
   void (*onCreate)(const void *data, const FixSessionID_t *session);
@@ -83,6 +86,25 @@ typedef struct LogCallbacks {
   void (*onOutgoing)(const void *data, const FixSessionID_t *sessionId, const char *msg);
   void (*onEvent)(const void *data, const FixSessionID_t *sessionId, const char *msg);
 } FixLogCallbacks_t;
+
+typedef struct FactoryStoreCallbacks {
+  MessageStore* (*onCreate)( const void* data, const FixSessionID_t* );
+  void (*onDelete)(const void *data, MessageStore* store);
+} FixFactoryMemoryStoreCallbacks_t;
+
+typedef struct MessageStoreCallbacks {
+    bool (*set)(const void* data,  int seq_num, const char* message);
+    const char** (*get)(const void* data, int begin, int end);
+    int (*getNextSenderMsgSeqNum)(const void* data);
+    int (*getNextTargetMsgSeqNum)(const void* data);
+    void (*setNextSenderMsgSeqNum)(const void* data, int seq_num);
+    void (*setNextTargetMsgSeqNum)(const void* data, int seq_num);
+    void (*incrNextSenderMsgSeqNum)(const void* data);
+    void (*incrNextTargetMsgSeqNum)(const void* data);
+    UtcTimeStamp* (*getCreationTime)(const void* data);
+    void (*reset)(const void* data, const UtcTimeStamp& now );
+    void (*refresh)(const void* data);
+} FixMessageStoreCallbacks_t;
 
 const char *Fix_getLastErrorMessage();
 int8_t Fix_getLastErrorCode();
@@ -214,6 +236,16 @@ int8_t FixGroup_addGroup(FixGroup_t *obj, const FixGroup_t *group);
 void FixGroup_delete(const FixGroup_t *obj);
 
 int8_t FixSession_sendToTarget(FixMessage_t *msg, const FixSessionID_t *session_id);
+
+MessageStoreFactory* FixApplicationFactoryMessageStore_new(const void *data, const FactoryStoreCallbacks *callbacks);
+void FixApplicationFactoryMessageStore_delete(const MessageStoreFactory *obj);
+
+MessageStore* FixApplicationMessageStore_new(const void *data, const MessageStoreCallbacks *callbacks);
+void FixApplicationMessageStore_delete(const MessageStore *obj);
+
+FixUtcTimeStamp_t* FixUtcTimeStamp_new(int hour, int minute, int second, int millisecond,
+                                       int day, int month, int year );
+void FixUtcTimeStamp_delete(FixUtcTimeStamp_t* timestamp);
 
 #ifdef __cplusplus
 }

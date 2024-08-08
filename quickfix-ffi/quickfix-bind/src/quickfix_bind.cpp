@@ -5,6 +5,7 @@
 #include <quickfix/Application.h>
 #include <quickfix/DataDictionary.h>
 #include <quickfix/Dictionary.h>
+#include <quickfix/FieldTypes.h>
 #include <quickfix/FileStore.h>
 #include <quickfix/Group.h>
 #include <quickfix/Log.h>
@@ -15,6 +16,7 @@
 #include <quickfix/SessionSettings.h>
 #include <quickfix/SocketAcceptor.h>
 #include <quickfix/SocketInitiator.h>
+#include <quickfix/MessageStore.h>
 
 #ifdef HAVE_MYSQL
 #include <quickfix/MySQLStore.h>
@@ -987,6 +989,144 @@ int8_t FixSession_sendToTarget(Message *msg, const SessionID *session_id) {
     Session::sendToTarget(*msg, *session_id);
     return 0;
   });
+}
+
+class MemoryStoreBind : public MessageStore {
+private:
+  const MessageStoreCallbacks *callbacks;
+  const void *data;
+  mutable UtcTimeStamp* cached;
+public:
+  MemoryStoreBind(const void *data, const MessageStoreCallbacks *callbacks)
+  : callbacks(callbacks), data(data), cached(nullptr) {}
+  MemoryStoreBind(const MemoryStoreBind &) = delete;
+  MemoryStoreBind &operator=(const MemoryStoreBind &) = delete;
+  virtual ~MemoryStoreBind() {}
+  bool set( int seq_num, const std::string& message) override {
+    if (callbacks != nullptr && callbacks->set != nullptr) {
+      return callbacks->set(data, seq_num, message.c_str());
+    }
+    return false;
+  }
+  void get( int begin, int end, std::vector < std::string > & messages ) const override {
+    if (callbacks != nullptr && callbacks->get != nullptr) {
+        const char** result = callbacks->get(data, begin, end);
+        if (result == nullptr) {
+          return;
+        }
+        int i = 0;
+        while (result[i] != nullptr) {
+          messages.push_back(result[i]);
+          delete result[i];
+          ++i;
+        }
+        delete result;
+    }
+  }
+
+  int getNextSenderMsgSeqNum() const override {
+    if (callbacks != nullptr && callbacks->getNextSenderMsgSeqNum != nullptr) {
+       return callbacks->getNextSenderMsgSeqNum(data);
+    }
+    return 0;
+  }
+  int getNextTargetMsgSeqNum() const override {
+    if (callbacks != nullptr && callbacks->getNextTargetMsgSeqNum != nullptr) {
+       return callbacks->getNextTargetMsgSeqNum(data);
+    }
+    return 0;
+  }
+  void setNextSenderMsgSeqNum( int seq_num) override {
+    if (callbacks != nullptr && callbacks->setNextSenderMsgSeqNum != nullptr) {
+        callbacks->setNextSenderMsgSeqNum(data, seq_num);
+    }
+  }
+  void setNextTargetMsgSeqNum( int seq_num) override {
+    if (callbacks != nullptr && callbacks->setNextTargetMsgSeqNum != nullptr) {
+       callbacks->setNextTargetMsgSeqNum(data, seq_num);
+    }
+  }
+  void incrNextSenderMsgSeqNum() override {
+    if (callbacks != nullptr && callbacks->incrNextSenderMsgSeqNum != nullptr) {
+      callbacks->incrNextSenderMsgSeqNum(data);
+    }
+  }
+  void incrNextTargetMsgSeqNum() override {
+    if (callbacks != nullptr && callbacks->incrNextTargetMsgSeqNum != nullptr) {
+       callbacks->incrNextTargetMsgSeqNum(data);
+    }
+  }
+  UtcTimeStamp getCreationTime() const override {
+    if (callbacks != nullptr && callbacks->getCreationTime != nullptr) {
+      if (cached != nullptr) delete cached;
+      cached = callbacks->getCreationTime(data);
+      return *cached;
+    }
+    return UtcTimeStamp::now();
+  }
+  void reset( const UtcTimeStamp& now ) override {
+    if (callbacks != nullptr && callbacks->reset != nullptr) {
+      callbacks->reset(data, now);
+    }
+  }
+  void refresh() override {
+    if (callbacks != nullptr && callbacks->refresh != nullptr) {
+       callbacks->refresh(data);
+    }
+  }
+};
+
+class MessageFactoryBind : public MessageStoreFactory {
+private:
+  const FactoryStoreCallbacks *callbacks;
+  const void *data;
+
+public:
+  MessageFactoryBind(const void *data, const FactoryStoreCallbacks *callbacks) : callbacks(callbacks), data(data) {}
+  MessageFactoryBind(const MessageFactoryBind &) = delete;
+  MessageFactoryBind &operator=(const MessageFactoryBind &) = delete;
+  virtual ~MessageFactoryBind() {}
+
+  MessageStore* create( const UtcTimeStamp& now, const SessionID& session ) override {
+      if (callbacks == nullptr || callbacks->onCreate == nullptr) {
+        return NULL;
+      }
+      return callbacks->onCreate(data, &session);
+  }
+
+  void destroy( MessageStore* store) override {
+    if (callbacks != nullptr && callbacks->onDelete) {
+      callbacks->onDelete(data, store);
+    }
+    delete store;
+  }
+};
+
+MessageStoreFactory* FixApplicationFactoryMessageStore_new(const void *data, const FactoryStoreCallbacks *callbacks) {
+ RETURN_VAL_IF_NULL(callbacks, NULL);
+ CATCH_OR_RETURN_NULL({ return new MessageFactoryBind(data, callbacks); });
+}
+
+void FixApplicationFactoryMessageStore_delete(const MessageStoreFactory *obj) {
+  RETURN_IF_NULL(obj);
+  delete obj;
+}
+
+MessageStore* FixMessageStore_new(const void *data, const MessageStoreCallbacks *callbacks) {
+ RETURN_VAL_IF_NULL(callbacks, NULL);
+ CATCH_OR_RETURN_NULL({ return new MemoryStoreBind(data, callbacks); });
+
+}
+void FixMessageStore_delete(const MessageStore *obj) {
+  delete obj;
+}
+
+FixUtcTimeStamp_t* FixUtcTimeStamp_new(int hour, int minute, int second, int millisecond,
+                                       int day, int month, int year ) {
+   return new UtcTimeStamp(hour, minute, second, millisecond, day, month, year);
+}
+void FixUtcTimeStamp_delete(FixUtcTimeStamp_t* timestamp) {
+  delete timestamp;
 }
 
 } // namespace FIX
