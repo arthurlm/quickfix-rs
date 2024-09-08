@@ -5,9 +5,9 @@ edition = "2021"
 publish = false
 
 [dependencies]
-anyhow = "1.0.80"
-chrono = "0.4.35"
-parking_lot = "0.12.1"
+anyhow = "1.0.87"
+chrono = "0.4.38"
+parking_lot = "0.12.3"
 quickfix = { path = "../../quickfix", version = "0.1.0" }
 quickfix-msg44 = { path = "../../quickfix-msg44", version = "0.1.0" }
-uuid = "1.7.0"
+uuid = "1.10.0"
