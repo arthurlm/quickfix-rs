@@ -13,5 +13,5 @@ exclude = ["examples"]
 
 [dependencies]
 bytes = "1.7.1"
-quick-xml = "0.31.0"
+quick-xml = "0.36.1"
 thiserror = "1.0.63"

@@ -51,7 +51,7 @@ type XmlReader<'a> = Reader<&'a [u8]>;
 /// Try converting byte array into a FIX spec tree.
 pub fn parse_spec(input: &[u8]) -> Result<FixSpec, FixSpecError> {
     let mut reader = Reader::from_reader(input);
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
 
     match reader.read_event()? {
         // If we are at start of FIX spec.
