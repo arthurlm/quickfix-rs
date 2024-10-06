@@ -1007,5 +1007,10 @@ int8_t FixSession_isLoggedOn(FixSession_t *session) {
   CATCH_OR_RETURN_ERRNO({ return session->isLoggedOn(); });
 }
 
+int8_t FixSession_send(FixSession_t *session, FixMessage_t *msg) {
+  RETURN_VAL_IF_NULL(session, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({ return session->send(*msg); });
+}
+
 } // namespace FIX
 } // extern C

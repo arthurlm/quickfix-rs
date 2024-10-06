@@ -1,8 +1,8 @@
 use std::fmt;
 
 use quickfix_ffi::{
-    FixSession_isLoggedOn, FixSession_logout, FixSession_lookup, FixSession_sendToTarget,
-    FixSession_t,
+    FixSession_isLoggedOn, FixSession_logout, FixSession_lookup, FixSession_send,
+    FixSession_sendToTarget, FixSession_t,
 };
 
 use crate::{
@@ -43,6 +43,11 @@ impl Session {
     /// Check if session is logged on.
     pub fn is_logged_on(&mut self) -> Result<bool, QuickFixError> {
         ffi_code_to_bool(unsafe { FixSession_isLoggedOn(self.0) })
+    }
+
+    /// Send message using current session.
+    pub fn send(&mut self, msg: Message) -> Result<bool, QuickFixError> {
+        ffi_code_to_bool(unsafe { FixSession_send(self.0, msg.0) })
     }
 }
 

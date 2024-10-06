@@ -55,7 +55,18 @@ fn test_session_login_logout() -> Result<(), QuickFixError> {
     }
 
     // Lookup session
-    let mut session = unsafe { Session::lookup(&ServerType::Receiver.session_id()) }.unwrap();
+    let mut session = unsafe { Session::lookup(&ServerType::Sender.session_id()) }.unwrap();
+
+    // Send a message
+    assert_eq!(sender.user_msg_count(), MsgCounter { sent: 0, recv: 0 });
+    assert_eq!(receiver.user_msg_count(), MsgCounter { sent: 0, recv: 0 });
+
+    let news = build_news("Hello", &[])?;
+    assert!(session.send(news).unwrap());
+    thread::sleep(Duration::from_millis(50));
+
+    assert_eq!(sender.user_msg_count(), MsgCounter { sent: 1, recv: 0 });
+    assert_eq!(receiver.user_msg_count(), MsgCounter { sent: 0, recv: 1 });
 
     // Play with session state
     assert!(session.is_logged_on().unwrap());

@@ -446,4 +446,6 @@ extern "C" {
     pub fn FixSession_logout(session: FixSession_t) -> i8;
     #[must_use]
     pub fn FixSession_isLoggedOn(session: FixSession_t) -> i8;
+    #[must_use]
+    pub fn FixSession_send(session: FixSession_t, msg: FixMessage_t) -> i8;
 }
