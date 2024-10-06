@@ -62,6 +62,7 @@ typedef struct LogFactory FixLogFactory_t;
 typedef struct Application FixApplication_t;
 typedef struct SocketAcceptor FixSocketAcceptor_t;
 typedef struct SocketInitiator FixSocketInitiator_t;
+typedef struct Session FixSession_t;
 typedef struct SessionID FixSessionID_t;
 typedef struct Message FixMessage_t;
 typedef struct Header FixHeader_t;
@@ -214,6 +215,9 @@ int8_t FixGroup_addGroup(FixGroup_t *obj, const FixGroup_t *group);
 void FixGroup_delete(const FixGroup_t *obj);
 
 int8_t FixSession_sendToTarget(FixMessage_t *msg, const FixSessionID_t *session_id);
+FixSession_t *FixSession_lookup(const FixSessionID_t *session_id);
+int8_t FixSession_logout(FixSession_t *session);
+int8_t FixSession_isLoggedOn(FixSession_t *session);
 
 #ifdef __cplusplus
 }

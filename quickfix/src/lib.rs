@@ -136,7 +136,7 @@ pub use message_store_factory::{
     FfiMessageStoreFactory, FileMessageStoreFactory, MemoryMessageStoreFactory,
     NullMessageStoreFactory,
 };
-pub use session::send_to_target;
+pub use session::{send_to_target, Session};
 pub use session_id::SessionId;
 pub use session_settings::SessionSettings;
 pub use socket_acceptor::SocketAcceptor;

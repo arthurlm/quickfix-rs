@@ -989,5 +989,23 @@ int8_t FixSession_sendToTarget(Message *msg, const SessionID *session_id) {
   });
 }
 
+FixSession_t *FixSession_lookup(const FixSessionID_t *session_id) {
+  RETURN_VAL_IF_NULL(session_id, NULL);
+  CATCH_OR_RETURN_NULL({ return Session::lookupSession(*session_id); })
+}
+
+int8_t FixSession_logout(FixSession_t *session) {
+  RETURN_VAL_IF_NULL(session, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    session->logout();
+    return 0;
+  });
+}
+
+int8_t FixSession_isLoggedOn(FixSession_t *session) {
+  RETURN_VAL_IF_NULL(session, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({ return session->isLoggedOn(); });
+}
+
 } // namespace FIX
 } // extern C

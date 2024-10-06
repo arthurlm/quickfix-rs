@@ -44,6 +44,10 @@ pub struct FixApplication_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
+pub struct FixSession_t(NonNull<ffi::c_void>);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
 pub struct FixSessionID_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -437,4 +441,9 @@ extern "C" {
     // Session
 
     pub fn FixSession_sendToTarget(msg: FixMessage_t, session_id: FixSessionID_t) -> i8;
+    pub fn FixSession_lookup(session_id: FixSessionID_t) -> Option<FixSession_t>;
+    #[must_use]
+    pub fn FixSession_logout(session: FixSession_t) -> i8;
+    #[must_use]
+    pub fn FixSession_isLoggedOn(session: FixSession_t) -> i8;
 }
