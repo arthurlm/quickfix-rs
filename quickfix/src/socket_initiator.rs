@@ -1,15 +1,16 @@
 use std::marker::PhantomData;
 
 use quickfix_ffi::{
-    FixSocketInitiator_block, FixSocketInitiator_delete, FixSocketInitiator_isLoggedOn,
-    FixSocketInitiator_isStopped, FixSocketInitiator_new, FixSocketInitiator_poll,
-    FixSocketInitiator_start, FixSocketInitiator_stop, FixSocketInitiator_t,
+    FixSocketInitiator_block, FixSocketInitiator_delete, FixSocketInitiator_getSession,
+    FixSocketInitiator_isLoggedOn, FixSocketInitiator_isStopped, FixSocketInitiator_new,
+    FixSocketInitiator_poll, FixSocketInitiator_start, FixSocketInitiator_stop,
+    FixSocketInitiator_t,
 };
 
 use crate::{
     utils::{ffi_code_to_bool, ffi_code_to_result},
     Application, ApplicationCallback, ConnectionHandler, FfiMessageStoreFactory, LogCallback,
-    LogFactory, QuickFixError, SessionSettings,
+    LogFactory, QuickFixError, Session, SessionContainer, SessionSettings,
 };
 
 /// Socket implementation of establishing connections handler.
@@ -86,6 +87,28 @@ where
 
     fn is_stopped(&self) -> Result<bool, QuickFixError> {
         ffi_code_to_bool(unsafe { FixSocketInitiator_isStopped(self.inner) })
+    }
+}
+
+impl<A, L, S> SessionContainer for SocketInitiator<'_, A, L, S>
+where
+    A: ApplicationCallback,
+    S: FfiMessageStoreFactory,
+    L: LogCallback,
+{
+    fn with_session_mut<F, T>(&self, session_id: crate::SessionId, f: F) -> Result<T, QuickFixError>
+    where
+        F: FnOnce(&mut Session) -> T,
+    {
+        let mut session = unsafe {
+            FixSocketInitiator_getSession(self.inner, session_id.0)
+                .map(Session)
+                .ok_or_else(|| {
+                    QuickFixError::SessionNotFound(format!("No session found: {session_id:?}"))
+                })?
+        };
+
+        Ok(f(&mut session))
     }
 }
 

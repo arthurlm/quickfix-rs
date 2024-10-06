@@ -27,7 +27,8 @@ impl Session {
     /// Function is unsafe because there is no way to bind FIX session lifetime
     /// to rust session lifetime.
     ///
-    /// Maybe Oren Miller as a better idea / solution to solve this issue.
+    /// Use `SessionContainer::with_session_mut` instead. It will give you a safe scope
+    /// where session has been borrowed to the acceptor / initiator.
     pub unsafe fn lookup(session_id: &SessionId) -> Result<Self, QuickFixError> {
         match unsafe { FixSession_lookup(session_id.0) } {
             Some(session) => Ok(Self(session)),

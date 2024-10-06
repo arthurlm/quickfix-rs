@@ -75,7 +75,7 @@ fn test_full_fix_application() -> Result<(), QuickFixError> {
 
     assert_eq!(receiver.admin_msg_count(), MsgCounter { recv: 1, sent: 1 });
 
-    // Send a message from one app to the other
+    // Send a message from one app to the other using `send_to_target` API.
     assert_eq!(sender.user_msg_count(), MsgCounter::default());
     assert_eq!(receiver.user_msg_count(), MsgCounter::default());
 
@@ -95,6 +95,52 @@ fn test_full_fix_application() -> Result<(), QuickFixError> {
 
     assert_eq!(sender.user_msg_count(), MsgCounter { sent: 1, recv: 1 });
     assert_eq!(receiver.user_msg_count(), MsgCounter { sent: 1, recv: 1 });
+
+    // Send a message from one app to the other using `SessionContainer` API.
+    // - Check first session are not mixable from sender / receiver.
+    assert_eq!(
+        socket_sender.with_session_mut(ServerType::Receiver.session_id(), |_session| {
+            unreachable!();
+        }),
+        Err(QuickFixError::SessionNotFound(
+            "No session found: SessionId(\"FIX.4.4:ME->THEIR\")".to_string()
+        ))
+    );
+
+    assert_eq!(
+        socket_receiver.with_session_mut(ServerType::Sender.session_id(), |_session| {
+            unreachable!();
+        }),
+        Err(QuickFixError::SessionNotFound(
+            "No session found: SessionId(\"FIX.4.4:THEIR->ME\")".to_string()
+        ))
+    );
+
+    // Then play with API 😎
+    socket_sender.with_session_mut(ServerType::Sender.session_id(), |session| {
+        let news = build_news("Hello", &[])?;
+        session.send(news)?;
+
+        Ok::<_, QuickFixError>(())
+    })??;
+    thread::sleep(Duration::from_millis(50));
+
+    assert_eq!(sender.user_msg_count(), MsgCounter { sent: 2, recv: 1 });
+    assert_eq!(receiver.user_msg_count(), MsgCounter { sent: 1, recv: 2 });
+
+    socket_receiver.with_session_mut(ServerType::Receiver.session_id(), |session| {
+        let news = build_news(
+            "Anyone here",
+            &["This news have", "some content", "that is very interesting"],
+        )?;
+        session.send(news)?;
+
+        Ok::<_, QuickFixError>(())
+    })??;
+    thread::sleep(Duration::from_millis(50));
+
+    assert_eq!(sender.user_msg_count(), MsgCounter { sent: 2, recv: 2 });
+    assert_eq!(receiver.user_msg_count(), MsgCounter { sent: 2, recv: 2 });
 
     // Stop everything
     socket_receiver.stop()?;

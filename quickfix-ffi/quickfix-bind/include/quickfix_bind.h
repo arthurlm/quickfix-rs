@@ -144,6 +144,7 @@ int8_t FixSocketAcceptor_poll(FixSocketAcceptor_t *obj);
 int8_t FixSocketAcceptor_stop(FixSocketAcceptor_t *obj);
 int8_t FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj);
 int8_t FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj);
+FixSession_t *FixSocketAcceptor_getSession(const FixSocketAcceptor_t *obj, const FixSessionID_t *sessionId);
 void FixSocketAcceptor_delete(const FixSocketAcceptor_t *obj);
 
 FixSocketInitiator_t *FixSocketInitiator_new(FixApplication_t *application, FixMessageStoreFactory_t *storeFactory,
@@ -154,6 +155,7 @@ int8_t FixSocketInitiator_poll(FixSocketInitiator_t *obj);
 int8_t FixSocketInitiator_stop(FixSocketInitiator_t *obj);
 int8_t FixSocketInitiator_isLoggedOn(const FixSocketInitiator_t *obj);
 int8_t FixSocketInitiator_isStopped(const FixSocketInitiator_t *obj);
+FixSession_t *FixSocketInitiator_getSession(const FixSocketInitiator_t *obj, const FixSessionID_t *sessionId);
 void FixSocketInitiator_delete(const FixSocketInitiator_t *obj);
 
 FixSessionID_t *FixSessionID_new(const char *beginString, const char *senderCompID, const char *targetCompID,

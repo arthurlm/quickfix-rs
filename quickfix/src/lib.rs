@@ -171,6 +171,18 @@ pub trait ConnectionHandler {
     fn is_stopped(&self) -> Result<bool, QuickFixError>;
 }
 
+/// Define a container of session
+///
+/// May be a socket acceptor / initiator.
+pub trait SessionContainer {
+    /// Borrow mutable session to the container.
+    ///
+    /// Session is lookup using its ID.
+    fn with_session_mut<F, T>(&self, session_id: SessionId, f: F) -> Result<T, QuickFixError>
+    where
+        F: FnOnce(&mut Session) -> T;
+}
+
 /// Convert object to FIX value.
 ///
 /// This trait is like `std::fmt::Display` but it has a different meaning.

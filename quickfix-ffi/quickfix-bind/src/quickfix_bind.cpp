@@ -588,6 +588,12 @@ int8_t FixSocketAcceptor_isStopped(const SocketAcceptor *obj) {
   CATCH_OR_RETURN_ERRNO({ return obj->isStopped(); });
 }
 
+FixSession_t *FixSocketAcceptor_getSession(const FixSocketAcceptor_t *obj, const FixSessionID_t *sessionId) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  RETURN_VAL_IF_NULL(sessionId, NULL);
+  CATCH_OR_RETURN_NULL({ return obj->getSession(*sessionId); });
+}
+
 void FixSocketAcceptor_delete(const SocketAcceptor *obj) {
   RETURN_IF_NULL(obj);
   delete obj;
@@ -640,6 +646,12 @@ int8_t FixSocketInitiator_isLoggedOn(const SocketInitiator *obj) {
 int8_t FixSocketInitiator_isStopped(const SocketInitiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({ return obj->isStopped(); });
+}
+
+FixSession_t *FixSocketInitiator_getSession(const FixSocketInitiator_t *obj, const FixSessionID_t *sessionId) {
+  RETURN_VAL_IF_NULL(obj, NULL);
+  RETURN_VAL_IF_NULL(sessionId, NULL);
+  CATCH_OR_RETURN_NULL({ return obj->getSession(*sessionId); });
 }
 
 void FixSocketInitiator_delete(const SocketInitiator *obj) {

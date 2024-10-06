@@ -267,6 +267,11 @@ extern "C" {
     #[must_use]
     pub fn FixSocketAcceptor_isStopped(obj: FixSocketAcceptor_t) -> i8;
 
+    pub fn FixSocketAcceptor_getSession(
+        obj: FixSocketAcceptor_t,
+        sessionId: FixSessionID_t,
+    ) -> Option<FixSession_t>;
+
     pub fn FixSocketAcceptor_delete(obj: FixSocketAcceptor_t);
 
     // Socket initiator
@@ -295,6 +300,11 @@ extern "C" {
 
     #[must_use]
     pub fn FixSocketInitiator_isStopped(obj: FixSocketInitiator_t) -> i8;
+
+    pub fn FixSocketInitiator_getSession(
+        obj: FixSocketInitiator_t,
+        sessionId: FixSessionID_t,
+    ) -> Option<FixSession_t>;
 
     pub fn FixSocketInitiator_delete(obj: FixSocketInitiator_t);
 

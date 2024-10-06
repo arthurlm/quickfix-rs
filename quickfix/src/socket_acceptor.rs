@@ -1,15 +1,15 @@
 use std::marker::PhantomData;
 
 use quickfix_ffi::{
-    FixSocketAcceptor_block, FixSocketAcceptor_delete, FixSocketAcceptor_isLoggedOn,
-    FixSocketAcceptor_isStopped, FixSocketAcceptor_new, FixSocketAcceptor_poll,
-    FixSocketAcceptor_start, FixSocketAcceptor_stop, FixSocketAcceptor_t,
+    FixSocketAcceptor_block, FixSocketAcceptor_delete, FixSocketAcceptor_getSession,
+    FixSocketAcceptor_isLoggedOn, FixSocketAcceptor_isStopped, FixSocketAcceptor_new,
+    FixSocketAcceptor_poll, FixSocketAcceptor_start, FixSocketAcceptor_stop, FixSocketAcceptor_t,
 };
 
 use crate::{
     utils::{ffi_code_to_bool, ffi_code_to_result},
     Application, ApplicationCallback, ConnectionHandler, FfiMessageStoreFactory, LogCallback,
-    LogFactory, QuickFixError, SessionSettings,
+    LogFactory, QuickFixError, Session, SessionContainer, SessionSettings,
 };
 
 /// Socket implementation of incoming connections handler.
@@ -86,6 +86,28 @@ where
 
     fn is_stopped(&self) -> Result<bool, QuickFixError> {
         ffi_code_to_bool(unsafe { FixSocketAcceptor_isStopped(self.inner) })
+    }
+}
+
+impl<A, L, S> SessionContainer for SocketAcceptor<'_, A, L, S>
+where
+    A: ApplicationCallback,
+    S: FfiMessageStoreFactory,
+    L: LogCallback,
+{
+    fn with_session_mut<F, T>(&self, session_id: crate::SessionId, f: F) -> Result<T, QuickFixError>
+    where
+        F: FnOnce(&mut Session) -> T,
+    {
+        let mut session = unsafe {
+            FixSocketAcceptor_getSession(self.inner, session_id.0)
+                .map(Session)
+                .ok_or_else(|| {
+                    QuickFixError::SessionNotFound(format!("No session found: {session_id:?}"))
+                })?
+        };
+
+        Ok(f(&mut session))
     }
 }
 
