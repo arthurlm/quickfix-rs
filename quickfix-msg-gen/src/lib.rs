@@ -711,6 +711,14 @@ fn generate_group_reader(output: &mut String, struct_name: &str, group: &Message
     // Generate code.
     output.push_str(&format!(
         r#" #[inline(always)]
+            pub fn get_{fun_name_suffix}_count(&self) -> usize {{
+                self.inner
+                    .get_field({group_type}::FIELD_ID)
+                    .and_then(|x| x.parse().ok())
+                    .unwrap_or_default()
+            }}
+
+            #[inline(always)]
             pub fn clone_group_{fun_name_suffix}(&self, index: usize) -> Option<{group_type}> {{
                 self.inner
                     .clone_group(index as i32, {group_type}::FIELD_ID)
