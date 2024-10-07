@@ -1,4 +1,4 @@
-use std::fmt;
+use std::{fmt, marker::PhantomData};
 
 use quickfix_ffi::{
     FixSession_isLoggedOn, FixSession_logout, FixSession_lookup, FixSession_send,
@@ -17,9 +17,12 @@ pub fn send_to_target(msg: Message, session_id: &SessionId) -> Result<(), QuickF
 }
 
 /// FIX Session.
-pub struct Session(pub(crate) FixSession_t);
+pub struct Session<'a> {
+    pub(crate) inner: FixSession_t,
+    pub(crate) phantom_container: PhantomData<&'a ()>,
+}
 
-impl Session {
+impl Session<'static> {
     /// Find a session by its ID.
     ///
     /// # Safety
@@ -27,32 +30,37 @@ impl Session {
     /// Function is unsafe because there is no way to bind FIX session lifetime
     /// to rust session lifetime.
     ///
-    /// Use `SessionContainer::with_session_mut` instead. It will give you a safe scope
+    /// Use `SessionContainer::session` instead. It will give you a safe scope
     /// where session has been borrowed to the acceptor / initiator.
     pub unsafe fn lookup(session_id: &SessionId) -> Result<Self, QuickFixError> {
         match unsafe { FixSession_lookup(session_id.0) } {
-            Some(session) => Ok(Self(session)),
+            Some(inner) => Ok(Self {
+                inner,
+                phantom_container: PhantomData,
+            }),
             None => Err(QuickFixError::from_last_error()),
         }
     }
+}
 
+impl Session<'_> {
     /// Force session logout.
     pub fn logout(&mut self) -> Result<(), QuickFixError> {
-        ffi_code_to_result(unsafe { FixSession_logout(self.0) })
+        ffi_code_to_result(unsafe { FixSession_logout(self.inner) })
     }
 
     /// Check if session is logged on.
     pub fn is_logged_on(&mut self) -> Result<bool, QuickFixError> {
-        ffi_code_to_bool(unsafe { FixSession_isLoggedOn(self.0) })
+        ffi_code_to_bool(unsafe { FixSession_isLoggedOn(self.inner) })
     }
 
     /// Send message using current session.
     pub fn send(&mut self, msg: Message) -> Result<bool, QuickFixError> {
-        ffi_code_to_bool(unsafe { FixSession_send(self.0, msg.0) })
+        ffi_code_to_bool(unsafe { FixSession_send(self.inner, msg.0) })
     }
 }
 
-impl fmt::Debug for Session {
+impl fmt::Debug for Session<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_tuple("Session").finish()
     }

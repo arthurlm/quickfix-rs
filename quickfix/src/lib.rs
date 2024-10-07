@@ -178,9 +178,7 @@ pub trait SessionContainer {
     /// Borrow mutable session to the container.
     ///
     /// Session is lookup using its ID.
-    fn with_session_mut<F, T>(&self, session_id: SessionId, f: F) -> Result<T, QuickFixError>
-    where
-        F: FnOnce(&mut Session) -> T;
+    fn session(&self, session_id: SessionId) -> Result<Session<'_>, QuickFixError>;
 }
 
 /// Convert object to FIX value.

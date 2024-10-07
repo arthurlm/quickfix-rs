@@ -9,7 +9,7 @@ use quickfix_ffi::{
 use crate::{
     utils::{ffi_code_to_bool, ffi_code_to_result},
     Application, ApplicationCallback, ConnectionHandler, FfiMessageStoreFactory, LogCallback,
-    LogFactory, QuickFixError, Session, SessionContainer, SessionSettings,
+    LogFactory, QuickFixError, Session, SessionContainer, SessionId, SessionSettings,
 };
 
 /// Socket implementation of incoming connections handler.
@@ -95,19 +95,17 @@ where
     S: FfiMessageStoreFactory,
     L: LogCallback,
 {
-    fn with_session_mut<F, T>(&self, session_id: crate::SessionId, f: F) -> Result<T, QuickFixError>
-    where
-        F: FnOnce(&mut Session) -> T,
-    {
-        let mut session = unsafe {
+    fn session(&self, session_id: SessionId) -> Result<Session<'_>, QuickFixError> {
+        unsafe {
             FixSocketAcceptor_getSession(self.inner, session_id.0)
-                .map(Session)
+                .map(|inner| Session {
+                    inner,
+                    phantom_container: PhantomData,
+                })
                 .ok_or_else(|| {
                     QuickFixError::SessionNotFound(format!("No session found: {session_id:?}"))
-                })?
-        };
-
-        Ok(f(&mut session))
+                })
+        }
     }
 }
 
