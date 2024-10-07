@@ -726,7 +726,7 @@ fn generate_group_reader(output: &mut String, struct_name: &str, group: &Message
     // Generate code.
     output.push_str(&format!(
         r#" #[inline(always)]
-            pub fn get_{fun_name_suffix}_count(&self) -> usize {{
+            pub fn {fun_name_suffix}_len(&self) -> usize {{
                 self.inner
                     .get_field({group_type}::FIELD_ID)
                     .and_then(|x| x.parse().ok())

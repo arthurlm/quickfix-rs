@@ -99,7 +99,7 @@ fn test_build_list_status() -> Result<(), QuickFixError> {
 
     // Add some groups and check again string content
     // NB. We clearly see group content if final string + check sorter works correctly 😎.
-    assert_eq!(obj.get_no_orders_count(), 0);
+    assert_eq!(obj.no_orders_len(), 0);
 
     obj.add_no_orders(list_status::NoOrders::try_new(
         "Order:10000".to_string(),
@@ -107,7 +107,7 @@ fn test_build_list_status() -> Result<(), QuickFixError> {
         50,
         18.5,
     )?)?;
-    assert_eq!(obj.get_no_orders_count(), 1);
+    assert_eq!(obj.no_orders_len(), 1);
 
     obj.add_no_orders(list_status::NoOrders::try_new(
         "Order:10001".to_string(),
@@ -115,7 +115,7 @@ fn test_build_list_status() -> Result<(), QuickFixError> {
         75,
         987.4,
     )?)?;
-    assert_eq!(obj.get_no_orders_count(), 2);
+    assert_eq!(obj.no_orders_len(), 2);
 
     obj.add_no_orders(list_status::NoOrders::try_new(
         "Order:10018".to_string(),
@@ -123,7 +123,7 @@ fn test_build_list_status() -> Result<(), QuickFixError> {
         79,
         5.6,
     )?)?;
-    assert_eq!(obj.get_no_orders_count(), 3);
+    assert_eq!(obj.no_orders_len(), 3);
 
     assert_eq!(
         obj.to_fix_string(),
@@ -186,7 +186,7 @@ fn test_group_iterator() -> Result<(), QuickFixError> {
     )?)?;
 
     // Check we have inserted something
-    assert_eq!(obj.get_no_orders_count(), 3);
+    assert_eq!(obj.no_orders_len(), 3);
 
     // Iterate over group
 
