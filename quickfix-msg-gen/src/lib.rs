@@ -94,6 +94,21 @@ fn generate_root(output: &mut String, begin_string: &str) {
 
             impl std::error::Error for FixParseError {{}}
 
+            pub struct GroupIterator<'a, T, I> {{
+                parent: &'a T,
+                clone_group_func: fn(&'a T, usize) -> Option<I>,
+                current_index: usize,
+            }}
+
+            impl<'a, T, I> Iterator for GroupIterator<'a, T, I> {{
+                type Item = I;
+
+                fn next(&mut self) -> Option<Self::Item> {{
+                    self.current_index += 1;
+                    (self.clone_group_func)(self.parent, self.current_index)
+                }}
+            }}
+
             "#
     ))
 }
@@ -723,6 +738,15 @@ fn generate_group_reader(output: &mut String, struct_name: &str, group: &Message
                 self.inner
                     .clone_group(index as i32, {group_type}::FIELD_ID)
                     .map(|raw_group| {group_type} {{ inner: raw_group }})
+            }}
+
+            #[inline(always)]
+            pub fn iter_{fun_name_suffix}(&self) -> GroupIterator<'_, Self, {group_type}> {{
+                GroupIterator {{
+                    parent: self,
+                    clone_group_func: |parent, idx| parent.clone_group_{fun_name_suffix}(idx),
+                    current_index: 0,
+                }}
             }}
 
             "#

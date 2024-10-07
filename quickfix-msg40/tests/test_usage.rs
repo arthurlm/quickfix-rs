@@ -161,3 +161,56 @@ fn test_build_list_status() -> Result<(), QuickFixError> {
 
     Ok(())
 }
+
+#[test]
+fn test_group_iterator() -> Result<(), QuickFixError> {
+    let mut obj = ListStatus::try_new("My list".to_string(), 0, 0)?;
+
+    obj.add_no_orders(list_status::NoOrders::try_new(
+        "Order:10000".to_string(),
+        100,
+        50,
+        18.5,
+    )?)?;
+    obj.add_no_orders(list_status::NoOrders::try_new(
+        "Order:10001".to_string(),
+        89,
+        75,
+        987.4,
+    )?)?;
+    obj.add_no_orders(list_status::NoOrders::try_new(
+        "Order:10018".to_string(),
+        5,
+        79,
+        5.6,
+    )?)?;
+
+    // Check we have inserted something
+    assert_eq!(obj.get_no_orders_count(), 3);
+
+    // Iterate over group
+
+    let output: Vec<_> = obj
+        .iter_no_orders()
+        .map(|no_order| {
+            (
+                no_order.get_cl_ord_id(),
+                no_order.get_cum_qty(),
+                no_order.get_cxl_qty(),
+                no_order.get_avg_px(),
+            )
+        })
+        .collect();
+
+    // Check what we have collected
+    assert_eq!(
+        output,
+        vec![
+            ("Order:10000".to_string(), 100, 50, 18.5),
+            ("Order:10001".to_string(), 89, 75, 987.4),
+            ("Order:10018".to_string(), 5, 79, 5.6)
+        ]
+    );
+
+    Ok(())
+}
