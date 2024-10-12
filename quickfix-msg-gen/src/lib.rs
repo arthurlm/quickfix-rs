@@ -649,7 +649,7 @@ fn generate_field_getter(
     let call_get_prefix = accessor.getter_prefix_text();
     let call_suffix = accessor.caller_suffix_text();
 
-    let fun_name_suffix = field_name.to_case(Case::Snake);
+    let fun_name = format!("get_{}", field_name.to_case(Case::Snake));
     let field_type = format!("crate::field_types::{field_name}");
     let field_id = format_field_id(field_name);
 
@@ -658,7 +658,7 @@ fn generate_field_getter(
         // Generate a getter that `panic()` if field is not set.
         output.push_str(&format!(
             r#" #[inline(always)]
-                pub fn get_{fun_name_suffix}(&self) -> {field_type} {{
+                pub fn {fun_name}(&self) -> {field_type} {{
                     self.{call_get_prefix}get_field({field_id}){call_suffix}
                        .and_then(|x| x.parse().ok())
                        .expect("{field_id} is required but it is missing")
@@ -670,7 +670,7 @@ fn generate_field_getter(
         // Generate an optional getter.
         output.push_str(&format!(
             r#" #[inline(always)]
-                pub fn get_{fun_name_suffix}(&self) -> Option<{field_type}> {{
+                pub fn {fun_name}(&self) -> Option<{field_type}> {{
                     self.{call_get_prefix}get_field({field_id}){call_suffix}
                        .and_then(|x| x.parse().ok())
                 }}
@@ -689,14 +689,14 @@ fn generate_field_setters(
     let call_set_prefix = accessor.setter_prefix_text();
     let call_suffix = accessor.caller_suffix_text();
 
-    let fun_name_suffix = field.name.to_case(Case::Snake);
+    let field_name = field.name.to_case(Case::Snake);
     let field_type = format!("crate::field_types::{}", field.name);
     let field_id = format_field_id(&field.name);
 
     // Generate code.
     output.push_str(&format!(
         r#" #[inline(always)]
-            pub fn set_{fun_name_suffix}(&mut self, value: {field_type}) -> Result<&Self, quickfix::QuickFixError> {{
+            pub fn set_{field_name}(&mut self, value: {field_type}) -> Result<&Self, quickfix::QuickFixError> {{
                 self.{call_set_prefix}set_field({field_id}, value){call_suffix}?;
                 Ok(self)
             }}
@@ -708,7 +708,7 @@ fn generate_field_setters(
     if !field.required {
         output.push_str(&format!(
             r#" #[inline(always)]
-                pub fn remove_{fun_name_suffix}(&mut self) -> Result<&Self, quickfix::QuickFixError> {{
+                pub fn remove_{field_name}(&mut self) -> Result<&Self, quickfix::QuickFixError> {{
                     self.{call_set_prefix}remove_field({field_id}){call_suffix}?;
                     Ok(self)
                 }}
@@ -720,13 +720,13 @@ fn generate_field_setters(
 
 fn generate_group_reader(output: &mut String, struct_name: &str, group: &MessageGroup) {
     // Add some type alias.
-    let fun_name_suffix = group.name.to_case(Case::Snake);
+    let group_name = group.name.to_case(Case::Snake);
     let group_type = format!("self::{}::{}", struct_name.to_case(Case::Snake), group.name);
 
     // Generate code.
     output.push_str(&format!(
         r#" #[inline(always)]
-            pub fn {fun_name_suffix}_len(&self) -> usize {{
+            pub fn {group_name}_len(&self) -> usize {{
                 self.inner
                     .get_field({group_type}::FIELD_ID)
                     .and_then(|x| x.parse().ok())
@@ -734,17 +734,17 @@ fn generate_group_reader(output: &mut String, struct_name: &str, group: &Message
             }}
 
             #[inline(always)]
-            pub fn clone_group_{fun_name_suffix}(&self, index: usize) -> Option<{group_type}> {{
+            pub fn clone_group_{group_name}(&self, index: usize) -> Option<{group_type}> {{
                 self.inner
                     .clone_group(index as i32, {group_type}::FIELD_ID)
                     .map(|raw_group| {group_type} {{ inner: raw_group }})
             }}
 
             #[inline(always)]
-            pub fn iter_{fun_name_suffix}(&self) -> GroupIterator<'_, Self, {group_type}> {{
+            pub fn iter_{group_name}(&self) -> GroupIterator<'_, Self, {group_type}> {{
                 GroupIterator {{
                     parent: self,
-                    clone_group_func: |parent, idx| parent.clone_group_{fun_name_suffix}(idx),
+                    clone_group_func: |parent, idx| parent.clone_group_{group_name}(idx),
                     current_index: 0,
                 }}
             }}
@@ -755,13 +755,13 @@ fn generate_group_reader(output: &mut String, struct_name: &str, group: &Message
 
 fn generate_fn_add_group(output: &mut String, struct_name: &str, group: &MessageGroup) {
     // Add some type alias.
-    let fun_name = format!("add_{}", group.name.to_case(Case::Snake));
+    let group_name = group.name.to_case(Case::Snake);
     let group_type = format!("self::{}::{}", struct_name.to_case(Case::Snake), group.name);
 
     // Generate code.
     output.push_str(&format!(
         r#" #[inline(always)]
-            pub fn {fun_name}(&mut self, value: {group_type}) -> Result<&Self, quickfix::QuickFixError> {{
+            pub fn add_{group_name}(&mut self, value: {group_type}) -> Result<&Self, quickfix::QuickFixError> {{
                 self.inner.add_group(&value.inner)?;
                 Ok(self)
             }}
