@@ -102,7 +102,7 @@ dependencies = [
 
 [[package]]
 name = "coinbase-example"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "anyhow",
  "coinbase-fix-utils",
@@ -114,7 +114,7 @@ dependencies = [
 
 [[package]]
 name = "coinbase-fix-utils"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "base64",
  "coinbase-fix42-order-entry",
@@ -126,7 +126,7 @@ dependencies = [
 
 [[package]]
 name = "coinbase-fix42-order-entry"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -134,7 +134,7 @@ dependencies = [
 
 [[package]]
 name = "coinbase-fix50-market-data"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -203,7 +203,7 @@ checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
 
 [[package]]
 name = "executor"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "quickfix",
  "quickfix-msg40",
@@ -381,7 +381,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "colored",
  "log",
@@ -391,7 +391,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-ffi"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "cmake",
  "fs_extra",
@@ -399,7 +399,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg-gen"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "bytes",
  "convert_case",
@@ -410,7 +410,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg40"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -418,7 +418,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg41"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -426,7 +426,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg42"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -434,7 +434,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg43"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -442,7 +442,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg44"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -450,7 +450,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg50"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -458,7 +458,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-spec-parser"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "bytes",
  "quick-xml",
@@ -508,7 +508,7 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 
 [[package]]
 name = "single-order-sender"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "anyhow",
  "chrono",
