@@ -1,8 +1,8 @@
 use std::{fmt, marker::PhantomData};
 
 use quickfix_ffi::{
-    FixSession_isLoggedOn, FixSession_logout, FixSession_lookup, FixSession_send,
-    FixSession_sendToTarget, FixSession_t,
+    FixSession_isLoggedOn, FixSession_logout, FixSession_lookup, FixSession_send, FixSession_reset,
+    FixSession_logon, FixSession_sendToTarget, FixSession_t,
 };
 
 use crate::{
@@ -44,7 +44,7 @@ impl Session<'static> {
 }
 
 impl Session<'_> {
-    /// Force session logout.
+    /// Force session logout, and disable session.
     pub fn logout(&mut self) -> Result<(), QuickFixError> {
         ffi_code_to_result(unsafe { FixSession_logout(self.inner) })
     }
@@ -57,6 +57,17 @@ impl Session<'_> {
     /// Send message using current session.
     pub fn send(&mut self, msg: Message) -> Result<bool, QuickFixError> {
         ffi_code_to_bool(unsafe { FixSession_send(self.inner, msg.0) })
+    }
+
+    /// Reset session by sending a logout & disconnecting, but still keeping the session enabled,
+    /// so that logon is retried.
+    pub fn reset(&mut self) -> Result<(), QuickFixError> {
+        ffi_code_to_result(unsafe { FixSession_reset(self.inner) })
+    }
+
+    /// Enable session so that logon is sent.
+    pub fn logon(&mut self) -> Result<(), QuickFixError> {
+        ffi_code_to_result(unsafe { FixSession_logon(self.inner) })
     }
 }
 

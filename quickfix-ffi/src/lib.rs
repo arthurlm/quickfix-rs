@@ -458,4 +458,8 @@ extern "C" {
     pub fn FixSession_isLoggedOn(session: FixSession_t) -> i8;
     #[must_use]
     pub fn FixSession_send(session: FixSession_t, msg: FixMessage_t) -> i8;
+    #[must_use]
+    pub fn FixSession_reset(session: FixSession_t) -> i8;
+    #[must_use]
+    pub fn FixSession_logon(session: FixSession_t) -> i8;
 }

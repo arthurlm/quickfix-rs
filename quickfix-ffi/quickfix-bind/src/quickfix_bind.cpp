@@ -1024,5 +1024,21 @@ int8_t FixSession_send(FixSession_t *session, FixMessage_t *msg) {
   CATCH_OR_RETURN_ERRNO({ return session->send(*msg); });
 }
 
+int8_t FixSession_reset(FixSession_t *session) {
+  RETURN_VAL_IF_NULL(session, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    session->reset();
+    return 0;
+  });
+}
+
+int8_t FixSession_logon(FixSession_t *session) {
+  RETURN_VAL_IF_NULL(session, ERRNO_INVAL);
+  CATCH_OR_RETURN_ERRNO({
+    session->logon();
+    return 0;
+  });
+}
+
 } // namespace FIX
 } // extern C
