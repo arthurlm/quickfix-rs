@@ -9,4 +9,4 @@ quickfix = { path = "../../quickfix", version = "0.1.0" }
 quickfix-msg40 = { path = "../../quickfix-msg40", version = "0.1.0" }
 quickfix-msg41 = { path = "../../quickfix-msg41", version = "0.1.0" }
 quickfix-msg42 = { path = "../../quickfix-msg42", version = "0.1.0" }
-thiserror = "1.0.63"
+thiserror = "1.0.69"
