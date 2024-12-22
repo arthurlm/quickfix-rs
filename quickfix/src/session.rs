@@ -1,8 +1,8 @@
 use std::{fmt, marker::PhantomData};
 
 use quickfix_ffi::{
-    FixSession_isLoggedOn, FixSession_logout, FixSession_lookup, FixSession_send, FixSession_reset,
-    FixSession_logon, FixSession_sendToTarget, FixSession_t,
+    FixSession_isLoggedOn, FixSession_logon, FixSession_logout, FixSession_lookup,
+    FixSession_reset, FixSession_send, FixSession_sendToTarget, FixSession_t,
 };
 
 use crate::{
