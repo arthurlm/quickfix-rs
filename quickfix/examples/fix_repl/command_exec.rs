@@ -1,6 +1,5 @@
 use std::io::{self, stdin, stdout, BufRead, StdinLock, Write};
 
-use colored::Colorize;
 use quickfix::{send_to_target, ConnectionHandler};
 
 use crate::command_parser::ShellCommand;
@@ -20,7 +19,7 @@ impl FixShell<'_> {
 
     fn read_user_input(&mut self) -> io::Result<()> {
         let mut stdout = stdout().lock();
-        write!(stdout, "{}> ", "FIX".blue())?;
+        write!(stdout, "FIX> ")?;
         stdout.flush()?;
         drop(stdout);
 
@@ -77,7 +76,7 @@ impl FixShell<'_> {
             match self.last_command.parse::<ShellCommand>() {
                 Ok(ShellCommand::Quit) => break,
                 Ok(cmd) => self.exec_command(cmd, connection_handler),
-                Err(err) => eprintln!("Error when running command: {}", err.to_string().red()),
+                Err(err) => eprintln!("Error when running command: {err}"),
             }
         }
     }

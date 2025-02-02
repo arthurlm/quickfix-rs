@@ -15,9 +15,6 @@ quickfix-ffi = { path = "../quickfix-ffi", version = "0.1.0" }
 thiserror = "2.0.11"
 log = { version = "0.4.22", optional = true }
 
-[dev-dependencies]
-colored = "3.0.0"
-
 [features]
 default = ["log"]
 build-with-mysql = ["quickfix-ffi/build-with-mysql"]

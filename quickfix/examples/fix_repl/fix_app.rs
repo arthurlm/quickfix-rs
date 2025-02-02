@@ -3,7 +3,6 @@ use std::{
     sync::atomic::{AtomicU32, Ordering},
 };
 
-use colored::Colorize;
 use quickfix::*;
 
 #[derive(Default)]
@@ -24,11 +23,11 @@ impl MyApplication {
         let msg_count = self.message_index.load(Ordering::Relaxed);
 
         let mut stdout = stdout().lock();
-        let _ = write!(stdout, "{}", callback_name.blue().bold());
-        let _ = write!(stdout, "({}={}) ", "id".green(), msg_count);
-        let _ = write!(stdout, "{}={:?}", "session".green(), session);
+        let _ = write!(stdout, "{callback_name}");
+        let _ = write!(stdout, "(id={msg_count}) ");
+        let _ = write!(stdout, "session={session:?}");
         if let Some(msg) = msg {
-            let _ = write!(stdout, " {}={:?}", "msg".green(), msg);
+            let _ = write!(stdout, " msg={msg:?}");
         }
         let _ = writeln!(stdout);
     }
