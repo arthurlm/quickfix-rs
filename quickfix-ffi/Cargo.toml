@@ -1,6 +1,6 @@
 [package]
 name = "quickfix-ffi"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Arthur LE MOIGNE"]
 edition = "2021"
 description = "Low level binding to quickfix C++ library"
