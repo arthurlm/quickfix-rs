@@ -1,3 +1,5 @@
+use std::io;
+
 use quick_xml::events::{BytesStart, Event};
 
 use crate::{FixSpecError, XmlReader, XmlWriter};
@@ -20,13 +22,10 @@ pub trait XmlObject {
 }
 
 pub trait XmlWritable {
-    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> quick_xml::Result<&'a mut XmlWriter>;
+    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> io::Result<&'a mut XmlWriter>;
 }
 
-pub fn write_xml_list<T: XmlWritable>(
-    writer: &mut XmlWriter,
-    items: &[T],
-) -> quick_xml::Result<()> {
+pub fn write_xml_list<T: XmlWritable>(writer: &mut XmlWriter, items: &[T]) -> io::Result<()> {
     for item in items {
         item.write_xml(writer)?;
     }
@@ -37,7 +36,7 @@ pub fn write_xml_container<'a, T: XmlWritable>(
     writer: &'a mut XmlWriter,
     tag_name: &'a str,
     items: &[T],
-) -> quick_xml::Result<&'a mut XmlWriter> {
+) -> io::Result<&'a mut XmlWriter> {
     let element = writer.create_element(tag_name);
 
     if items.is_empty() {

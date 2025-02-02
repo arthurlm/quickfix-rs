@@ -1,3 +1,5 @@
+use std::io;
+
 use quick_xml::events::BytesStart;
 
 use crate::{
@@ -39,7 +41,7 @@ impl XmlReadable for Group {
 }
 
 impl XmlWritable for Group {
-    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> quick_xml::Result<&'a mut XmlWriter> {
+    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> io::Result<&'a mut XmlWriter> {
         writer
             .create_element(Self::TAG_NAME)
             .with_attribute(("name", self.name.as_str()))

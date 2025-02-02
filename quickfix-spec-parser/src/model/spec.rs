@@ -1,3 +1,5 @@
+use std::io;
+
 use quick_xml::events::{BytesStart, Event};
 
 use crate::{
@@ -91,7 +93,7 @@ impl XmlReadable for FixSpec {
 }
 
 impl XmlWritable for FixSpec {
-    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> quick_xml::Result<&'a mut XmlWriter> {
+    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> io::Result<&'a mut XmlWriter> {
         writer
             .create_element(Self::TAG_NAME)
             .with_attribute(("type", if self.is_fixt { "FIXT" } else { "FIX" }))

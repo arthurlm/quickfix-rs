@@ -7,6 +7,8 @@
  * **NOTE** This crate is not a code generator. It only help having a clear representation of what FIX dictionary are.
  */
 
+use std::io;
+
 use bytes::Bytes;
 use quick_xml::{events::Event, Reader, Writer};
 
@@ -64,7 +66,7 @@ pub fn parse_spec(input: &[u8]) -> Result<FixSpec, FixSpecError> {
 }
 
 /// Convert FIX spec tree into a byte array.
-pub fn write_spec(spec: &FixSpec) -> Result<Bytes, FixSpecError> {
+pub fn write_spec(spec: &FixSpec) -> io::Result<Bytes> {
     let mut writer = Writer::new_with_indent(Vec::new(), b' ', 1);
 
     spec.write_xml(&mut writer)?;

@@ -12,11 +12,11 @@ rust-version = "1.70.0"
 
 [dependencies]
 quickfix-ffi = { path = "../quickfix-ffi", version = "0.1.0" }
-thiserror = "1.0.69"
+thiserror = "2.0.11"
 log = { version = "0.4.22", optional = true }
 
 [dev-dependencies]
-colored = "2.2.0"
+colored = "3.0.0"
 
 [features]
 default = ["log"]

@@ -1,3 +1,5 @@
+use std::io;
+
 use quick_xml::events::BytesStart;
 
 use crate::{
@@ -44,7 +46,7 @@ impl XmlReadable for FieldSpec {
 }
 
 impl XmlWritable for FieldSpec {
-    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> quick_xml::Result<&'a mut XmlWriter> {
+    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> io::Result<&'a mut XmlWriter> {
         let element = writer
             .create_element(Self::TAG_NAME)
             .with_attribute(("number", self.number.to_string().as_str()))

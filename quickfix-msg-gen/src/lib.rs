@@ -119,7 +119,7 @@ fn generate_field_ids(output: &mut String, field_specs: &[FieldSpec]) {
     for field_spec in field_specs {
         output.push_str(&format!(
             "pub const {}: i32 = {};\n",
-            field_spec.name.to_case(Case::ScreamingSnake),
+            field_spec.name.to_case(Case::Constant),
             field_spec.number
         ));
     }
@@ -816,7 +816,7 @@ fn generate_message_cracker(output: &mut String, messages: &[MessageSpec]) {
 }
 
 fn format_field_id(input: &str) -> String {
-    format!("crate::field_id::{}", input.to_case(Case::ScreamingSnake))
+    format!("crate::field_id::{}", input.to_case(Case::Constant))
 }
 
 fn format_required_params(components: &[SubComponent]) -> String {

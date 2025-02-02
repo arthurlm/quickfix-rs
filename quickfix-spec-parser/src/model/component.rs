@@ -1,3 +1,5 @@
+use std::io;
+
 use quick_xml::events::BytesStart;
 
 use crate::{read_attribute, FixSpecError, XmlObject, XmlReadable, XmlWritable, XmlWriter};
@@ -24,7 +26,7 @@ impl XmlReadable for Component {
 }
 
 impl XmlWritable for Component {
-    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> quick_xml::Result<&'a mut XmlWriter> {
+    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> io::Result<&'a mut XmlWriter> {
         writer
             .create_element(Self::TAG_NAME)
             .with_attribute(("name", self.name.as_str()))

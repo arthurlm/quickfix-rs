@@ -1,3 +1,5 @@
+use std::io;
+
 use quick_xml::events::Event;
 
 use crate::{
@@ -52,7 +54,7 @@ impl FieldValue {
 }
 
 impl XmlWritable for FieldValue {
-    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> quick_xml::Result<&'a mut XmlWriter> {
+    fn write_xml<'a>(&self, writer: &'a mut XmlWriter) -> io::Result<&'a mut XmlWriter> {
         match self {
             Self::Field(field) => field.write_xml(writer),
             Self::Group(group) => group.write_xml(writer),
