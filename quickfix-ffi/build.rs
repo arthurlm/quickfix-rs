@@ -40,6 +40,7 @@ fn main() {
 
     // Build quickfix as a static library
     let quickfix_dst = Config::new(libquickfix_build_dir)
+        .define("CMAKE_POLICY_VERSION_MINIMUM", "3.10")
         .define("HAVE_SSL", "OFF")
         .define("HAVE_MYSQL", read_cmake_opt("build-with-mysql"))
         .define("HAVE_POSTGRESQL", read_cmake_opt("build-with-postgres"))
