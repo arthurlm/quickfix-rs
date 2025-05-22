@@ -11,7 +11,6 @@ use crate::converter::convert_spec;
 use crate::model::*;
 
 use convert_case::{Case, Casing};
-use itertools::Itertools;
 
 mod converter;
 mod model;
@@ -519,6 +518,7 @@ fn generate_group(output: &mut String, group: &MessageGroup) {
         .components
         .iter()
         .map(|x| format_field_id(x.name()))
+        .collect::<Vec<_>>()
         .join(",");
 
     // Generate main struct.
@@ -827,6 +827,7 @@ fn format_required_params(components: &[SubComponent]) -> String {
             let param_name = name.to_case(Case::Snake);
             format!("{param_name}: crate::field_types::{name}")
         })
+        .collect::<Vec<_>>()
         .join(", ")
 }
 
@@ -840,5 +841,6 @@ fn format_new_setters(components: &[SubComponent]) -> String {
             let param_name = name.to_case(Case::Snake);
             format!("inner.set_field({field_id}, {param_name})?;")
         })
+        .collect::<Vec<_>>()
         .join("\n")
 }
