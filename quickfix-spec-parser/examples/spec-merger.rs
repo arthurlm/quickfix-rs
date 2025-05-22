@@ -28,7 +28,7 @@ fn main() {
         });
 
     let output_xml = write_spec(&spec_merged).expect("Fail to write spec");
-    let txt = String::from_utf8(output_xml.to_vec())
+    let txt = String::from_utf8(output_xml)
         .expect("generated XML is not UTF8")
         .replace('\"', "'");
 

@@ -9,7 +9,6 @@
 
 use std::io;
 
-use bytes::Bytes;
 use quick_xml::{events::Event, Reader, Writer};
 
 mod error;
@@ -66,10 +65,10 @@ pub fn parse_spec(input: &[u8]) -> Result<FixSpec, FixSpecError> {
 }
 
 /// Convert FIX spec tree into a byte array.
-pub fn write_spec(spec: &FixSpec) -> io::Result<Bytes> {
+pub fn write_spec(spec: &FixSpec) -> io::Result<Vec<u8>> {
     let mut writer = Writer::new_with_indent(Vec::new(), b' ', 1);
 
     spec.write_xml(&mut writer)?;
 
-    Ok(Bytes::from(writer.into_inner()))
+    Ok(writer.into_inner())
 }

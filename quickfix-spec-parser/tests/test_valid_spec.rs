@@ -4,7 +4,7 @@ fn check(expected: &[u8]) {
     let spec = parse_spec(expected).unwrap();
 
     let out = write_spec(&spec).unwrap();
-    let out_txt = String::from_utf8(out.to_vec())
+    let out_txt = String::from_utf8(out)
         .unwrap()
         .replace('\"', "'")
         .replace("/>", " />")

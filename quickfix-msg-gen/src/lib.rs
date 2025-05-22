@@ -10,7 +10,6 @@ use std::{
 use crate::converter::convert_spec;
 use crate::model::*;
 
-use bytes::Bytes;
 use convert_case::{Case, Casing};
 use itertools::Itertools;
 
@@ -63,9 +62,9 @@ pub fn generate<S: AsRef<Path>, D: AsRef<Path>>(
     let rustfmt_out = rustfmt.wait_with_output()?;
     if !rustfmt_out.status.success() {
         println!("rustfmt stdout =======================");
-        println!("{:?}", Bytes::from(rustfmt_out.stdout));
+        println!("{}", String::from_utf8_lossy(&rustfmt_out.stdout));
         println!("rustfmt stderr =======================");
-        println!("{:?}", Bytes::from(rustfmt_out.stderr));
+        println!("{}", String::from_utf8_lossy(&rustfmt_out.stderr));
 
         panic!("Fail to run rustfmt");
     }

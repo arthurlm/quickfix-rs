@@ -14,7 +14,7 @@ fn main() {
 
     // Rewrite it as XML and apply change to make it match with original spec format.
     let out = write_spec(&spec).unwrap();
-    let txt = String::from_utf8(out.to_vec())
+    let txt = String::from_utf8(out)
         .unwrap()
         .replace('\"', "'")
         .replace("/>", " />");

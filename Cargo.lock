@@ -57,12 +57,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1628fb46dfa0b37568d12e5edd512553eccf6a22a78e8bde00bb4aed84d5bdbf"
 
 [[package]]
-name = "bytes"
-version = "1.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "325918d6fe32f23b19878fe4b34794ae41fc19ddbe53b10571a4874d44ffd39b"
-
-[[package]]
 name = "cc"
 version = "1.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -385,7 +379,6 @@ dependencies = [
 name = "quickfix-msg-gen"
 version = "0.1.6"
 dependencies = [
- "bytes",
  "convert_case",
  "itertools",
  "quickfix",
@@ -444,7 +437,6 @@ dependencies = [
 name = "quickfix-spec-parser"
 version = "0.1.6"
 dependencies = [
- "bytes",
  "quick-xml",
  "thiserror",
 ]

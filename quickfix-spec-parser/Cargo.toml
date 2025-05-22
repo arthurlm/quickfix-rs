@@ -12,6 +12,5 @@ rust-version = "1.70.0"
 exclude = ["examples"]
 
 [dependencies]
-bytes = "1.9.0"
 quick-xml = "0.37.2"
 thiserror = "2.0.11"
