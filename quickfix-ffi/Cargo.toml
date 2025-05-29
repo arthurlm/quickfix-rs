@@ -20,6 +20,9 @@ include = [
     "/src",
     "/build.rs",
     "/CMakeLists.txt",
+    # Exclude auto tools, makefiles and custom scripts
+    "!/libquickfix/**/Makefile.am",
+    "!/libquickfix/**/*.sh",
     # Do not include auto generated message files.
     "!/libquickfix/src/C++/fix40",
     "!/libquickfix/src/C++/fix41",
