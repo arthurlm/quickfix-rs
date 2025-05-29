@@ -24,13 +24,7 @@ include = [
     "!/libquickfix/**/Makefile.am",
     "!/libquickfix/**/*.sh",
     # Exclude SSL related code (we will inject dummy files to replace them in build.rs)
-    "!/libquickfix/src/C++/SSLSocketAcceptor.*",
-    "!/libquickfix/src/C++/SSLSocketConnection.*",
-    "!/libquickfix/src/C++/SSLSocketInitiator.*",
-    "!/libquickfix/src/C++/ThreadedSSLSocketAcceptor.*",
-    "!/libquickfix/src/C++/ThreadedSSLSocketConnection.*",
-    "!/libquickfix/src/C++/ThreadedSSLSocketInitiator.*",
-    "!/libquickfix/src/C++/UtilitySSL.*",
+    "!/libquickfix/src/C++/*SSL*.*",
     # Exclude Threaded socket application related code (we will inject dummy files to replace them in build.rs)
     "!/libquickfix/src/C++/ThreadedSocket*.*",
     # Do not include auto generated message files.

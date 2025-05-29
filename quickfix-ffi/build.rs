@@ -44,6 +44,7 @@ fn main() {
 
     // Inject stubs files
     let libquickfix_cpp_dir: std::path::PathBuf = libquickfix_build_dir.join("src/C++");
+    // Below line can be removed when this MR is merged https://github.com/quickfix/quickfix/pull/655
     touch_file(libquickfix_cpp_dir.join("SSLSocketAcceptor.h"));
     touch_file(libquickfix_cpp_dir.join("SSLSocketConnection.h"));
     touch_file(libquickfix_cpp_dir.join("SSLSocketInitiator.h"));
