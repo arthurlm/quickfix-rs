@@ -23,6 +23,14 @@ include = [
     # Exclude auto tools, makefiles and custom scripts
     "!/libquickfix/**/Makefile.am",
     "!/libquickfix/**/*.sh",
+    # Exclude SSL related code (we will inject dummy files to replace them in build.rs)
+    "!/libquickfix/src/C++/SSLSocketAcceptor.*",
+    "!/libquickfix/src/C++/SSLSocketConnection.*",
+    "!/libquickfix/src/C++/SSLSocketInitiator.*",
+    "!/libquickfix/src/C++/ThreadedSSLSocketAcceptor.*",
+    "!/libquickfix/src/C++/ThreadedSSLSocketConnection.*",
+    "!/libquickfix/src/C++/ThreadedSSLSocketInitiator.*",
+    "!/libquickfix/src/C++/UtilitySSL.*",
     # Do not include auto generated message files.
     "!/libquickfix/src/C++/fix40",
     "!/libquickfix/src/C++/fix41",

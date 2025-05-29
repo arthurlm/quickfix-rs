@@ -19,6 +19,10 @@ fn read_cmake_opt(flag: &str) -> &'static str {
     }
 }
 
+fn touch_file<P: AsRef<Path>>(path: P) {
+    fs::write(path, "").expect("Fail to touch file");
+}
+
 fn main() {
     let out_dir = env::var("OUT_DIR").expect("Missing OUT_DIR");
     let target_os = TargetOs::from_env();
@@ -37,6 +41,16 @@ fn main() {
     let _ = fs::remove_dir_all(&libquickfix_build_dir);
     fs_extra::copy_items(&["./libquickfix"], &out_dir, &CopyOptions::default())
         .expect("Fail to copy libquickfix");
+
+    // Inject stubs files
+    let libquickfix_cpp_dir: std::path::PathBuf = libquickfix_build_dir.join("src/C++");
+    touch_file(libquickfix_cpp_dir.join("SSLSocketAcceptor.h"));
+    touch_file(libquickfix_cpp_dir.join("SSLSocketConnection.h"));
+    touch_file(libquickfix_cpp_dir.join("SSLSocketInitiator.h"));
+    touch_file(libquickfix_cpp_dir.join("ThreadedSSLSocketAcceptor.h"));
+    touch_file(libquickfix_cpp_dir.join("ThreadedSSLSocketConnection.h"));
+    touch_file(libquickfix_cpp_dir.join("ThreadedSSLSocketInitiator.h"));
+    touch_file(libquickfix_cpp_dir.join("UtilitySSL.h"));
 
     // Build quickfix as a static library
     let quickfix_dst = Config::new(libquickfix_build_dir)
