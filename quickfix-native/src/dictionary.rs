@@ -5,8 +5,8 @@ use crate::errors::{NativeError, Result};
 /// For storage and retrieval of key/value pairs.
 #[derive(Default, Debug, Clone)]
 pub struct Dictionary {
-    pub name: String,
-    pub data: HashMap<String, String>,
+    name: String,
+    data: HashMap<String, String>,
 }
 
 impl<'a> IntoIterator for &'a Dictionary {
