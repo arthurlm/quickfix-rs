@@ -8,8 +8,8 @@ use quickfix_ffi::{
 
 use crate::{
     utils::{ffi_code_to_bool, ffi_code_to_result},
-    Application, ApplicationCallback, ConnectionHandler, FfiMessageStoreFactory, LogCallback,
-    LogFactory, QuickFixError, Session, SessionContainer, SessionId, SessionSettings,
+    Application, ApplicationCallback, ConnectionHandler, ConnectionMode, FfiMessageStoreFactory,
+    LogCallback, LogFactory, QuickFixError, Session, SessionContainer, SessionId, SessionSettings,
 };
 
 /// Socket implementation of incoming connections handler.
@@ -38,6 +38,7 @@ where
         application: &'a Application<A>,
         store_factory: &'a S,
         log_factory: &'a LogFactory<L>,
+        server_mode: ConnectionMode,
     ) -> Result<Self, QuickFixError> {
         match unsafe {
             FixAcceptor_new(
@@ -45,6 +46,7 @@ where
                 store_factory.as_ffi_ptr(),
                 settings.0,
                 log_factory.0,
+                server_mode.is_single_threaded() as i8,
             )
         } {
             Some(inner) => Ok(Self {

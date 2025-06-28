@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
   FixMessageStoreFactory_t *storeFactory = FixFileMessageStoreFactory_new(settings);
   FixLogFactory_t *logFactory = FixLogFactory_new((void *)0xFEED, &LOG_CALLBACKS);
   FixApplication_t *application = FixApplication_new((void *)0xBEEF, &APP_CALLBACKS);
-  FixAcceptor_t *acceptor = FixAcceptor_new(application, storeFactory, settings, logFactory);
+  FixAcceptor_t *acceptor = FixAcceptor_new(application, storeFactory, settings, logFactory, false);
 
   printf(">> Acceptor START\n");
   FixAcceptor_start(acceptor);

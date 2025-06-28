@@ -247,6 +247,7 @@ extern "C" {
         storeFactory: FixMessageStoreFactory_t,
         settings: FixSessionSettings_t,
         logFactory: FixLogFactory_t,
+        isMultiThreaded: i8,
     ) -> Option<FixAcceptor_t>;
 
     #[must_use]
@@ -281,6 +282,7 @@ extern "C" {
         storeFactory: FixMessageStoreFactory_t,
         settings: FixSessionSettings_t,
         logFactory: FixLogFactory_t,
+        isMultiThreaded: i8,
     ) -> Option<FixInitiator_t>;
 
     #[must_use]

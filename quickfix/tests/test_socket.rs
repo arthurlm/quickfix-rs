@@ -35,7 +35,14 @@ fn test_handler() {
         let logger = LogFactory::try_new(&StdLogger::Stdout).unwrap();
 
         check_connection_handler(
-            Acceptor::try_new(&settings, &app, &message_store, &logger).unwrap(),
+            Acceptor::try_new(
+                &settings,
+                &app,
+                &message_store,
+                &logger,
+                ConnectionMode::default(),
+            )
+            .unwrap(),
         );
     }
 
@@ -46,7 +53,14 @@ fn test_handler() {
         let logger = LogFactory::try_new(&StdLogger::Stdout).unwrap();
 
         check_connection_handler(
-            Initiator::try_new(&settings, &app, &message_store, &logger).unwrap(),
+            Initiator::try_new(
+                &settings,
+                &app,
+                &message_store,
+                &logger,
+                ConnectionMode::default(),
+            )
+            .unwrap(),
         );
     }
 }

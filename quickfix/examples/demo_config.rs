@@ -2,7 +2,8 @@ use std::io::{stdin, Read};
 
 use quickfix::{
     dictionary_item::*, Acceptor, Application, ApplicationCallback, ConnectionHandler, Dictionary,
-    LogFactory, MemoryMessageStoreFactory, QuickFixError, SessionId, SessionSettings, StdLogger,
+    LogFactory, MemoryMessageStoreFactory, QuickFixError, ConnectionMode, SessionId, SessionSettings,
+    StdLogger,
 };
 
 #[derive(Default)]
@@ -52,7 +53,13 @@ fn main() -> Result<(), QuickFixError> {
     let callbacks = MyApplication;
     let app = Application::try_new(&callbacks)?;
 
-    let mut acceptor = Acceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
+    let mut acceptor = Acceptor::try_new(
+        &settings,
+        &app,
+        &store_factory,
+        &log_factory,
+        ConnectionMode::SingleThreaded,
+    )?;
 
     println!(">> connection handler START");
     acceptor.start()?;

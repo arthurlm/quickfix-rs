@@ -33,12 +33,14 @@ fn test_session_login_logout() -> Result<(), QuickFixError> {
         &app_sender,
         &message_store_factory_sender,
         &log_factory,
+        ConnectionMode::default(),
     )?;
     let mut socket_receiver = Acceptor::try_new(
         &settings_receiver,
         &app_receiver,
         &message_store_factory_receiver,
         &log_factory,
+        ConnectionMode::default(),
     )?;
 
     // Check session have been configured

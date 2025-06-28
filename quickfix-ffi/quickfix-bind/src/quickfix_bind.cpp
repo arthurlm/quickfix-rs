@@ -15,6 +15,8 @@
 #include <quickfix/SessionSettings.h>
 #include <quickfix/SocketAcceptor.h>
 #include <quickfix/SocketInitiator.h>
+#include <quickfix/ThreadedSocketAcceptor.h>
+#include <quickfix/ThreadedSocketInitiator.h>
 
 #ifdef HAVE_MYSQL
 #include <quickfix/MySQLStore.h>
@@ -540,13 +542,19 @@ void FixApplication_delete(const Application *obj) {
 }
 
 Acceptor *FixAcceptor_new(Application *application, MessageStoreFactory *storeFactory, const SessionSettings *settings,
-                          LogFactory *logFactory) {
+                          LogFactory *logFactory, int8_t isMultiThreaded) {
   RETURN_VAL_IF_NULL(application, NULL);
   RETURN_VAL_IF_NULL(storeFactory, NULL);
   RETURN_VAL_IF_NULL(logFactory, NULL);
   RETURN_VAL_IF_NULL(settings, NULL);
 
-  CATCH_OR_RETURN_NULL({ return new SocketAcceptor(*application, *storeFactory, *settings, *logFactory); });
+  CATCH_OR_RETURN_NULL({
+    if (isMultiThreaded) {
+      return new ThreadedSocketAcceptor(*application, *storeFactory, *settings, *logFactory);
+    } else {
+      return new SocketAcceptor(*application, *storeFactory, *settings, *logFactory);
+    }
+  });
 }
 
 int8_t FixAcceptor_start(Acceptor *obj) {
@@ -600,13 +608,19 @@ void FixAcceptor_delete(const Acceptor *obj) {
 }
 
 Initiator *FixInitiator_new(Application *application, MessageStoreFactory *storeFactory,
-                            const SessionSettings *settings, LogFactory *logFactory) {
+                            const SessionSettings *settings, LogFactory *logFactory, int8_t isMultiThreaded) {
   RETURN_VAL_IF_NULL(application, NULL);
   RETURN_VAL_IF_NULL(storeFactory, NULL);
   RETURN_VAL_IF_NULL(logFactory, NULL);
   RETURN_VAL_IF_NULL(settings, NULL);
 
-  CATCH_OR_RETURN_NULL({ return new SocketInitiator(*application, *storeFactory, *settings, *logFactory); });
+  CATCH_OR_RETURN_NULL({
+    if (isMultiThreaded) {
+      return new ThreadedSocketInitiator(*application, *storeFactory, *settings, *logFactory);
+    } else {
+      return new SocketInitiator(*application, *storeFactory, *settings, *logFactory);
+    }
+  });
 }
 
 int8_t FixInitiator_start(Initiator *obj) {

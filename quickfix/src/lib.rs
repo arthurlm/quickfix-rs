@@ -81,7 +81,13 @@ let store_factory = MemoryMessageStoreFactory::new();
 let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
 let app = Application::try_new(&MyApplication)?;
 
-let mut acceptor = Acceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
+let mut acceptor = Acceptor::try_new(
+    &settings,
+    &app,
+    &store_factory,
+    &log_factory,
+    ConnectionMode::SingleThreaded,
+)?;
 
 // Start session.
 acceptor.start()?;
@@ -267,4 +273,24 @@ pub trait ForeignPropertyGetter<T> {
 pub trait ForeignPropertySetter<T> {
     /// Write foreign value into object.
     fn ffi_set(&mut self, key: CString, value: T) -> Result<(), QuickFixError>;
+}
+
+/// Underlying interface of FIX server to use.
+///
+/// This enum may add in future version SSL version of server mode.
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
+#[non_exhaustive]
+pub enum ConnectionMode {
+    /// Single threaded version of Acceptor and Initiator.
+    #[default]
+    SingleThreaded,
+    /// Multi threaded version of Acceptor and Initiator.
+    #[cfg(feature = "experimental-multi-thread-support")]
+    MultiThreaded,
+}
+
+impl ConnectionMode {
+    fn is_single_threaded(self) -> bool {
+        matches!(self, ConnectionMode::SingleThreaded)
+    }
 }

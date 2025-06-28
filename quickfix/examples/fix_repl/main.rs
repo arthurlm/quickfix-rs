@@ -2,7 +2,7 @@ use std::{env, process::exit};
 
 use quickfix::{
     Acceptor, Application, ConnectionHandler, FileMessageStoreFactory, Initiator, LogFactory,
-    QuickFixError, SessionSettings, StdLogger,
+    QuickFixError, ConnectionMode, SessionSettings, StdLogger,
 };
 
 use crate::{command_exec::FixShell, fix_app::MyApplication};
@@ -34,12 +34,14 @@ fn main() -> Result<(), QuickFixError> {
             &app,
             &store_factory,
             &log_factory,
+            ConnectionMode::SingleThreaded,
         )?),
         "acceptor" => server_loop(Acceptor::try_new(
             &settings,
             &app,
             &store_factory,
             &log_factory,
+            ConnectionMode::SingleThreaded,
         )?),
         _ => {
             eprintln!("Invalid connection mode");

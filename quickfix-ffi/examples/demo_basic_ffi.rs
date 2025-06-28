@@ -117,7 +117,7 @@ fn main() {
             .expect("Fail to build log factory");
         let application = FixApplication_new(0xFEED as *const ffi::c_void, &APP_CALLBACKS)
             .expect("Fail to build application");
-        let acceptor = FixAcceptor_new(application, store_factory, settings, log_factory)
+        let acceptor = FixAcceptor_new(application, store_factory, settings, log_factory, 0)
             .expect("Fail to build acceptor");
 
         println!(">> Acceptor START");

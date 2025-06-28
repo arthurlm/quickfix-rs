@@ -137,7 +137,8 @@ FixApplication_t *FixApplication_new(const void *data, const FixApplicationCallb
 void FixApplication_delete(const FixApplication_t *obj);
 
 FixAcceptor_t *FixAcceptor_new(FixApplication_t *application, FixMessageStoreFactory_t *storeFactory,
-                               const FixSessionSettings_t *settings, FixLogFactory_t *logFactory);
+                               const FixSessionSettings_t *settings, FixLogFactory_t *logFactory,
+                               int8_t isMultiThreaded);
 int8_t FixAcceptor_start(FixAcceptor_t *obj);
 int8_t FixAcceptor_block(FixAcceptor_t *obj);
 int8_t FixAcceptor_poll(FixAcceptor_t *obj);
@@ -148,7 +149,8 @@ FixSession_t *FixAcceptor_getSession(const FixAcceptor_t *obj, const FixSessionI
 void FixAcceptor_delete(const FixAcceptor_t *obj);
 
 FixInitiator_t *FixInitiator_new(FixApplication_t *application, FixMessageStoreFactory_t *storeFactory,
-                                 const FixSessionSettings_t *settings, FixLogFactory_t *logFactory);
+                                 const FixSessionSettings_t *settings, FixLogFactory_t *logFactory,
+                                 int8_t isMultiThreaded);
 int8_t FixInitiator_start(FixInitiator_t *obj);
 int8_t FixInitiator_block(FixInitiator_t *obj);
 int8_t FixInitiator_poll(FixInitiator_t *obj);

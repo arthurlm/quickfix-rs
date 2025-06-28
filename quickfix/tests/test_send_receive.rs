@@ -37,12 +37,14 @@ fn test_full_fix_application() -> Result<(), QuickFixError> {
         &app_sender,
         &message_store_factory_sender,
         &log_factory,
+        ConnectionMode::default(),
     )?;
     let mut socket_receiver = Acceptor::try_new(
         &settings_receiver,
         &app_receiver,
         &message_store_factory_receiver,
         &log_factory,
+        ConnectionMode::default(),
     )?;
 
     // Check session have been configured
@@ -151,13 +153,7 @@ fn test_full_fix_application() -> Result<(), QuickFixError> {
     assert!(!socket_receiver.is_logged_on().unwrap());
 
     // Check counter
-    assert_eq!(
-        sender.admin_msg_count(),
-        MsgCounter {
-            sent: 3, /* ??? */
-            recv: 2
-        }
-    );
+    assert_eq!(sender.admin_msg_count(), MsgCounter { sent: 2, recv: 2 });
     assert_eq!(receiver.admin_msg_count(), MsgCounter { recv: 2, sent: 2 });
 
     Ok(())

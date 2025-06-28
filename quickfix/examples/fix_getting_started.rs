@@ -31,7 +31,13 @@ fn main() -> Result<(), QuickFixError> {
     let callbacks = MyApplication;
     let app = Application::try_new(&callbacks)?;
 
-    let mut acceptor = Acceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
+    let mut acceptor = Acceptor::try_new(
+        &settings,
+        &app,
+        &store_factory,
+        &log_factory,
+        ConnectionMode::SingleThreaded,
+    )?;
 
     println!(">> connection handler START");
     acceptor.start()?;
