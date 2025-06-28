@@ -60,8 +60,8 @@ typedef struct DataDictionary FixDataDictionary_t;
 typedef struct MessageStoreFactory FixMessageStoreFactory_t;
 typedef struct LogFactory FixLogFactory_t;
 typedef struct Application FixApplication_t;
-typedef struct SocketAcceptor FixSocketAcceptor_t;
-typedef struct SocketInitiator FixSocketInitiator_t;
+typedef struct Acceptor FixAcceptor_t;
+typedef struct Initiator FixInitiator_t;
 typedef struct Session FixSession_t;
 typedef struct SessionID FixSessionID_t;
 typedef struct Message FixMessage_t;
@@ -136,27 +136,27 @@ void FixLogFactory_delete(const FixLogFactory_t *obj);
 FixApplication_t *FixApplication_new(const void *data, const FixApplicationCallbacks_t *callbacks);
 void FixApplication_delete(const FixApplication_t *obj);
 
-FixSocketAcceptor_t *FixSocketAcceptor_new(FixApplication_t *application, FixMessageStoreFactory_t *storeFactory,
-                                           const FixSessionSettings_t *settings, FixLogFactory_t *logFactory);
-int8_t FixSocketAcceptor_start(FixSocketAcceptor_t *obj);
-int8_t FixSocketAcceptor_block(FixSocketAcceptor_t *obj);
-int8_t FixSocketAcceptor_poll(FixSocketAcceptor_t *obj);
-int8_t FixSocketAcceptor_stop(FixSocketAcceptor_t *obj);
-int8_t FixSocketAcceptor_isLoggedOn(const FixSocketAcceptor_t *obj);
-int8_t FixSocketAcceptor_isStopped(const FixSocketAcceptor_t *obj);
-FixSession_t *FixSocketAcceptor_getSession(const FixSocketAcceptor_t *obj, const FixSessionID_t *sessionId);
-void FixSocketAcceptor_delete(const FixSocketAcceptor_t *obj);
+FixAcceptor_t *FixAcceptor_new(FixApplication_t *application, FixMessageStoreFactory_t *storeFactory,
+                               const FixSessionSettings_t *settings, FixLogFactory_t *logFactory);
+int8_t FixAcceptor_start(FixAcceptor_t *obj);
+int8_t FixAcceptor_block(FixAcceptor_t *obj);
+int8_t FixAcceptor_poll(FixAcceptor_t *obj);
+int8_t FixAcceptor_stop(FixAcceptor_t *obj);
+int8_t FixAcceptor_isLoggedOn(const FixAcceptor_t *obj);
+int8_t FixAcceptor_isStopped(const FixAcceptor_t *obj);
+FixSession_t *FixAcceptor_getSession(const FixAcceptor_t *obj, const FixSessionID_t *sessionId);
+void FixAcceptor_delete(const FixAcceptor_t *obj);
 
-FixSocketInitiator_t *FixSocketInitiator_new(FixApplication_t *application, FixMessageStoreFactory_t *storeFactory,
-                                             const FixSessionSettings_t *settings, FixLogFactory_t *logFactory);
-int8_t FixSocketInitiator_start(FixSocketInitiator_t *obj);
-int8_t FixSocketInitiator_block(FixSocketInitiator_t *obj);
-int8_t FixSocketInitiator_poll(FixSocketInitiator_t *obj);
-int8_t FixSocketInitiator_stop(FixSocketInitiator_t *obj);
-int8_t FixSocketInitiator_isLoggedOn(const FixSocketInitiator_t *obj);
-int8_t FixSocketInitiator_isStopped(const FixSocketInitiator_t *obj);
-FixSession_t *FixSocketInitiator_getSession(const FixSocketInitiator_t *obj, const FixSessionID_t *sessionId);
-void FixSocketInitiator_delete(const FixSocketInitiator_t *obj);
+FixInitiator_t *FixInitiator_new(FixApplication_t *application, FixMessageStoreFactory_t *storeFactory,
+                                 const FixSessionSettings_t *settings, FixLogFactory_t *logFactory);
+int8_t FixInitiator_start(FixInitiator_t *obj);
+int8_t FixInitiator_block(FixInitiator_t *obj);
+int8_t FixInitiator_poll(FixInitiator_t *obj);
+int8_t FixInitiator_stop(FixInitiator_t *obj);
+int8_t FixInitiator_isLoggedOn(const FixInitiator_t *obj);
+int8_t FixInitiator_isStopped(const FixInitiator_t *obj);
+FixSession_t *FixInitiator_getSession(const FixInitiator_t *obj, const FixSessionID_t *sessionId);
+void FixInitiator_delete(const FixInitiator_t *obj);
 
 FixSessionID_t *FixSessionID_new(const char *beginString, const char *senderCompID, const char *targetCompID,
                                  const char *sessionQualifier);

@@ -1,10 +1,9 @@
 use std::marker::PhantomData;
 
 use quickfix_ffi::{
-    FixSocketInitiator_block, FixSocketInitiator_delete, FixSocketInitiator_getSession,
-    FixSocketInitiator_isLoggedOn, FixSocketInitiator_isStopped, FixSocketInitiator_new,
-    FixSocketInitiator_poll, FixSocketInitiator_start, FixSocketInitiator_stop,
-    FixSocketInitiator_t,
+    FixAcceptor_block, FixAcceptor_delete, FixAcceptor_getSession, FixAcceptor_isLoggedOn,
+    FixAcceptor_isStopped, FixAcceptor_new, FixAcceptor_poll, FixAcceptor_start, FixAcceptor_stop,
+    FixAcceptor_t,
 };
 
 use crate::{
@@ -13,21 +12,21 @@ use crate::{
     LogFactory, QuickFixError, Session, SessionContainer, SessionId, SessionSettings,
 };
 
-/// Socket implementation of establishing connections handler.
+/// Socket implementation of incoming connections handler.
 #[derive(Debug)]
-pub struct SocketInitiator<'a, A, L, S>
+pub struct Acceptor<'a, A, L, S>
 where
     A: ApplicationCallback,
     S: FfiMessageStoreFactory,
     L: LogCallback,
 {
-    inner: FixSocketInitiator_t,
+    inner: FixAcceptor_t,
     phantom_application: PhantomData<&'a A>,
     phantom_message_store_factory: PhantomData<&'a S>,
     phantom_log_factory: PhantomData<&'a L>,
 }
 
-impl<'a, A, L, S> SocketInitiator<'a, A, L, S>
+impl<'a, A, L, S> Acceptor<'a, A, L, S>
 where
     A: ApplicationCallback,
     S: FfiMessageStoreFactory,
@@ -41,7 +40,7 @@ where
         log_factory: &'a LogFactory<L>,
     ) -> Result<Self, QuickFixError> {
         match unsafe {
-            FixSocketInitiator_new(
+            FixAcceptor_new(
                 application.0,
                 store_factory.as_ffi_ptr(),
                 settings.0,
@@ -59,38 +58,38 @@ where
     }
 }
 
-impl<A, L, S> ConnectionHandler for SocketInitiator<'_, A, L, S>
+impl<A, L, S> ConnectionHandler for Acceptor<'_, A, L, S>
 where
     A: ApplicationCallback,
     S: FfiMessageStoreFactory,
     L: LogCallback,
 {
     fn start(&mut self) -> Result<(), QuickFixError> {
-        ffi_code_to_result(unsafe { FixSocketInitiator_start(self.inner) })
+        ffi_code_to_result(unsafe { FixAcceptor_start(self.inner) })
     }
 
     fn block(&mut self) -> Result<(), QuickFixError> {
-        ffi_code_to_result(unsafe { FixSocketInitiator_block(self.inner) })
+        ffi_code_to_result(unsafe { FixAcceptor_block(self.inner) })
     }
 
     fn poll(&mut self) -> Result<bool, QuickFixError> {
-        ffi_code_to_bool(unsafe { FixSocketInitiator_poll(self.inner) })
+        ffi_code_to_bool(unsafe { FixAcceptor_poll(self.inner) })
     }
 
     fn stop(&mut self) -> Result<(), QuickFixError> {
-        ffi_code_to_result(unsafe { FixSocketInitiator_stop(self.inner) })
+        ffi_code_to_result(unsafe { FixAcceptor_stop(self.inner) })
     }
 
     fn is_logged_on(&self) -> Result<bool, QuickFixError> {
-        ffi_code_to_bool(unsafe { FixSocketInitiator_isLoggedOn(self.inner) })
+        ffi_code_to_bool(unsafe { FixAcceptor_isLoggedOn(self.inner) })
     }
 
     fn is_stopped(&self) -> Result<bool, QuickFixError> {
-        ffi_code_to_bool(unsafe { FixSocketInitiator_isStopped(self.inner) })
+        ffi_code_to_bool(unsafe { FixAcceptor_isStopped(self.inner) })
     }
 }
 
-impl<A, L, S> SessionContainer for SocketInitiator<'_, A, L, S>
+impl<A, L, S> SessionContainer for Acceptor<'_, A, L, S>
 where
     A: ApplicationCallback,
     S: FfiMessageStoreFactory,
@@ -98,7 +97,7 @@ where
 {
     fn session(&self, session_id: SessionId) -> Result<Session<'_>, QuickFixError> {
         unsafe {
-            FixSocketInitiator_getSession(self.inner, session_id.0)
+            FixAcceptor_getSession(self.inner, session_id.0)
                 .map(|inner| Session {
                     inner,
                     phantom_container: PhantomData,
@@ -110,7 +109,7 @@ where
     }
 }
 
-impl<A, L, S> Drop for SocketInitiator<'_, A, L, S>
+impl<A, L, S> Drop for Acceptor<'_, A, L, S>
 where
     A: ApplicationCallback,
     S: FfiMessageStoreFactory,
@@ -118,6 +117,6 @@ where
 {
     fn drop(&mut self) {
         let _ = self.stop();
-        unsafe { FixSocketInitiator_delete(self.inner) }
+        unsafe { FixAcceptor_delete(self.inner) }
     }
 }

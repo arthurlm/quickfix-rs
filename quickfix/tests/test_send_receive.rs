@@ -32,13 +32,13 @@ fn test_full_fix_application() -> Result<(), QuickFixError> {
     assert_eq!(receiver.user_msg_count(), MsgCounter::default());
 
     // Init socket acceptor / initiator.
-    let mut socket_sender = SocketInitiator::try_new(
+    let mut socket_sender = Initiator::try_new(
         &settings_sender,
         &app_sender,
         &message_store_factory_sender,
         &log_factory,
     )?;
-    let mut socket_receiver = SocketAcceptor::try_new(
+    let mut socket_receiver = Acceptor::try_new(
         &settings_receiver,
         &app_receiver,
         &message_store_factory_receiver,

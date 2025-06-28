@@ -56,11 +56,11 @@ pub struct FixMessage_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
-pub struct FixSocketAcceptor_t(NonNull<ffi::c_void>);
+pub struct FixAcceptor_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
-pub struct FixSocketInitiator_t(NonNull<ffi::c_void>);
+pub struct FixInitiator_t(NonNull<ffi::c_void>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
@@ -242,71 +242,71 @@ extern "C" {
 
     // Socket acceptor
 
-    pub fn FixSocketAcceptor_new(
+    pub fn FixAcceptor_new(
         application: FixApplication_t,
         storeFactory: FixMessageStoreFactory_t,
         settings: FixSessionSettings_t,
         logFactory: FixLogFactory_t,
-    ) -> Option<FixSocketAcceptor_t>;
+    ) -> Option<FixAcceptor_t>;
 
     #[must_use]
-    pub fn FixSocketAcceptor_start(obj: FixSocketAcceptor_t) -> i8;
+    pub fn FixAcceptor_start(obj: FixAcceptor_t) -> i8;
 
     #[must_use]
-    pub fn FixSocketAcceptor_block(obj: FixSocketAcceptor_t) -> i8;
+    pub fn FixAcceptor_block(obj: FixAcceptor_t) -> i8;
 
     #[must_use]
-    pub fn FixSocketAcceptor_poll(obj: FixSocketAcceptor_t) -> i8;
+    pub fn FixAcceptor_poll(obj: FixAcceptor_t) -> i8;
 
     #[must_use]
-    pub fn FixSocketAcceptor_stop(obj: FixSocketAcceptor_t) -> i8;
+    pub fn FixAcceptor_stop(obj: FixAcceptor_t) -> i8;
 
     #[must_use]
-    pub fn FixSocketAcceptor_isLoggedOn(obj: FixSocketAcceptor_t) -> i8;
+    pub fn FixAcceptor_isLoggedOn(obj: FixAcceptor_t) -> i8;
 
     #[must_use]
-    pub fn FixSocketAcceptor_isStopped(obj: FixSocketAcceptor_t) -> i8;
+    pub fn FixAcceptor_isStopped(obj: FixAcceptor_t) -> i8;
 
-    pub fn FixSocketAcceptor_getSession(
-        obj: FixSocketAcceptor_t,
+    pub fn FixAcceptor_getSession(
+        obj: FixAcceptor_t,
         sessionId: FixSessionID_t,
     ) -> Option<FixSession_t>;
 
-    pub fn FixSocketAcceptor_delete(obj: FixSocketAcceptor_t);
+    pub fn FixAcceptor_delete(obj: FixAcceptor_t);
 
     // Socket initiator
 
-    pub fn FixSocketInitiator_new(
+    pub fn FixInitiator_new(
         application: FixApplication_t,
         storeFactory: FixMessageStoreFactory_t,
         settings: FixSessionSettings_t,
         logFactory: FixLogFactory_t,
-    ) -> Option<FixSocketInitiator_t>;
+    ) -> Option<FixInitiator_t>;
 
     #[must_use]
-    pub fn FixSocketInitiator_start(obj: FixSocketInitiator_t) -> i8;
+    pub fn FixInitiator_start(obj: FixInitiator_t) -> i8;
 
     #[must_use]
-    pub fn FixSocketInitiator_block(obj: FixSocketInitiator_t) -> i8;
+    pub fn FixInitiator_block(obj: FixInitiator_t) -> i8;
 
     #[must_use]
-    pub fn FixSocketInitiator_poll(obj: FixSocketInitiator_t) -> i8;
+    pub fn FixInitiator_poll(obj: FixInitiator_t) -> i8;
 
     #[must_use]
-    pub fn FixSocketInitiator_stop(obj: FixSocketInitiator_t) -> i8;
+    pub fn FixInitiator_stop(obj: FixInitiator_t) -> i8;
 
     #[must_use]
-    pub fn FixSocketInitiator_isLoggedOn(obj: FixSocketInitiator_t) -> i8;
+    pub fn FixInitiator_isLoggedOn(obj: FixInitiator_t) -> i8;
 
     #[must_use]
-    pub fn FixSocketInitiator_isStopped(obj: FixSocketInitiator_t) -> i8;
+    pub fn FixInitiator_isStopped(obj: FixInitiator_t) -> i8;
 
-    pub fn FixSocketInitiator_getSession(
-        obj: FixSocketInitiator_t,
+    pub fn FixInitiator_getSession(
+        obj: FixInitiator_t,
         sessionId: FixSessionID_t,
     ) -> Option<FixSession_t>;
 
-    pub fn FixSocketInitiator_delete(obj: FixSocketInitiator_t);
+    pub fn FixInitiator_delete(obj: FixInitiator_t);
 
     // Session ID
 

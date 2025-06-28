@@ -539,8 +539,8 @@ void FixApplication_delete(const Application *obj) {
   delete obj;
 }
 
-SocketAcceptor *FixSocketAcceptor_new(Application *application, MessageStoreFactory *storeFactory,
-                                      const SessionSettings *settings, LogFactory *logFactory) {
+Acceptor *FixAcceptor_new(Application *application, MessageStoreFactory *storeFactory, const SessionSettings *settings,
+                          LogFactory *logFactory) {
   RETURN_VAL_IF_NULL(application, NULL);
   RETURN_VAL_IF_NULL(storeFactory, NULL);
   RETURN_VAL_IF_NULL(logFactory, NULL);
@@ -549,7 +549,7 @@ SocketAcceptor *FixSocketAcceptor_new(Application *application, MessageStoreFact
   CATCH_OR_RETURN_NULL({ return new SocketAcceptor(*application, *storeFactory, *settings, *logFactory); });
 }
 
-int8_t FixSocketAcceptor_start(SocketAcceptor *obj) {
+int8_t FixAcceptor_start(Acceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({
     obj->start();
@@ -557,7 +557,7 @@ int8_t FixSocketAcceptor_start(SocketAcceptor *obj) {
   });
 }
 
-int8_t FixSocketAcceptor_block(SocketAcceptor *obj) {
+int8_t FixAcceptor_block(Acceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({
     obj->block();
@@ -565,12 +565,12 @@ int8_t FixSocketAcceptor_block(SocketAcceptor *obj) {
   });
 }
 
-int8_t FixSocketAcceptor_poll(SocketAcceptor *obj) {
+int8_t FixAcceptor_poll(Acceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({ return obj->poll(); });
 }
 
-int8_t FixSocketAcceptor_stop(SocketAcceptor *obj) {
+int8_t FixAcceptor_stop(Acceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({
     obj->stop();
@@ -578,29 +578,29 @@ int8_t FixSocketAcceptor_stop(SocketAcceptor *obj) {
   });
 }
 
-int8_t FixSocketAcceptor_isLoggedOn(const SocketAcceptor *obj) {
+int8_t FixAcceptor_isLoggedOn(const Acceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({ return obj->isLoggedOn(); });
 }
 
-int8_t FixSocketAcceptor_isStopped(const SocketAcceptor *obj) {
+int8_t FixAcceptor_isStopped(const Acceptor *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({ return obj->isStopped(); });
 }
 
-FixSession_t *FixSocketAcceptor_getSession(const FixSocketAcceptor_t *obj, const FixSessionID_t *sessionId) {
+FixSession_t *FixAcceptor_getSession(const FixAcceptor_t *obj, const FixSessionID_t *sessionId) {
   RETURN_VAL_IF_NULL(obj, NULL);
   RETURN_VAL_IF_NULL(sessionId, NULL);
   CATCH_OR_RETURN_NULL({ return obj->getSession(*sessionId); });
 }
 
-void FixSocketAcceptor_delete(const SocketAcceptor *obj) {
+void FixAcceptor_delete(const Acceptor *obj) {
   RETURN_IF_NULL(obj);
   delete obj;
 }
 
-SocketInitiator *FixSocketInitiator_new(Application *application, MessageStoreFactory *storeFactory,
-                                        const SessionSettings *settings, LogFactory *logFactory) {
+Initiator *FixInitiator_new(Application *application, MessageStoreFactory *storeFactory,
+                            const SessionSettings *settings, LogFactory *logFactory) {
   RETURN_VAL_IF_NULL(application, NULL);
   RETURN_VAL_IF_NULL(storeFactory, NULL);
   RETURN_VAL_IF_NULL(logFactory, NULL);
@@ -609,7 +609,7 @@ SocketInitiator *FixSocketInitiator_new(Application *application, MessageStoreFa
   CATCH_OR_RETURN_NULL({ return new SocketInitiator(*application, *storeFactory, *settings, *logFactory); });
 }
 
-int8_t FixSocketInitiator_start(SocketInitiator *obj) {
+int8_t FixInitiator_start(Initiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({
     obj->start();
@@ -617,7 +617,7 @@ int8_t FixSocketInitiator_start(SocketInitiator *obj) {
   });
 }
 
-int8_t FixSocketInitiator_block(SocketInitiator *obj) {
+int8_t FixInitiator_block(Initiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({
     obj->block();
@@ -625,12 +625,12 @@ int8_t FixSocketInitiator_block(SocketInitiator *obj) {
   });
 }
 
-int8_t FixSocketInitiator_poll(SocketInitiator *obj) {
+int8_t FixInitiator_poll(Initiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({ return obj->poll(); });
 }
 
-int8_t FixSocketInitiator_stop(SocketInitiator *obj) {
+int8_t FixInitiator_stop(Initiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({
     obj->stop();
@@ -638,23 +638,23 @@ int8_t FixSocketInitiator_stop(SocketInitiator *obj) {
   });
 }
 
-int8_t FixSocketInitiator_isLoggedOn(const SocketInitiator *obj) {
+int8_t FixInitiator_isLoggedOn(const Initiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({ return obj->isLoggedOn(); });
 }
 
-int8_t FixSocketInitiator_isStopped(const SocketInitiator *obj) {
+int8_t FixInitiator_isStopped(const Initiator *obj) {
   RETURN_VAL_IF_NULL(obj, ERRNO_INVAL);
   CATCH_OR_RETURN_ERRNO({ return obj->isStopped(); });
 }
 
-FixSession_t *FixSocketInitiator_getSession(const FixSocketInitiator_t *obj, const FixSessionID_t *sessionId) {
+FixSession_t *FixInitiator_getSession(const FixInitiator_t *obj, const FixSessionID_t *sessionId) {
   RETURN_VAL_IF_NULL(obj, NULL);
   RETURN_VAL_IF_NULL(sessionId, NULL);
   CATCH_OR_RETURN_NULL({ return obj->getSession(*sessionId); });
 }
 
-void FixSocketInitiator_delete(const SocketInitiator *obj) {
+void FixInitiator_delete(const Initiator *obj) {
   RETURN_IF_NULL(obj);
   delete obj;
 }

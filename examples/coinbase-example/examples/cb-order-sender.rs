@@ -160,7 +160,7 @@ fn main() -> anyhow::Result<()> {
     let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
     let app = Application::try_new(&my_app)?;
 
-    let mut acceptor = SocketInitiator::try_new(&settings, &app, &store_factory, &log_factory)?;
+    let mut acceptor = Initiator::try_new(&settings, &app, &store_factory, &log_factory)?;
 
     // Start the engine.
     println!(">> Starting FIX engine 🚀");

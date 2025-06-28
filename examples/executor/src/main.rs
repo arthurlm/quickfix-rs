@@ -148,7 +148,7 @@ fn main() -> Result<(), QuickFixError> {
     let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
     let app = Application::try_new(&executor)?;
 
-    let mut acceptor = SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
+    let mut acceptor = Acceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
     acceptor.start()?;
 
     println!(">> App running, press 'q' to quit");

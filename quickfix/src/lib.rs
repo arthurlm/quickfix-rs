@@ -81,7 +81,7 @@ let store_factory = MemoryMessageStoreFactory::new();
 let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
 let app = Application::try_new(&MyApplication)?;
 
-let mut acceptor = SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
+let mut acceptor = Acceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
 
 // Start session.
 acceptor.start()?;
@@ -98,6 +98,7 @@ acceptor.stop()?;
 
 */
 
+mod acceptor;
 mod application;
 mod data_dictionary;
 mod days;
@@ -107,20 +108,20 @@ pub mod dictionary_item;
 mod error;
 mod group;
 mod header;
+mod initiator;
 mod log_factory;
 mod message;
 mod message_store_factory;
 mod session;
 mod session_id;
 mod session_settings;
-mod socket_acceptor;
-mod socket_initiator;
 mod trailer;
 
 mod utils;
 
 use std::ffi::{CString, NulError};
 
+pub use acceptor::Acceptor;
 pub use application::{
     Application, ApplicationCallback, MsgFromAdminError, MsgFromAppError, MsgToAppError,
 };
@@ -130,6 +131,7 @@ pub use dictionary::Dictionary;
 pub use error::QuickFixError;
 pub use group::Group;
 pub use header::Header;
+pub use initiator::Initiator;
 pub use log_factory::{LogCallback, LogFactory, NullLogger, StdLogger};
 pub use message::Message;
 pub use message_store_factory::{
@@ -139,8 +141,6 @@ pub use message_store_factory::{
 pub use session::{send_to_target, Session};
 pub use session_id::SessionId;
 pub use session_settings::SessionSettings;
-pub use socket_acceptor::SocketAcceptor;
-pub use socket_initiator::SocketInitiator;
 pub use trailer::Trailer;
 
 #[cfg(feature = "log")]

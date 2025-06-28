@@ -1,8 +1,8 @@
 use std::{env, process::exit};
 
 use quickfix::{
-    Application, ConnectionHandler, FileMessageStoreFactory, LogFactory, QuickFixError,
-    SessionSettings, SocketAcceptor, SocketInitiator, StdLogger,
+    Acceptor, Application, ConnectionHandler, FileMessageStoreFactory, Initiator, LogFactory,
+    QuickFixError, SessionSettings, StdLogger,
 };
 
 use crate::{command_exec::FixShell, fix_app::MyApplication};
@@ -29,13 +29,13 @@ fn main() -> Result<(), QuickFixError> {
     let app = Application::try_new(&callbacks)?;
 
     match connect_mode.as_str() {
-        "initiator" => server_loop(SocketInitiator::try_new(
+        "initiator" => server_loop(Initiator::try_new(
             &settings,
             &app,
             &store_factory,
             &log_factory,
         )?),
-        "acceptor" => server_loop(SocketAcceptor::try_new(
+        "acceptor" => server_loop(Acceptor::try_new(
             &settings,
             &app,
             &store_factory,
