@@ -1,9 +1,9 @@
 use std::io::{stdin, Read};
 
 use quickfix::{
-    dictionary_item::*, Acceptor, Application, ApplicationCallback, ConnectionHandler, Dictionary,
-    LogFactory, MemoryMessageStoreFactory, QuickFixError, ConnectionMode, SessionId, SessionSettings,
-    StdLogger,
+    dictionary_item::*, Acceptor, Application, ApplicationCallback, ConnectionHandler,
+    ConnectionMode, Dictionary, LogFactory, MemoryMessageStoreFactory, QuickFixError, SessionId,
+    SessionSettings, StdLogger,
 };
 
 #[derive(Default)]
