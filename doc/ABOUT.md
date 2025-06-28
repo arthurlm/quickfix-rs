@@ -27,17 +27,12 @@ What I do **not** plan to bind from this crate:
 
     Use original library instead obviously.
 
-3. Threaded versions of socket acceptor / initiator.
-
-    Multithreading model is just too different between Rust / C++.
-    It is much more simple to handle correctly multithreading from Rust side and use single thread C++ socket handler.
-
-4. Autotools build toolchain.
+3. Autotools build toolchain.
 
     Just use `cmake` once and for all !
     We are in 2023+ and not targeting OS from the 80s.
 
-5. FIX 5x messages generated code.
+4. FIX 5x messages generated code.
 
     FIX 5x XML definition is a little bit weird ...
     For example:
@@ -48,20 +43,20 @@ What I do **not** plan to bind from this crate:
     You can edit XML spec to your need and create a package with desired spec locally.\
     Check FAQ for more info on this.
 
-6. All binding of `LogFactory`.
+5. All binding of `LogFactory`.
 
     I just provide Rust standard trait.
     You can implement whatever you want using standard Rust crate and impl 3 callbacks (logger / redis / syslog / sql / ...).
 
     Moreover Rust file descriptor are protected by mutex, so this avoid mixing log from C++ / Rust in the same program.
 
-7. Custom `MessageStoreFactory` from rust.
+6. Custom `MessageStoreFactory` from rust.
 
    For now, only `FileMessageStoreFactory` and `MemoryMessageStoreFactory` are bind.
    You can use also use `MySqlMessageStoreFactory` and `PostgresMessageStoreFactory` when enabling crate feature flag.
    Implementing message store from rust side is a little bit tricky and I am not 100% sure of the correct way to proceed.
 
-8. Exotic operating system.
+7. Exotic operating system.
 
     AIX / Solaris are not targeted.
     They are not Rust [Tier1](https://doc.rust-lang.org/nightly/rustc/platform-support.html) for now.
