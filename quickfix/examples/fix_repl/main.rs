@@ -1,8 +1,8 @@
 use std::{env, process::exit};
 
 use quickfix::{
-    Acceptor, Application, ConnectionHandler, FixSocketServerKind, FileMessageStoreFactory, Initiator,
-    LogFactory, QuickFixError, SessionSettings, StdLogger,
+    Acceptor, Application, ConnectionHandler, FileMessageStoreFactory, FixSocketServerKind,
+    Initiator, LogFactory, QuickFixError, SessionSettings, StdLogger,
 };
 
 use crate::{command_exec::FixShell, fix_app::MyApplication};

@@ -1,8 +1,8 @@
 use std::io::{stdin, Read};
 
 use quickfix::{
-    dictionary_item::*, Acceptor, Application, ApplicationCallback, ConnectionHandler,
-    FixSocketServerKind, Dictionary, LogFactory, MemoryMessageStoreFactory, QuickFixError, SessionId,
+    dictionary_item::*, Acceptor, Application, ApplicationCallback, ConnectionHandler, Dictionary,
+    FixSocketServerKind, LogFactory, MemoryMessageStoreFactory, QuickFixError, SessionId,
     SessionSettings, StdLogger,
 };
 

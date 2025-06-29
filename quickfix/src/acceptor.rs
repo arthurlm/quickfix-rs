@@ -8,8 +8,9 @@ use quickfix_ffi::{
 
 use crate::{
     utils::{ffi_code_to_bool, ffi_code_to_result},
-    Application, ApplicationCallback, ConnectionHandler, FixSocketServerKind, FfiMessageStoreFactory,
-    LogCallback, LogFactory, QuickFixError, Session, SessionContainer, SessionId, SessionSettings,
+    Application, ApplicationCallback, ConnectionHandler, FfiMessageStoreFactory,
+    FixSocketServerKind, LogCallback, LogFactory, QuickFixError, Session, SessionContainer,
+    SessionId, SessionSettings,
 };
 
 /// Socket implementation of incoming connections handler.
