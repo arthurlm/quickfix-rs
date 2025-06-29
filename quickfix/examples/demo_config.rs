@@ -2,7 +2,7 @@ use std::io::{stdin, Read};
 
 use quickfix::{
     dictionary_item::*, Acceptor, Application, ApplicationCallback, ConnectionHandler,
-    ConnectionMode, Dictionary, LogFactory, MemoryMessageStoreFactory, QuickFixError, SessionId,
+    FixSocketServerKind, Dictionary, LogFactory, MemoryMessageStoreFactory, QuickFixError, SessionId,
     SessionSettings, StdLogger,
 };
 
@@ -58,7 +58,7 @@ fn main() -> Result<(), QuickFixError> {
         &app,
         &store_factory,
         &log_factory,
-        ConnectionMode::SingleThreaded,
+        FixSocketServerKind::SingleThreaded,
     )?;
 
     println!(">> connection handler START");

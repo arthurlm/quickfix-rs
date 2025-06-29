@@ -1,7 +1,7 @@
 use std::{env, process::exit};
 
 use quickfix::{
-    Acceptor, Application, ConnectionHandler, ConnectionMode, FileMessageStoreFactory, Initiator,
+    Acceptor, Application, ConnectionHandler, FixSocketServerKind, FileMessageStoreFactory, Initiator,
     LogFactory, QuickFixError, SessionSettings, StdLogger,
 };
 
@@ -34,14 +34,14 @@ fn main() -> Result<(), QuickFixError> {
             &app,
             &store_factory,
             &log_factory,
-            ConnectionMode::SingleThreaded,
+            FixSocketServerKind::SingleThreaded,
         )?),
         "acceptor" => server_loop(Acceptor::try_new(
             &settings,
             &app,
             &store_factory,
             &log_factory,
-            ConnectionMode::SingleThreaded,
+            FixSocketServerKind::SingleThreaded,
         )?),
         _ => {
             eprintln!("Invalid connection mode");

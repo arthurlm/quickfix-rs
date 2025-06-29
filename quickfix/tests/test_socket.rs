@@ -40,7 +40,7 @@ fn test_handler() {
                 &app,
                 &message_store,
                 &logger,
-                ConnectionMode::default(),
+                FixSocketServerKind::default(),
             )
             .unwrap(),
         );
@@ -58,7 +58,7 @@ fn test_handler() {
                 &app,
                 &message_store,
                 &logger,
-                ConnectionMode::default(),
+                FixSocketServerKind::default(),
             )
             .unwrap(),
         );

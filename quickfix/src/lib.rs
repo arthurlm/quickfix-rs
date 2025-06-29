@@ -86,7 +86,7 @@ let mut acceptor = Acceptor::try_new(
     &app,
     &store_factory,
     &log_factory,
-    ConnectionMode::SingleThreaded,
+    FixSocketServerKind::SingleThreaded,
 )?;
 
 // Start session.
@@ -275,12 +275,12 @@ pub trait ForeignPropertySetter<T> {
     fn ffi_set(&mut self, key: CString, value: T) -> Result<(), QuickFixError>;
 }
 
-/// Underlying interface of FIX server to use.
+/// Underlying interface of FIX socket server to use.
 ///
 /// This enum may add in future version SSL version of server mode.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
 #[non_exhaustive]
-pub enum ConnectionMode {
+pub enum FixSocketServerKind {
     /// Single threaded version of Acceptor and Initiator.
     #[default]
     SingleThreaded,
@@ -289,8 +289,8 @@ pub enum ConnectionMode {
     MultiThreaded,
 }
 
-impl ConnectionMode {
+impl FixSocketServerKind {
     fn is_single_threaded(self) -> bool {
-        matches!(self, ConnectionMode::SingleThreaded)
+        matches!(self, FixSocketServerKind::SingleThreaded)
     }
 }

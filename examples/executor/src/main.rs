@@ -153,7 +153,7 @@ fn main() -> Result<(), QuickFixError> {
         &app,
         &store_factory,
         &log_factory,
-        ConnectionMode::SingleThreaded,
+        FixSocketServerKind::SingleThreaded,
     )?;
     acceptor.start()?;
 

@@ -37,14 +37,14 @@ fn test_full_fix_application() -> Result<(), QuickFixError> {
         &app_sender,
         &message_store_factory_sender,
         &log_factory,
-        ConnectionMode::default(),
+        FixSocketServerKind::default(),
     )?;
     let mut socket_receiver = Acceptor::try_new(
         &settings_receiver,
         &app_receiver,
         &message_store_factory_receiver,
         &log_factory,
-        ConnectionMode::default(),
+        FixSocketServerKind::default(),
     )?;
 
     // Check session have been configured

@@ -85,7 +85,7 @@ fn main() -> anyhow::Result<()> {
         &app,
         &store_factory,
         &log_factory,
-        ConnectionMode::SingleThreaded,
+        FixSocketServerKind::SingleThreaded,
     )?;
 
     // Start the engine.

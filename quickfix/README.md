@@ -92,7 +92,7 @@ fn main() -> Result<(), QuickFixError> {
         &app,
         &store_factory,
         &log_factory,
-        ConnectionMode::SingleThreaded,
+        FixSocketServerKind::SingleThreaded,
     )?;
     acceptor.start()?;
 
@@ -121,6 +121,8 @@ If some of your needs are missing: PR / feedbacks are welcomed 😁!
 **API MAY CHANGE IN FUTURE VERSION**\
 Crate is still in the [reviewing process](https://github.com/quickfix/quickfix/issues/533).
 Feel free to participate and share your point of view on this github issue.
+
+For list of breaking changes between version, please check [CHANGELOG](./CHANGELOG.md).
 
 **NOTE**: I am personally not using for now the generated message struct.
 I know they works fine thanks to unit tests and can be used in production code.

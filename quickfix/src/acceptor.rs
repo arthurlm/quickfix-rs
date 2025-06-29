@@ -8,7 +8,7 @@ use quickfix_ffi::{
 
 use crate::{
     utils::{ffi_code_to_bool, ffi_code_to_result},
-    Application, ApplicationCallback, ConnectionHandler, ConnectionMode, FfiMessageStoreFactory,
+    Application, ApplicationCallback, ConnectionHandler, FixSocketServerKind, FfiMessageStoreFactory,
     LogCallback, LogFactory, QuickFixError, Session, SessionContainer, SessionId, SessionSettings,
 };
 
@@ -38,7 +38,7 @@ where
         application: &'a Application<A>,
         store_factory: &'a S,
         log_factory: &'a LogFactory<L>,
-        server_mode: ConnectionMode,
+        server_mode: FixSocketServerKind,
     ) -> Result<Self, QuickFixError> {
         match unsafe {
             FixAcceptor_new(
