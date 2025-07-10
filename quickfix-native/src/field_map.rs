@@ -215,6 +215,14 @@ impl FieldMap {
         self.groups.contains_key(&tag) && !self.groups[&tag].is_empty()
     }
 
+    /// checks if a groups at a specific index exsits for a tag
+    pub fn has_group_at(&self, num: usize, tag: i32) -> bool {
+        if self.get_group(tag, num).is_some() {
+            return true;
+        }
+        false
+    }
+
     /// group count for a tag
     pub fn group_count(&self, tag: i32) -> usize {
         self.groups.get(&tag).map(|v| v.len()).unwrap_or(0)

@@ -1,4 +1,8 @@
-use crate::{errors::Result, field_map::FieldMap, message_order::MessageOrder};
+use crate::{
+    errors::{NativeError, Result},
+    field_map::FieldMap,
+    message_order::MessageOrder,
+};
 
 #[derive(Debug, Clone)]
 pub struct Group {
@@ -7,6 +11,69 @@ pub struct Group {
     field_id: i32,
     /// delimiter field that  starts each group entry
     delim: i32,
+}
+
+pub trait GroupOperations {
+    fn get_field_map(&self) -> &FieldMap;
+    fn get_field_map_mut(&mut self) -> &mut FieldMap;
+
+    /// add a group
+    fn add_group(&mut self, group: &Group) {
+        self.get_field_map_mut()
+            .add_group(group.field(), group.clone());
+    }
+
+    /// replace a group at a specific index
+    fn replace_group(&mut self, num: usize, group: &Group) -> Result<()> {
+        self.get_field_map_mut()
+            .replace_group(group.field(), num, group.clone())
+    }
+
+    /// get a group at a specific group
+    fn get_group(&self, num: usize, group: &Group) -> Result<Group> {
+        self.get_field_map()
+            .get_group(group.field(), num)
+            .ok_or_else(|| {
+                crate::errors::NativeError::FieldNotFound(format!(
+                    "Group not found at index {} for field {}",
+                    num,
+                    group.field()
+                ))
+            })
+            .cloned()
+    }
+    /// remove a group at a specific index
+    fn remove_group(&mut self, num: usize, group: &Group) -> Result<Group> {
+        self.get_field_map_mut().remove_group(group.field(), num)
+    }
+
+    /// remove all groups of this type
+    fn remove_group_by_field(&mut self, group: &Group) -> Result<Vec<Group>> {
+        self.get_field_map_mut()
+            .remove_all_groups(group.field())
+            .ok_or(NativeError::FieldConvertError(
+                "This fields doesnt exist.".to_string(),
+            ))
+    }
+
+    /// Check if any groups of this type exist
+    fn has_group(&self, group: &Group) -> bool {
+        self.get_field_map().has_group(group.field())
+    }
+
+    /// check if group exists at specific index
+    fn has_group_at(&self, num: usize, group: &Group) -> bool {
+        self.get_field_map().has_group_at(num, group.field())
+    }
+}
+
+impl GroupOperations for Group {
+    fn get_field_map(&self) -> &FieldMap {
+        &self.fieldmap
+    }
+    fn get_field_map_mut(&mut self) -> &mut FieldMap {
+        &mut self.fieldmap
+    }
 }
 
 impl Group {
@@ -31,51 +98,6 @@ impl Group {
     pub fn delim(&self) -> i32 {
         self.delim
     }
-    // pub fn set_field(&mut self, tag: i32, value: String) {
-    //     self.fieldmap.set_field(tag, value);
-    // }
-
-    /// add a group
-    pub fn add_group(&mut self, group: &Group) {
-        self.fieldmap.add_group(group.field(), group.clone());
-    }
-    /// replace a group at a specific index
-    pub fn replace_group(&mut self, num: usize, group: &Group) -> Result<()> {
-        self.fieldmap
-            .replace_group(group.field(), num, group.clone())
-    }
-
-    /// get a group at a specific group
-    pub fn get_group(&self, num: usize, group: &Group) -> Result<Group> {
-        self.fieldmap
-            .get_group(group.field(), num)
-            .ok_or_else(|| {
-                crate::errors::NativeError::FieldNotFound(format!(
-                    "Group not found at index {} for field {}",
-                    num,
-                    group.field()
-                ))
-            })
-            .cloned()
-    }
-    /// remove a group at a specific index
-    pub fn remove_group_at(&mut self, num: usize, group: &Group) -> Result<Group> {
-        self.fieldmap.remove_group(group.field(), num)
-    }
-    /// remove all groups of this type
-    pub fn remove_group(&mut self, group: &Group) -> Option<Vec<Group>> {
-        self.fieldmap.remove_all_groups(group.field())
-    }
-
-    /// check if group exists at specific index
-    pub fn has_group_at(&self, num: usize, group: &Group) -> bool {
-        self.fieldmap.get_group(group.field(), num).is_some()
-    }
-    /// Check if any groups of this type exist
-    pub fn has_group(&self, group: &Group) -> bool {
-        self.fieldmap.has_group(group.field())
-    }
-
     /// Get group count for a specific field
     pub fn group_count(&self, group: &Group) -> usize {
         self.fieldmap.group_count(group.field())
