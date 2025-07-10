@@ -66,9 +66,9 @@ impl MessageOrder {
             let iy = order.get(y as usize).copied().unwrap_or(0);
 
             if ix == 0 && iy == 0 {
-                return x.cmp(&y);
+                x.cmp(&y)
             } else if ix == 0 {
-                return Ordering::Greater;
+                Ordering::Greater
             } else if iy == 0 {
                 return Ordering::Less;
             } else {

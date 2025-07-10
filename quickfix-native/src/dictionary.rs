@@ -74,9 +74,9 @@ impl Dictionary {
         let value = self.get_string(key, false)?;
         match Self::convert_bool(&value) {
             Some(true) => Ok(true),
-            Some(false) => Err(NativeError::FieldConvertError(format!(
-                "Returned value is set to 'NO'"
-            ))),
+            Some(false) => Err(NativeError::FieldConvertError(
+                "Returned value is set to 'NO'".to_string(),
+            )),
             None => Err(NativeError::FieldConvertError(format!(
                 "Illegal value {} for {}",
                 value, key

@@ -142,7 +142,7 @@ impl FieldMap {
 
     /// add a group
     pub fn add_group(&mut self, tag: i32, group: Group) {
-        self.groups.entry(tag).or_insert_with(Vec::new).push(group);
+        self.groups.entry(tag).or_default().push(group);
         let count = self.groups.get(&tag).map(|v| v.len()).unwrap_or(0);
         self.set_int(tag, count as i32);
     }
@@ -234,7 +234,7 @@ impl FieldMap {
             }
         }
 
-        for (&group_tag, groups) in &self.groups {
+        for (&_group_tag, groups) in &self.groups {
             for group in groups {
                 results.push_str(&group.to_fix_string());
             }
@@ -243,9 +243,9 @@ impl FieldMap {
     }
 
     /// parse a FIX format from a string
-    pub fn from_fix_string(&mut self, fix_String: &str) -> Result<()> {
+    pub fn from_fix_string(&mut self, fix_string: &str) -> Result<()> {
         self.clear();
-        let fields: Vec<&str> = fix_String.split('\x01').collect();
+        let fields: Vec<&str> = fix_string.split('\x01').collect();
 
         for field_str in fields {
             if field_str.is_empty() {

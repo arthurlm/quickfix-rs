@@ -40,10 +40,11 @@ impl Group {
         self.fieldmap.add_group(group.field(), group.clone());
     }
     /// replace a group at a specific index
-    pub fn replace_group(&mut self, num: usize, group: &Group) {
+    pub fn replace_group(&mut self, num: usize, group: &Group) -> Result<()> {
         self.fieldmap
-            .replace_group(group.field(), num, group.clone());
+            .replace_group(group.field(), num, group.clone())
     }
+
     /// get a group at a specific group
     pub fn get_group(&self, num: usize, group: &Group) -> Result<Group> {
         self.fieldmap
@@ -55,7 +56,7 @@ impl Group {
                     group.field()
                 ))
             })
-            .map(|g| g.clone())
+            .cloned()
     }
     /// remove a group at a specific index
     pub fn remove_group_at(&mut self, num: usize, group: &Group) -> Result<Group> {

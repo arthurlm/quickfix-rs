@@ -5,3 +5,7 @@ edition = "2024"
 
 [dependencies]
 thiserror="2.0.12"
+
+
+[lints.clippy]
+uninlined_format_args = "allow"
