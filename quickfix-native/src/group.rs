@@ -8,9 +8,9 @@ use crate::{
 pub struct Group {
     fieldmap: FieldMap,
     /// group's identifying field tag9
-    field_id: i32,
+    field_id: u32,
     /// delimiter field that  starts each group entry
-    delim: i32,
+    delim: u32,
 }
 
 pub trait GroupOperations {
@@ -77,7 +77,7 @@ impl GroupOperations for Group {
 }
 
 impl Group {
-    pub fn new(field_id: i32, delim: i32, order: Option<Vec<i32>>) -> Self {
+    pub fn new(field_id: u32, delim: u32, order: Option<Vec<u32>>) -> Self {
         let msg_order = if let Some(ord) = order {
             MessageOrder::group(ord)
         } else {
@@ -92,10 +92,10 @@ impl Group {
 
     //TODO: other constructors in group.h
 
-    pub fn field(&self) -> i32 {
+    pub fn field(&self) -> u32 {
         self.field_id
     }
-    pub fn delim(&self) -> i32 {
+    pub fn delim(&self) -> u32 {
         self.delim
     }
     /// Get group count for a specific field
@@ -103,59 +103,59 @@ impl Group {
         self.fieldmap.group_count(group.field())
     }
 
-    pub fn set_field(&mut self, tag: i32, value: String) {
+    pub fn set_field(&mut self, tag: u32, value: String) {
         self.fieldmap.set_field(tag, value);
     }
 
-    pub fn get_field(&self, tag: i32) -> Option<&String> {
+    pub fn get_field(&self, tag: u32) -> Option<&String> {
         self.fieldmap.get_field(tag)
     }
 
-    pub fn has_field(&self, tag: i32) -> bool {
+    pub fn has_field(&self, tag: u32) -> bool {
         self.fieldmap.has_field(tag)
     }
 
-    pub fn remove_field(&mut self, tag: i32) -> Option<String> {
+    pub fn remove_field(&mut self, tag: u32) -> Option<String> {
         self.fieldmap.remove_field(tag)
     }
 
-    pub fn set_string(&mut self, tag: i32, value: &str) {
+    pub fn set_string(&mut self, tag: u32, value: &str) {
         self.fieldmap.set_string(tag, value);
     }
 
-    pub fn get_string(&self, tag: i32) -> Result<String> {
+    pub fn get_string(&self, tag: u32) -> Result<String> {
         self.fieldmap.get_string(tag)
     }
 
-    pub fn set_int(&mut self, tag: i32, value: i32) {
+    pub fn set_int(&mut self, tag: u32, value: u32) {
         self.fieldmap.set_int(tag, value);
     }
 
-    pub fn get_int(&self, tag: i32) -> Result<i32> {
+    pub fn get_int(&self, tag: u32) -> Result<u32> {
         self.fieldmap.get_int(tag)
     }
 
-    pub fn set_double(&mut self, tag: i32, value: f64) {
+    pub fn set_double(&mut self, tag: u32, value: f64) {
         self.fieldmap.set_float(tag, value);
     }
 
-    pub fn get_double(&self, tag: i32) -> Result<f64> {
+    pub fn get_double(&self, tag: u32) -> Result<f64> {
         self.fieldmap.get_float(tag)
     }
 
-    pub fn set_bool(&mut self, tag: i32, value: bool) {
+    pub fn set_bool(&mut self, tag: u32, value: bool) {
         self.fieldmap.set_bool(tag, value);
     }
 
-    pub fn get_bool(&self, tag: i32) -> Result<bool> {
+    pub fn get_bool(&self, tag: u32) -> Result<bool> {
         self.fieldmap.get_bool(tag)
     }
 
-    pub fn set_char(&mut self, tag: i32, value: char) {
+    pub fn set_char(&mut self, tag: u32, value: char) {
         self.fieldmap.set_char(tag, value);
     }
 
-    pub fn get_char(&self, tag: i32) -> Result<char> {
+    pub fn get_char(&self, tag: u32) -> Result<char> {
         self.fieldmap.get_char(tag)
     }
 

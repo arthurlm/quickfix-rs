@@ -9,9 +9,9 @@ use crate::{
 #[derive(Debug, Clone)]
 pub struct FieldMap {
     /// tag->value
-    pub fields: BTreeMap<i32, String>,
+    pub fields: BTreeMap<u32, String>,
     /// tag->Group
-    pub groups: HashMap<i32, Vec<Group>>,
+    pub groups: HashMap<u32, Vec<Group>>,
     /// expected field_order
     pub message_order: MessageOrder,
 }
@@ -34,23 +34,23 @@ impl FieldMap {
     }
     //----Basic field ops
 
-    pub fn set_field(&mut self, tag: i32, value: String) {
+    pub fn set_field(&mut self, tag: u32, value: String) {
         self.fields.insert(tag, value);
     }
 
-    pub fn get_field(&self, tag: i32) -> Option<&String> {
+    pub fn get_field(&self, tag: u32) -> Option<&String> {
         self.fields.get(&tag)
     }
 
-    pub fn has_field(&self, tag: i32) -> bool {
+    pub fn has_field(&self, tag: u32) -> bool {
         self.fields.contains_key(&tag)
     }
 
-    pub fn remove_field(&mut self, tag: i32) -> Option<String> {
+    pub fn remove_field(&mut self, tag: u32) -> Option<String> {
         self.fields.remove(&tag)
     }
 
-    pub fn get_field_tags(&self) -> Vec<i32> {
+    pub fn get_field_tags(&self) -> Vec<u32> {
         self.fields.keys().copied().collect()
     }
 
@@ -69,32 +69,32 @@ impl FieldMap {
     //----type safe field ops
 
     /// get a field as string
-    pub fn get_string(&self, tag: i32) -> Result<String> {
+    pub fn get_string(&self, tag: u32) -> Result<String> {
         self.get_field(tag)
             .ok_or_else(|| NativeError::FieldNotFound(format!("Field {} not found", tag)))
             .map(|s| s.to_string())
     }
 
     /// set a field as string
-    pub fn set_string(&mut self, tag: i32, value: &str) {
+    pub fn set_string(&mut self, tag: u32, value: &str) {
         self.set_field(tag, value.to_string());
     }
 
-    /// get a field as i32
-    pub fn get_int(&self, tag: i32) -> Result<i32> {
+    /// get a field as u32
+    pub fn get_int(&self, tag: u32) -> Result<u32> {
         let ret = self.get_string(tag)?;
-        ret.parse::<i32>().map_err(|_| {
+        ret.parse::<u32>().map_err(|_| {
             NativeError::FieldConvertError(format!("failed to convert field {} to i32", tag))
         })
     }
 
-    /// set a field as i32
-    pub fn set_int(&mut self, tag: i32, value: i32) {
+    /// set a field as u32
+    pub fn set_int(&mut self, tag: u32, value: u32) {
         self.set_field(tag, value.to_string());
     }
 
     /// get a field as f64
-    pub fn get_float(&self, tag: i32) -> Result<f64> {
+    pub fn get_float(&self, tag: u32) -> Result<f64> {
         let ret = self.get_string(tag)?;
         ret.parse::<f64>().map_err(|_| {
             NativeError::FieldConvertError(format!("failed to convert field {} to f64", tag))
@@ -102,12 +102,12 @@ impl FieldMap {
     }
 
     /// set a field as f64
-    pub fn set_float(&mut self, tag: i32, value: f64) {
+    pub fn set_float(&mut self, tag: u32, value: f64) {
         self.set_field(tag, value.to_string());
     }
 
     /// get a field as boolean (y/n)
-    pub fn get_bool(&self, tag: i32) -> Result<bool> {
+    pub fn get_bool(&self, tag: u32) -> Result<bool> {
         let value = self.get_string(tag)?;
         match value.to_uppercase().as_str() {
             "Y" | "YES" | "TRUE" => Ok(true),
@@ -120,13 +120,13 @@ impl FieldMap {
     }
 
     /// set a field as bool
-    pub fn set_bool(&mut self, tag: i32, value: bool) {
+    pub fn set_bool(&mut self, tag: u32, value: bool) {
         let value = if value { "Y" } else { "N" };
         self.set_string(tag, value);
     }
 
     /// get a field as char
-    pub fn get_char(&self, tag: i32) -> Result<char> {
+    pub fn get_char(&self, tag: u32) -> Result<char> {
         let value = self.get_string(tag)?;
         value
             .chars()
@@ -135,37 +135,37 @@ impl FieldMap {
     }
 
     /// set field as char
-    pub fn set_char(&mut self, tag: i32, value: char) {
+    pub fn set_char(&mut self, tag: u32, value: char) {
         self.set_string(tag, &value.to_string());
     }
     //----Group ops
 
     /// add a group
-    pub fn add_group(&mut self, tag: i32, group: Group) {
+    pub fn add_group(&mut self, tag: u32, group: Group) {
         self.groups.entry(tag).or_default().push(group);
         let count = self.groups.get(&tag).map(|v| v.len()).unwrap_or(0);
-        self.set_int(tag, count as i32);
+        self.set_int(tag, count as u32);
     }
     /// get groups for a tag
-    pub fn get_groups(&self, tag: i32) -> Option<&Vec<Group>> {
+    pub fn get_groups(&self, tag: u32) -> Option<&Vec<Group>> {
         self.groups.get(&tag)
     }
     /// get mutable groups for a tag
-    pub fn get_groups_mut(&mut self, tag: i32) -> Option<&mut Vec<Group>> {
+    pub fn get_groups_mut(&mut self, tag: u32) -> Option<&mut Vec<Group>> {
         self.groups.get_mut(&tag)
     }
     /// get a specific group for a tag by index
-    pub fn get_group(&self, tag: i32, index: usize) -> Option<&Group> {
+    pub fn get_group(&self, tag: u32, index: usize) -> Option<&Group> {
         self.groups.get(&tag)?.get(index)
     }
 
     /// get a mutable specific group for a tag by index
-    pub fn get_group_mut(&mut self, tag: i32, index: usize) -> Option<&mut Group> {
+    pub fn get_group_mut(&mut self, tag: u32, index: usize) -> Option<&mut Group> {
         self.groups.get_mut(&tag)?.get_mut(index)
     }
 
     /// replace a group at a specific index
-    pub fn replace_group(&mut self, tag: i32, index: usize, group: Group) -> Result<()> {
+    pub fn replace_group(&mut self, tag: u32, index: usize, group: Group) -> Result<()> {
         let groups = self
             .get_groups_mut(tag)
             .ok_or_else(|| NativeError::FieldNotFound(format!("no groups for tag {}", tag)))?;
@@ -180,7 +180,7 @@ impl FieldMap {
         Ok(())
     }
     /// remove group at a specific index
-    pub fn remove_group(&mut self, tag: i32, index: usize) -> Result<Group> {
+    pub fn remove_group(&mut self, tag: u32, index: usize) -> Result<Group> {
         let groups = self
             .get_groups_mut(tag)
             .ok_or_else(|| NativeError::FieldNotFound(format!("no groups for tag {}", tag)))?;
@@ -199,24 +199,24 @@ impl FieldMap {
             self.remove_field(tag);
             self.groups.remove(&tag);
         } else {
-            self.set_int(tag, count as i32);
+            self.set_int(tag, count as u32);
         }
         Ok(group)
     }
 
     /// remove all groups for a tag
-    pub fn remove_all_groups(&mut self, tag: i32) -> Option<Vec<Group>> {
+    pub fn remove_all_groups(&mut self, tag: u32) -> Option<Vec<Group>> {
         self.remove_field(tag);
         self.groups.remove(&tag)
     }
 
     /// checks if  group exists for a tag
-    pub fn has_group(&self, tag: i32) -> bool {
+    pub fn has_group(&self, tag: u32) -> bool {
         self.groups.contains_key(&tag) && !self.groups[&tag].is_empty()
     }
 
     /// checks if a groups at a specific index exsits for a tag
-    pub fn has_group_at(&self, num: usize, tag: i32) -> bool {
+    pub fn has_group_at(&self, num: usize, tag: u32) -> bool {
         if self.get_group(tag, num).is_some() {
             return true;
         }
@@ -224,7 +224,7 @@ impl FieldMap {
     }
 
     /// group count for a tag
-    pub fn group_count(&self, tag: i32) -> usize {
+    pub fn group_count(&self, tag: u32) -> usize {
         self.groups.get(&tag).map(|v| v.len()).unwrap_or(0)
     }
 
@@ -233,7 +233,7 @@ impl FieldMap {
     /// convert to FIX string format
     pub fn to_fix_string(&self) -> String {
         let mut results = String::new();
-        let mut field_tags: Vec<i32> = self.fields.keys().copied().collect();
+        let mut field_tags: Vec<u32> = self.fields.keys().copied().collect();
         field_tags.sort_by(|&a, &b| self.message_order.compare(a, b));
 
         for tag in field_tags {
@@ -268,7 +268,7 @@ impl FieldMap {
                 )));
             }
             let tag = parts[0]
-                .parse::<i32>()
+                .parse::<u32>()
                 .map_err(|_| NativeError::InvalidMessage(format!("Invalid tag: {}", parts[0])))?;
 
             let value = parts[1].to_string();
@@ -310,8 +310,8 @@ impl Default for FieldMap {
 }
 
 impl<'a> IntoIterator for &'a FieldMap {
-    type Item = (&'a i32, &'a String);
-    type IntoIter = std::collections::btree_map::Iter<'a, i32, String>;
+    type Item = (&'a u32, &'a String);
+    type IntoIter = std::collections::btree_map::Iter<'a, u32, String>;
     fn into_iter(self) -> Self::IntoIter {
         self.fields.iter()
     }

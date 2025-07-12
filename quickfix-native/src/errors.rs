@@ -26,34 +26,34 @@ pub enum NativeError {
     UnsupportedVersion,
 
     #[error("Tag out of order: {0}")]
-    TagOutOfOrder(i32),
+    TagOutOfOrder(u32),
 
     #[error("Invalid tag number: {0}")]
-    InvalidTagNumber(String),
+    InvalidTagNumber(u32),
 
     #[error("Invalid message type")]
     InvalidMessageType,
 
     #[error("Incorrect data format for field {0}: {1}")]
-    IncorrectDataFormat(i32, String),
+    IncorrectDataFormat(u32, String),
 
     #[error("Incorrect tag value for field {0}")]
-    IncorrectTagValue(i32),
+    IncorrectTagValue(u32),
 
     #[error("No tag value for field {0}")]
-    NoTagValue(i32),
+    NoTagValue(u32),
 
     #[error("Tag not defined for message: {0}")]
-    TagNotDefinedforMessage(i32),
+    TagNotDefinedforMessage(u32),
 
     #[error("Repeating group count mismatch for field {0}")]
-    RepeatingGroupCountMismatch(i32),
+    RepeatingGroupCountMismatch(u32),
 
     #[error("Required tag missing: {0}")]
-    MissingTag(i32),
+    MissingTag(u32),
 
     #[error("Repeated tag: {0}")]
-    RepeatedTag(i32),
+    RepeatedTag(u32),
 
     #[error("Data dictionary not found")]
     DataDictionaryNotFound,

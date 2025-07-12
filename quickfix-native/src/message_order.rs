@@ -13,8 +13,8 @@ pub enum CompareMode {
 #[derive(Clone, Debug)]
 pub struct MessageOrder {
     pub compare_mode: CompareMode,
-    pub largest: i32,
-    pub group_order: Option<Vec<i32>>,
+    pub largest: u32,
+    pub group_order: Option<Vec<u32>>,
 }
 
 impl MessageOrder {
@@ -41,15 +41,15 @@ impl MessageOrder {
         }
     }
 
-    pub fn group(order: Vec<i32>) -> Self {
+    pub fn group(order: Vec<u32>) -> Self {
         Self {
             compare_mode: CompareMode::Group,
-            largest: *order.iter().max().unwrap_or(&0i32),
+            largest: *order.iter().max().unwrap_or(&0u32),
             group_order: Some(order),
         }
     }
 
-    pub fn compare(&self, x: i32, y: i32) -> std::cmp::Ordering {
+    pub fn compare(&self, x: u32, y: u32) -> std::cmp::Ordering {
         match self.compare_mode {
             CompareMode::Group => {
                 self.compare_group(x, y, self.group_order.as_ref().unwrap(), self.largest)
@@ -60,7 +60,7 @@ impl MessageOrder {
         }
     }
 
-    fn compare_group(&self, x: i32, y: i32, order: &[i32], largest: i32) -> std::cmp::Ordering {
+    fn compare_group(&self, x: u32, y: u32, order: &[u32], largest: u32) -> std::cmp::Ordering {
         if x <= largest && y <= largest {
             let ix = order.get(x as usize).copied().unwrap_or(0);
             let iy = order.get(y as usize).copied().unwrap_or(0);
@@ -82,7 +82,7 @@ impl MessageOrder {
             x.cmp(&y)
         }
     }
-    fn compare_header(&self, x: i32, y: i32) -> std::cmp::Ordering {
+    fn compare_header(&self, x: u32, y: u32) -> std::cmp::Ordering {
         let ordered_x = self.get_header_position(x);
         let ordered_y = self.get_header_position(y);
         match (ordered_x, ordered_y) {
@@ -93,7 +93,7 @@ impl MessageOrder {
         }
     }
 
-    fn compare_trailer(&self, x: i32, y: i32) -> std::cmp::Ordering {
+    fn compare_trailer(&self, x: u32, y: u32) -> std::cmp::Ordering {
         if x == CHECKSUM {
             return Ordering::Greater;
         } else if y == CHECKSUM {
@@ -109,7 +109,7 @@ impl MessageOrder {
             (None, None) => x.cmp(&y),
         }
     }
-    fn get_header_position(&self, field_id: i32) -> Option<i32> {
+    fn get_header_position(&self, field_id: u32) -> Option<u32> {
         match field_id {
             BEGINSTRING => Some(1),
             BODYLENGTH => Some(2),
@@ -118,7 +118,7 @@ impl MessageOrder {
         }
     }
 
-    fn get_trailer_position(&self, field_id: i32) -> Option<i32> {
+    fn get_trailer_position(&self, field_id: u32) -> Option<u32> {
         match field_id {
             SIGNATURELENGTH => Some(1),
             SIGNATURE => Some(2),
