@@ -74,7 +74,7 @@ pub struct FixTrailer_t(NonNull<ffi::c_void>);
 #[repr(transparent)]
 pub struct FixGroup_t(NonNull<ffi::c_void>);
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy)]
 #[repr(C)]
 pub struct FixApplicationCallbacks_t {
     pub onCreate: extern "C" fn(*const ffi::c_void, FixSessionID_t),
@@ -86,7 +86,7 @@ pub struct FixApplicationCallbacks_t {
     pub fromApp: extern "C" fn(*const ffi::c_void, FixMessage_t, FixSessionID_t) -> i8,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy)]
 #[repr(C)]
 pub struct FixLogCallbacks_t {
     pub onIncoming: extern "C" fn(

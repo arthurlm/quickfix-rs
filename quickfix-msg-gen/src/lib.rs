@@ -397,22 +397,22 @@ fn generate_message(output: &mut String, message: &MessageSpec) {
                     }};
 
                 #[inline(always)]
-                pub fn header(&mut self) -> Header {{
+                pub fn header(&mut self) -> Header<'_> {{
                     Header {{ inner: &self.inner }}
                 }}
 
                 #[inline(always)]
-                pub fn header_mut(&mut self) -> HeaderMut {{
+                pub fn header_mut(&mut self) -> HeaderMut<'_> {{
                     HeaderMut {{ inner: &mut self.inner }}
                 }}
 
                 #[inline(always)]
-                pub fn trailer(&mut self) -> Trailer {{
+                pub fn trailer(&mut self) -> Trailer<'_> {{
                     Trailer {{ inner: &self.inner }}
                 }}
 
                 #[inline(always)]
-                pub fn trailer_mut(&mut self) -> TrailerMut {{
+                pub fn trailer_mut(&mut self) -> TrailerMut<'_> {{
                     TrailerMut {{ inner: &mut self.inner }}
                 }}
 

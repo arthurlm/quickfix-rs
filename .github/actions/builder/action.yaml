@@ -1,0 +1,17 @@
+name: "Build"
+description: "Common step for building rust application"
+
+runs:
+  using: "composite"
+
+  steps:
+    # Common
+    - uses: Swatinem/rust-cache@v2
+    # Sccache
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.9
+    # Nextest
+    - uses: cargo-bins/cargo-binstall@main
+    - name: Install nextest
+      shell: bash
+      run: cargo binstall cargo-nextest --secure

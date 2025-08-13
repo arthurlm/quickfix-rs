@@ -2,12 +2,14 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   CARGO_TERM_COLOR: always
+  SCCACHE_GHA_ENABLED: on
+  SCCACHE_GHA_VERSION: "1"
 
 jobs:
   build_and_test:
@@ -16,67 +18,58 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: true
-    - run: rustup toolchain install 1.70.0
-    - run: rustup override set 1.70.0
-    - run: rustup component add rustfmt
-    - uses: Swatinem/rust-cache@v2
-    - run: rustc --version
-    - name: Build debug
-      run: cargo build --verbose
-    - name: Build release
-      run: cargo build --verbose --release
-    - name: Run tests no default features
-      run: cargo test --no-default-features
-    - name: Run tests
-      run: cargo test
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: ./.github/actions/builder
+      - uses: ./.github/actions/rustcSetup
+      - name: Build debug
+        run: cargo build --verbose
+      - name: Build release
+        run: cargo build --verbose --release
+      - name: Run tests no default features
+        run: cargo nextest run --no-default-features
+      - name: Run tests
+        run: cargo nextest run
 
   test_mysql:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: true
-    - run: rustup toolchain install 1.70.0
-    - run: rustup override set 1.70.0
-    - run: rustup component add rustfmt
-    - uses: Swatinem/rust-cache@v2
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install --yes libmysqlclient-dev
-    - run: rustc --version
-    - name: Run tests
-      run: cargo test -F build-with-mysql
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: ./.github/actions/builder
+      - uses: ./.github/actions/rustcSetup
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libmysqlclient-dev
+      - name: Run tests
+        run: cargo nextest run -F build-with-mysql
 
   test_postgresql:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: true
-    - run: rustup toolchain install 1.70.0
-    - run: rustup override set 1.70.0
-    - run: rustup component add rustfmt
-    - uses: Swatinem/rust-cache@v2
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install --yes libpq-dev
-    - run: rustc --version
-    - name: Run tests
-      run: cargo test -F build-with-postgres
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: ./.github/actions/builder
+      - uses: ./.github/actions/rustcSetup
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libpq-dev
+      - name: Run tests
+        run: cargo nextest run -F build-with-postgres
 
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: true
-    - uses: Swatinem/rust-cache@v2
-    - name: Lint
-      run: cargo clippy
-    - name: Format
-      run: cargo fmt --check
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: ./.github/actions/builder
+      - name: Lint
+        run: cargo clippy
+      - name: Format
+        run: cargo fmt --check
