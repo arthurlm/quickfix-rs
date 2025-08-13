@@ -18,8 +18,8 @@ pub fn build_session_settings(config: &CoinbaseConfig) -> anyhow::Result<Session
             &StartTime("00:00:01"),
             &EndTime("23:59:59"),
             &HeartBtInt(30),
-            &SocketConnectPort(5298), // ⚠️ This port should match what you have in your stunnel configuration file.
-            &SocketConnectHost("127.0.0.1"),
+            &SocketConnectPort(4198),
+            &SocketConnectHost("fix-public.sandbox.exchange.coinbase.com"),
             &DataDictionary("data/order-entry/FIX42-prod-sand.xml"),
         ])?,
     )?;
@@ -30,8 +30,8 @@ pub fn build_session_settings(config: &CoinbaseConfig) -> anyhow::Result<Session
             &StartTime("00:00:01"),
             &EndTime("23:59:59"),
             &HeartBtInt(30),
-            &SocketConnectPort(7221), // ⚠️ This port should match what you have in your stunnel configuration file.
-            &SocketConnectHost("127.0.0.1"),
+            &SocketConnectPort(6121),
+            &SocketConnectHost("fix-md.sandbox.exchange.coinbase.com"),
             &DataDictionary("data/order-entry/FIX42-prod-sand.xml"),
             &DefaultApplVerID("9" /* FIX 5.0 SP2 */),
             &DataDictionary("data/market-data/FIX50-prod-sand.xml"),

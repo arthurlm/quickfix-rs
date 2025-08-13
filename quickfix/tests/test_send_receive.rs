@@ -5,14 +5,17 @@ use utils::*;
 
 mod utils;
 
-fn run(server_kind: FixSocketServerKind) -> Result<(), QuickFixError> {
+fn run<F>(server_kind: FixSocketServerKind, setting_builder: F) -> Result<(), QuickFixError>
+where
+    F: Fn(ServerType, u16) -> Result<SessionSettings, QuickFixError>,
+{
     let sender = FixRecorder::new(ServerType::Sender.session_id());
     let receiver = FixRecorder::new(ServerType::Receiver.session_id());
 
     // Init settings with same server port.
     let communication_port = find_available_port();
-    let settings_sender = build_settings(ServerType::Sender, communication_port)?;
-    let settings_receiver = build_settings(ServerType::Receiver, communication_port)?;
+    let settings_sender = setting_builder(ServerType::Sender, communication_port)?;
+    let settings_receiver = setting_builder(ServerType::Receiver, communication_port)?;
 
     let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
 
@@ -104,7 +107,7 @@ fn run(server_kind: FixSocketServerKind) -> Result<(), QuickFixError> {
             .session(ServerType::Receiver.session_id())
             .unwrap_err(),
         QuickFixError::SessionNotFound(
-            "No session found: SessionId(\"FIX.4.4:ME->THEIR\")".to_string()
+            "No session found: SessionId(\"FIX.4.4:RECEIVER->SENDER\")".to_string()
         )
     );
 
@@ -113,7 +116,7 @@ fn run(server_kind: FixSocketServerKind) -> Result<(), QuickFixError> {
             .session(ServerType::Sender.session_id())
             .unwrap_err(),
         QuickFixError::SessionNotFound(
-            "No session found: SessionId(\"FIX.4.4:THEIR->ME\")".to_string()
+            "No session found: SessionId(\"FIX.4.4:SENDER->RECEIVER\")".to_string()
         )
     );
 
@@ -162,8 +165,23 @@ fn run(server_kind: FixSocketServerKind) -> Result<(), QuickFixError> {
 }
 
 #[test]
-fn test_full_fix_application() -> Result<(), QuickFixError> {
-    run(FixSocketServerKind::SingleThreaded)?;
-    run(FixSocketServerKind::MultiThreaded)?;
-    Ok(())
+fn test_full_fix_application_single_thread() -> Result<(), QuickFixError> {
+    run(FixSocketServerKind::SingleThreaded, build_settings)
+}
+
+#[test]
+fn test_full_fix_application_multi_thread() -> Result<(), QuickFixError> {
+    run(FixSocketServerKind::MultiThreaded, build_settings)
+}
+
+#[test]
+#[cfg(feature = "build-with-ssl")]
+fn test_full_fix_application_ssl_single_thread() -> Result<(), QuickFixError> {
+    run(FixSocketServerKind::SslSingleThreaded, build_ssl_settings)
+}
+
+#[test]
+#[cfg(feature = "build-with-ssl")]
+fn test_full_fix_application_ssl_multi_thread() -> Result<(), QuickFixError> {
+    run(FixSocketServerKind::SslMultiThreaded, build_ssl_settings)
 }

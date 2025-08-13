@@ -4,8 +4,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// #define HAVE_MYSQL
-// #define HAVE_POSTGRESQL
+// #define HAVE_SSL        1
+// #define HAVE_MYSQL      1
+// #define HAVE_POSTGRESQL 1
 
 #define ERRNO_INVAL -1
 #define ERRNO_EXCEPTION -2
@@ -138,7 +139,7 @@ void FixApplication_delete(const FixApplication_t *obj);
 
 FixAcceptor_t *FixAcceptor_new(FixApplication_t *application, FixMessageStoreFactory_t *storeFactory,
                                const FixSessionSettings_t *settings, FixLogFactory_t *logFactory,
-                               int8_t isMultiThreaded);
+                               int8_t isMultiThreaded, int8_t isSslEnabled);
 int8_t FixAcceptor_start(FixAcceptor_t *obj);
 int8_t FixAcceptor_block(FixAcceptor_t *obj);
 int8_t FixAcceptor_poll(FixAcceptor_t *obj);
@@ -150,7 +151,7 @@ void FixAcceptor_delete(const FixAcceptor_t *obj);
 
 FixInitiator_t *FixInitiator_new(FixApplication_t *application, FixMessageStoreFactory_t *storeFactory,
                                  const FixSessionSettings_t *settings, FixLogFactory_t *logFactory,
-                                 int8_t isMultiThreaded);
+                                 int8_t isMultiThreaded, int8_t isSslEnabled);
 int8_t FixInitiator_start(FixInitiator_t *obj);
 int8_t FixInitiator_block(FixInitiator_t *obj);
 int8_t FixInitiator_poll(FixInitiator_t *obj);

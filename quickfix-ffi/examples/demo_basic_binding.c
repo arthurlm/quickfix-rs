@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,16 +21,19 @@ static void customToAdmin(const void *data, FixMessage_t *msg, const FixSessionI
   printf("customToAdmin: %p %p %p\n", data, msg, session);
 }
 
-static void customToApp(const void *data, FixMessage_t *msg, const FixSessionID_t *session) {
+static int8_t customToApp(const void *data, FixMessage_t *msg, const FixSessionID_t *session) {
   printf("customToApp: %p %p %p\n", data, msg, session);
+  return CALLBACK_OK;
 }
 
-static void customFromAdmin(const void *data, const FixMessage_t *msg, const FixSessionID_t *session) {
+static int8_t customFromAdmin(const void *data, const FixMessage_t *msg, const FixSessionID_t *session) {
   printf("customFromAdmin: %p %p %p\n", data, msg, session);
+  return CALLBACK_OK;
 }
 
-static void customFromApp(const void *data, const FixMessage_t *msg, const FixSessionID_t *session) {
+static int8_t customFromApp(const void *data, const FixMessage_t *msg, const FixSessionID_t *session) {
   printf("customFromApp: %p %p %p\n", data, msg, session);
+  return CALLBACK_OK;
 }
 
 static const FixApplicationCallbacks_t APP_CALLBACKS = {
@@ -68,10 +72,15 @@ int main(int argc, char **argv) {
 
   printf(">> Creating resources\n");
   FixSessionSettings_t *settings = FixSessionSettings_fromPath(argv[1]);
+  assert(settings);
   FixMessageStoreFactory_t *storeFactory = FixFileMessageStoreFactory_new(settings);
+  assert(storeFactory);
   FixLogFactory_t *logFactory = FixLogFactory_new((void *)0xFEED, &LOG_CALLBACKS);
+  assert(logFactory);
   FixApplication_t *application = FixApplication_new((void *)0xBEEF, &APP_CALLBACKS);
-  FixAcceptor_t *acceptor = FixAcceptor_new(application, storeFactory, settings, logFactory, false);
+  assert(application);
+  FixAcceptor_t *acceptor = FixAcceptor_new(application, storeFactory, settings, logFactory, false, false);
+  assert(acceptor);
 
   printf(">> Acceptor START\n");
   FixAcceptor_start(acceptor);

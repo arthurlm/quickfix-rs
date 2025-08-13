@@ -48,6 +48,7 @@ where
                 settings.0,
                 log_factory.0,
                 server_mode.is_single_threaded() as i8,
+                server_mode.is_ssl_enabled() as i8,
             )
         } {
             Some(inner) => Ok(Self {

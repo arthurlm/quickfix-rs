@@ -14,4 +14,4 @@ runs:
     - uses: cargo-bins/cargo-binstall@main
     - name: Install nextest
       shell: bash
-      run: cargo binstall cargo-nextest --secure
+      run: cargo binstall cargo-nextest --secure --force

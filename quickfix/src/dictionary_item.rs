@@ -241,6 +241,64 @@ impl_dictionary_item!(HttpAcceptPort as i32);
 pub struct PersistMessages(pub bool);
 impl_dictionary_item!(PersistMessages);
 
+/// Reset sequence number as soon as session is initialized.
+pub struct SendResetSeqNumFlag(pub bool);
+impl_dictionary_item!(SendResetSeqNumFlag);
+
+/// Path where SSL certificate file can be found.
+pub struct ServerCertificateFile<'a>(pub &'a str);
+impl_dictionary_item!(ServerCertificateFile as String);
+
+/// Path where SSL certificate key file can be found.
+pub struct ServerCertificateKeyFile<'a>(pub &'a str);
+impl_dictionary_item!(ServerCertificateKeyFile as String);
+
+/// Path where SSL certificate file can be found.
+pub struct ClientCertificateFile<'a>(pub &'a str);
+impl_dictionary_item!(ClientCertificateFile as String);
+
+/// Path where SSL certificate key file can be found.
+pub struct ClientCertificateKeyFile<'a>(pub &'a str);
+impl_dictionary_item!(ClientCertificateKeyFile as String);
+
+/// Enabled and active SSL protocol.
+pub enum SSLProtocol {
+    /// This is the Secure Sockets Layer (SSL) protocol, version 2.0. It is the
+    /// original SSL protocol as designed by Netscape Corporation.
+    SSLv2,
+    /// This is the Secure Sockets Layer (SSL) protocol, version 3.0. It is the
+    /// successor to SSLv2 and the currently (as of February 1999) de-facto
+    /// standardized SSL protocol from Netscape Corporation. It's supported by
+    /// almost all popular browsers.
+    SSLv3,
+    /// This is the Transport Layer Security (TLS) protocol, version 1.0.
+    TLSv1,
+    /// This is the Transport Layer Security (TLS) protocol, version 1.1.
+    TLSv1_1,
+    /// This is the Transport Layer Security (TLS) protocol, version 1.2.
+    TLSv1_2,
+    /// This is a shortcut for `+SSLv2 +SSLv3 +TLSv1 +TLSv1_1 +TLSv1_2' and a convenient way for
+    /// enabling all protocols except one when used in combination with the minus
+    /// sign on a protocol as the example above shows.
+    All,
+}
+
+impl DictionaryItem for SSLProtocol {
+    fn apply_param(&self, dict: &mut Dictionary) -> Result<(), QuickFixError> {
+        dict.set(
+            "SSLProtocol",
+            match self {
+                Self::SSLv2 => "SSLv2",
+                Self::SSLv3 => "SSLv3",
+                Self::TLSv1 => "TLSv1",
+                Self::TLSv1_1 => "TLSv1_1",
+                Self::TLSv1_2 => "TLSv1_2",
+                Self::All => "all",
+            },
+        )
+    }
+}
+
 impl DictionaryItem for (&'static str, &str) {
     fn apply_param(&self, dict: &mut Dictionary) -> Result<(), QuickFixError> {
         dict.set(self.0, self.1.to_string())

@@ -18,6 +18,58 @@
 #include <quickfix/ThreadedSocketAcceptor.h>
 #include <quickfix/ThreadedSocketInitiator.h>
 
+#ifdef HAVE_SSL
+#include <quickfix/SSLSocketAcceptor.h>
+#include <quickfix/SSLSocketInitiator.h>
+#include <quickfix/ThreadedSSLSocketAcceptor.h>
+#include <quickfix/ThreadedSSLSocketInitiator.h>
+#else
+
+#define _IMPL_CLASS_STUB(_CLS_NAME_, _CLS_IMPLEMENT_)                                                                  \
+  class _CLS_NAME_ : public _CLS_IMPLEMENT_ {                                                                          \
+  public:                                                                                                              \
+    _CLS_NAME_(Application &application, MessageStoreFactory &storeFactory, const SessionSettings &settings,           \
+               LogFactory &logFactory)                                                                                 \
+        : _CLS_IMPLEMENT_(application, storeFactory, settings, logFactory) {                                           \
+      throw new std::logic_error(#_CLS_NAME_ " should not be instantiated.");                                          \
+    }                                                                                                                  \
+  }
+
+class StubAcceptor : public FIX::Acceptor {
+public:
+  StubAcceptor(FIX::Application &application, FIX::MessageStoreFactory &storeFactory,
+               const FIX::SessionSettings &settings, FIX::LogFactory &logFactory)
+      : FIX::Acceptor(application, storeFactory, settings, logFactory) {}
+  virtual ~StubAcceptor() {}
+
+private:
+  void onStart() override {}
+  bool onPoll() override { return false; }
+  void onStop() override {}
+};
+
+class StubInitiator : public FIX::Initiator {
+public:
+  StubInitiator(FIX::Application &application, FIX::MessageStoreFactory &storeFactory,
+                const FIX::SessionSettings &settings, FIX::LogFactory &logFactory)
+      : FIX::Initiator(application, storeFactory, settings, logFactory) {}
+  virtual ~StubInitiator() {}
+
+private:
+  void onStart() override {}
+  bool onPoll() override { return false; }
+  void onStop() override {}
+  void doConnect(const FIX::SessionID &session, const FIX::Dictionary &dict) override {}
+};
+
+namespace FIX {
+_IMPL_CLASS_STUB(SSLSocketAcceptor, StubAcceptor);
+_IMPL_CLASS_STUB(SSLSocketInitiator, StubInitiator);
+_IMPL_CLASS_STUB(ThreadedSSLSocketAcceptor, StubAcceptor);
+_IMPL_CLASS_STUB(ThreadedSSLSocketInitiator, StubInitiator);
+} // namespace FIX
+#endif
+
 #ifdef HAVE_MYSQL
 #include <quickfix/MySQLStore.h>
 #endif // HAVE_MYSQL
@@ -542,15 +594,19 @@ void FixApplication_delete(const Application *obj) {
 }
 
 Acceptor *FixAcceptor_new(Application *application, MessageStoreFactory *storeFactory, const SessionSettings *settings,
-                          LogFactory *logFactory, int8_t isMultiThreaded) {
+                          LogFactory *logFactory, int8_t isMultiThreaded, int8_t isSslEnabled) {
   RETURN_VAL_IF_NULL(application, NULL);
   RETURN_VAL_IF_NULL(storeFactory, NULL);
   RETURN_VAL_IF_NULL(logFactory, NULL);
   RETURN_VAL_IF_NULL(settings, NULL);
 
   CATCH_OR_RETURN_NULL({
-    if (isMultiThreaded) {
+    if (isMultiThreaded && isSslEnabled) {
+      return new ThreadedSSLSocketAcceptor(*application, *storeFactory, *settings, *logFactory);
+    } else if (isMultiThreaded && !isSslEnabled) {
       return new ThreadedSocketAcceptor(*application, *storeFactory, *settings, *logFactory);
+    } else if (!isMultiThreaded && isSslEnabled) {
+      return new SSLSocketAcceptor(*application, *storeFactory, *settings, *logFactory);
     } else {
       return new SocketAcceptor(*application, *storeFactory, *settings, *logFactory);
     }
@@ -608,15 +664,20 @@ void FixAcceptor_delete(const Acceptor *obj) {
 }
 
 Initiator *FixInitiator_new(Application *application, MessageStoreFactory *storeFactory,
-                            const SessionSettings *settings, LogFactory *logFactory, int8_t isMultiThreaded) {
+                            const SessionSettings *settings, LogFactory *logFactory, int8_t isMultiThreaded,
+                            int8_t isSslEnabled) {
   RETURN_VAL_IF_NULL(application, NULL);
   RETURN_VAL_IF_NULL(storeFactory, NULL);
   RETURN_VAL_IF_NULL(logFactory, NULL);
   RETURN_VAL_IF_NULL(settings, NULL);
 
   CATCH_OR_RETURN_NULL({
-    if (isMultiThreaded) {
+    if (isMultiThreaded && isSslEnabled) {
+      return new ThreadedSSLSocketInitiator(*application, *storeFactory, *settings, *logFactory);
+    } else if (isMultiThreaded && !isSslEnabled) {
       return new ThreadedSocketInitiator(*application, *storeFactory, *settings, *logFactory);
+    } else if (!isMultiThreaded && isSslEnabled) {
+      return new SSLSocketInitiator(*application, *storeFactory, *settings, *logFactory);
     } else {
       return new SocketInitiator(*application, *storeFactory, *settings, *logFactory);
     }
