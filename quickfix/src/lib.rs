@@ -276,8 +276,6 @@ pub trait ForeignPropertySetter<T> {
 }
 
 /// Underlying interface of FIX socket server to use.
-///
-/// This enum may add in future version SSL version of server mode.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
 #[non_exhaustive]
 pub enum FixSocketServerKind {
@@ -286,10 +284,34 @@ pub enum FixSocketServerKind {
     SingleThreaded,
     /// Multi threaded version of Acceptor and Initiator.
     MultiThreaded,
+    /// Single threaded version of Acceptor and Initiator with SSL support.
+    #[cfg(feature = "build-with-ssl")]
+    SslSingleThreaded,
+    /// Multi threaded version of Acceptor and Initiator with SSL support.
+    #[cfg(feature = "build-with-ssl")]
+    SslMultiThreaded,
 }
 
 impl FixSocketServerKind {
     fn is_single_threaded(self) -> bool {
-        matches!(self, FixSocketServerKind::SingleThreaded)
+        match self {
+            Self::SingleThreaded => true,
+            Self::MultiThreaded => false,
+            #[cfg(feature = "build-with-ssl")]
+            Self::SslSingleThreaded => true,
+            #[cfg(feature = "build-with-ssl")]
+            Self::SslMultiThreaded => false,
+        }
+    }
+
+    fn is_ssl_enabled(self) -> bool {
+        match self {
+            Self::SingleThreaded => false,
+            Self::MultiThreaded => false,
+            #[cfg(feature = "build-with-ssl")]
+            Self::SslSingleThreaded => true,
+            #[cfg(feature = "build-with-ssl")]
+            Self::SslMultiThreaded => true,
+        }
     }
 }

@@ -32,6 +32,21 @@ jobs:
       - name: Run tests
         run: cargo nextest run
 
+  test_ssl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: ./.github/actions/builder
+      - uses: ./.github/actions/rustcSetup
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libssl-dev
+      - name: Run tests
+        run: cargo nextest run -F build-with-ssl
+
   test_mysql:
     runs-on: ubuntu-latest
     steps:
