@@ -26,9 +26,9 @@ jobs:
       - name: Build release
         run: cargo build --verbose --release
       - name: Run tests no default features
-        run: cargo test --no-default-features
+        run: cargo nextest run --no-default-features
       - name: Run tests
-        run: cargo test
+        run: cargo nextest run
 
   test_mysql:
     runs-on: ubuntu-latest
@@ -43,7 +43,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes libmysqlclient-dev
       - name: Run tests
-        run: cargo test -F build-with-mysql
+        run: cargo nextest run -F build-with-mysql
 
   test_postgresql:
     runs-on: ubuntu-latest
@@ -58,7 +58,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes libpq-dev
       - name: Run tests
-        run: cargo test -F build-with-postgres
+        run: cargo nextest run -F build-with-postgres
 
   lint:
     runs-on: ubuntu-latest

@@ -6,3 +6,7 @@ runs:
 
   steps:
     - uses: Swatinem/rust-cache@v2
+    - uses: cargo-bins/cargo-binstall@main
+    - name: Install nextest
+      shell: bash
+      run: cargo binstall cargo-nextest --secure
