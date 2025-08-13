@@ -8,11 +8,12 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  SCCACHE_GHA_ENABLED: on
+  SCCACHE_GHA_VERSION: "1"
 
 jobs:
   build_and_test:
     runs-on: ${{ matrix.os }}
-    environment: ci
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -33,7 +34,6 @@ jobs:
 
   test_mysql:
     runs-on: ubuntu-latest
-    environment: ci
     steps:
       - uses: actions/checkout@v4
         with:
@@ -49,7 +49,6 @@ jobs:
 
   test_postgresql:
     runs-on: ubuntu-latest
-    environment: ci
     steps:
       - uses: actions/checkout@v4
         with:
@@ -65,7 +64,6 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-    environment: ci
     steps:
       - uses: actions/checkout@v4
         with:
