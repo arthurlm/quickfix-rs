@@ -1,0 +1,23 @@
+name: "Rustc version"
+description: "Setup rustc to specific version number"
+inputs:
+  rustc_version:
+    description: "rustc version"
+    default: "1.70.0"
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Setup toolchain
+      shell: bash
+      run: rustup toolchain install ${{ inputs.rustc_version }}
+    - name: Setup default rustc version
+      shell: bash
+      run: rustup override set ${{ inputs.rustc_version }}
+    - name: Setup install goodies
+      shell: bash
+      run: rustup component add rustfmt
+    - name: Show version
+      shell: bash
+      run: rustc --version

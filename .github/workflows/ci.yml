@@ -19,11 +19,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - run: rustup toolchain install 1.70.0
-      - run: rustup override set 1.70.0
-      - run: rustup component add rustfmt
-      - uses: Swatinem/rust-cache@v2
-      - run: rustc --version
+      - uses: ./.github/actions/builder
+      - uses: ./.github/actions/rustcSetup
       - name: Build debug
         run: cargo build --verbose
       - name: Build release
@@ -39,15 +36,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - run: rustup toolchain install 1.70.0
-      - run: rustup override set 1.70.0
-      - run: rustup component add rustfmt
-      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/builder
+      - uses: ./.github/actions/rustcSetup
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install --yes libmysqlclient-dev
-      - run: rustc --version
       - name: Run tests
         run: cargo test -F build-with-mysql
 
@@ -57,15 +51,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - run: rustup toolchain install 1.70.0
-      - run: rustup override set 1.70.0
-      - run: rustup component add rustfmt
-      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/builder
+      - uses: ./.github/actions/rustcSetup
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install --yes libpq-dev
-      - run: rustc --version
       - name: Run tests
         run: cargo test -F build-with-postgres
 
@@ -75,7 +66,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/builder
       - name: Lint
         run: cargo clippy
       - name: Format

@@ -1,0 +1,8 @@
+name: "Build"
+description: "Common step for building rust application"
+
+runs:
+  using: "composite"
+
+  steps:
+    - uses: Swatinem/rust-cache@v2
