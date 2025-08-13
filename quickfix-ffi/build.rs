@@ -53,13 +53,6 @@ fn main() {
     touch_file(libquickfix_cpp_dir.join("ThreadedSSLSocketInitiator.h"));
     touch_file(libquickfix_cpp_dir.join("UtilitySSL.h"));
 
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketAcceptor.h"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketAcceptor.cpp"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketConnection.h"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketConnection.cpp"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketInitiator.h"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketInitiator.cpp"));
-
     // Build quickfix as a static library
     let quickfix_dst = Config::new(libquickfix_build_dir)
         .define("CMAKE_POLICY_VERSION_MINIMUM", "3.10")

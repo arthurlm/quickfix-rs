@@ -98,7 +98,7 @@ fn generate_root(output: &mut String, begin_string: &str) {
                 current_index: usize,
             }}
 
-            impl<'a, T, I> Iterator for GroupIterator<'a, T, I> {{
+            impl<T, I> Iterator for GroupIterator<'_, T, I> {{
                 type Item = I;
 
                 fn next(&mut self) -> Option<Self::Item> {{
