@@ -15,7 +15,7 @@ To create socket acceptor and initiator you must change below code:
 +     &app,
 +     &store_factory,
 +     &log_factory,
-+     FixSocketServerKind::SingleThreaded,
++     FixSocketServerKind::default(),
 + )?;
 
 - let mut initiator = SocketInitiator::try_new(&settings, &app, &message_store, &logger)?;

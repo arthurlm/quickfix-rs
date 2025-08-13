@@ -285,7 +285,6 @@ pub enum FixSocketServerKind {
     #[default]
     SingleThreaded,
     /// Multi threaded version of Acceptor and Initiator.
-    #[cfg(feature = "experimental-multi-thread-support")]
     MultiThreaded,
 }
 
