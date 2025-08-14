@@ -1,13 +1,13 @@
 [package]
 name = "coinbase-fix-utils"
-version = "0.1.6"
+version = "0.2.0"
 edition = "2021"
 publish = false
 
 [dependencies]
 base64 = "0.22.1"
-coinbase-fix42-order-entry = { path = "../coinbase-fix42-order-entry", version = "0.1.0" }
-coinbase-fix50-market-data = { path = "../coinbase-fix50-market-data", version = "0.1.0" }
+coinbase-fix42-order-entry = { path = "../coinbase-fix42-order-entry", version = "0.2.0" }
+coinbase-fix50-market-data = { path = "../coinbase-fix50-market-data", version = "0.2.0" }
 hmac = "0.12.1"
-quickfix = { path = "../../quickfix", version = "0.1.0" }
+quickfix = { path = "../../quickfix", version = "0.2.0" }
 sha2 = "0.10.8"

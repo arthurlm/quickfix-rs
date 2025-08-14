@@ -1,6 +1,6 @@
 [package]
 name = "quickfix"
-version = "0.1.6"
+version = "0.2.0"
 authors = ["Arthur LE MOIGNE"]
 edition = "2021"
 description = "High level binding to quickfix C++ library"
@@ -11,7 +11,7 @@ categories = ["api-bindings", "finance"]
 rust-version = "1.70.0"
 
 [dependencies]
-quickfix-ffi = { path = "../quickfix-ffi", version = "0.1.0" }
+quickfix-ffi = { path = "../quickfix-ffi", version = "0.2.0" }
 thiserror = "2.0.11"
 log = { version = "0.4.22", optional = true }
 

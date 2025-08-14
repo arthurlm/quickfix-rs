@@ -1,6 +1,6 @@
 [package]
 name = "quickfix-msg44"
-version = "0.1.6"
+version = "0.2.0"
 authors = ["Arthur LE MOIGNE"]
 edition = "2021"
 description = "FIX 4.4 messages generated from official XML spec file"
@@ -11,7 +11,7 @@ categories = ["encoding"]
 rust-version = "1.70.0"
 
 [dependencies]
-quickfix = { path = "../quickfix", version = "0.1.0" }
+quickfix = { path = "../quickfix", version = "0.2.0" }
 
 [build-dependencies]
-quickfix-msg-gen = { path = "../quickfix-msg-gen", version = "0.1.0" }
+quickfix-msg-gen = { path = "../quickfix-msg-gen", version = "0.2.0" }
