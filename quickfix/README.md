@@ -24,7 +24,7 @@ This project is an **unofficial** binding between [quickfix](https://github.com/
 - [What is it, what it is not ?](https://github.com/arthurlm/quickfix-rs/blob/main/doc/ABOUT.md)
 - [FAQ](https://github.com/arthurlm/quickfix-rs/blob/main/doc/FAQ.md)
 - [Internal design](https://github.com/arthurlm/quickfix-rs/blob/main/doc/DEV_NOTES.md)
-- [Examples](https://github.com/arthurlm/quickfix-rs/blob/main/examples/)
+- [Examples](https://github.com/arthurlm/quickfix-rs-examples)
 
 External website:
 
@@ -111,7 +111,7 @@ fn main() -> Result<(), QuickFixError> {
 }
 ```
 
-You may consider checking out this [directory](https://github.com/arthurlm/quickfix-rs/blob/main/examples/) for more examples.
+You may consider checking out this [repository](https://github.com/arthurlm/quickfix-rs-examples) for more examples.
 
 ## Is it ready for production ?
 

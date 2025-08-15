@@ -13,7 +13,7 @@ fn test_from_file() {
         QuickFixError::invalid_argument("nul byte found in provided data at position: 8")
     );
     let _settings1 = SessionSettings::new();
-    let _settings2 = SessionSettings::try_from_path("../examples/configs/settings.ini").unwrap();
+    let _settings2 = SessionSettings::try_from_path("../configs/settings.ini").unwrap();
 }
 
 #[test]

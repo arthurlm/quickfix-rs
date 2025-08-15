@@ -83,17 +83,12 @@ fn test_fixt11() {
 #[test]
 fn test_coinbase_order_entry() {
     // Cannot check parsed content, since comments are dropped.
-    parse_spec(include_bytes!(
-        "../../examples/coinbase-fix42-order-entry/src/cb-FIX42-prod-sand.xml"
-    ))
-    .unwrap();
+    parse_spec(include_bytes!("data/cb-FIX42-prod-sand.xml")).unwrap();
 }
 
 #[test]
 fn test_coinbase_market_data() {
-    check(include_bytes!(
-        "../../examples/coinbase-fix50-market-data/src/cb-FIX50-prod-sand.xml"
-    ));
+    check(include_bytes!("data/cb-FIX50-prod-sand.xml"));
 }
 
 #[test]
