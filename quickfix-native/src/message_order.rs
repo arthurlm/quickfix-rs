@@ -70,7 +70,7 @@ impl MessageOrder {
             } else if ix == 0 {
                 Ordering::Greater
             } else if iy == 0 {
-                return Ordering::Less;
+                Ordering::Less
             } else {
                 ix.cmp(&iy)
             }
