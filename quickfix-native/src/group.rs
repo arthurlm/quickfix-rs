@@ -19,8 +19,7 @@ pub trait GroupOperations {
 
     /// add a group
     fn add_group(&mut self, group: &Group) {
-        self.get_field_map_mut()
-            .add_group(group.field(), group.clone());
+        self.get_field_map_mut().add_group(group.clone());
     }
 
     /// replace a group at a specific index
