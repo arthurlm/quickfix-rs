@@ -421,6 +421,7 @@ dependencies = [
 name = "quickfix-native"
 version = "0.1.0"
 dependencies = [
+ "quickfix-spec-parser",
  "thiserror",
 ]
 
