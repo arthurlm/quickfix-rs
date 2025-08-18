@@ -1,6 +1,6 @@
 [package]
 name = "quickfix-msg-gen"
-version = "0.1.6"
+version = "0.2.0"
 authors = ["Arthur LE MOIGNE"]
 edition = "2021"
 description = "FIX code generator from XML spec file"
@@ -11,6 +11,6 @@ categories = ["development-tools::build-utils"]
 rust-version = "1.70.0"
 
 [dependencies]
-quickfix-spec-parser = { path = "../quickfix-spec-parser", version = "0.1.0" }
-quickfix = { path = "../quickfix", version = "0.1.0" }
+quickfix-spec-parser = { path = "../quickfix-spec-parser", version = "0.2.0" }
+quickfix = { path = "../quickfix", version = "0.2.0" }
 convert_case = "0.8.0"

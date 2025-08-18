@@ -96,7 +96,7 @@ where
     }
 }
 
-impl<'a, C: LogCallback> fmt::Debug for LogFactory<'a, C> {
+impl<C: LogCallback> fmt::Debug for LogFactory<'_, C> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_tuple("LogFactory").finish()
     }

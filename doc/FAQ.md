@@ -17,7 +17,7 @@ Moreover you can check `quickfix::Message` size is the size of a pointer.
 
 ## How can I use my own FIX XML spec file ?
 
-You can take for example what I have done to generate [coinbase FIX 4.2](../examples/coinbase-fix42/) package:
+You can take for example what I have done to generate [coinbase FIX 4.2](https://github.com/arthurlm/quickfix-rs-examples/tree/master/coinbase-fix42-order-entry) package:
 
 1. Crate a new sub-package in your workspace (ex: `my-fix51`)
 2. Add the FIX XML spec file in your `src` folder
@@ -67,7 +67,7 @@ PR about improving this utilities are always welcomed 😁.
 ## Why coinbase example are not published ?
 
 I do not own the "coinbase" name and do not own their XML spec file.\
-I am also  not working for / with them.
+I am also not working for / with them.
 
 So, I legally cannot publish theses examples.\
 They are just there to show you how to make your own package from an XML spec file.
@@ -89,19 +89,19 @@ make
 Run C binding example:
 
 ```sh
-LD_LIBRARY_PATH="$HOME/.local/lib" ./examples/demo_basic_binding ../examples/configs/settings.ini
+LD_LIBRARY_PATH="$HOME/.local/lib" ./examples/demo_basic_binding ../configs/settings.ini
 ```
 
 Rust FFI example:
 
 ```sh
-cargo r --example demo_basic_ffi -- examples/configs/settings.ini
+cargo r --example demo_basic_ffi -- configs/settings.ini
 ```
 
 Run rust full binding example:
 
 ```sh
-cargo r --example fix_getting_started -- examples/configs/server.ini
-cargo r --example fix_repl -- acceptor examples/configs/server.ini
-cargo r --example fix_repl -- initiator examples/configs/client.ini
+cargo r --example fix_getting_started -- configs/server.ini
+cargo r --example fix_repl -- acceptor configs/server.ini
+cargo r --example fix_repl -- initiator configs/client.ini
 ```

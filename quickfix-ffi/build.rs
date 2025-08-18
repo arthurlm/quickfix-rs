@@ -19,8 +19,18 @@ fn read_cmake_opt(flag: &str) -> &'static str {
     }
 }
 
-fn touch_file<P: AsRef<Path>>(path: P) {
-    fs::write(path, "").expect("Fail to touch file");
+fn get_compiler_launcher() -> Option<&'static str> {
+    if let Ok(res) = Command::new("sccache").arg("--version").status() {
+        if res.success() {
+            return Some("sccache");
+        }
+    }
+    if let Ok(res) = Command::new("ccache").arg("--version").status() {
+        if res.success() {
+            return Some("ccache");
+        }
+    }
+    None
 }
 
 fn main() {
@@ -42,28 +52,11 @@ fn main() {
     fs_extra::copy_items(&["./libquickfix"], &out_dir, &CopyOptions::default())
         .expect("Fail to copy libquickfix");
 
-    // Inject stubs files
-    let libquickfix_cpp_dir: std::path::PathBuf = libquickfix_build_dir.join("src/C++");
-    // Below line can be removed when this MR is merged https://github.com/quickfix/quickfix/pull/655
-    touch_file(libquickfix_cpp_dir.join("SSLSocketAcceptor.h"));
-    touch_file(libquickfix_cpp_dir.join("SSLSocketConnection.h"));
-    touch_file(libquickfix_cpp_dir.join("SSLSocketInitiator.h"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSSLSocketAcceptor.h"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSSLSocketConnection.h"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSSLSocketInitiator.h"));
-    touch_file(libquickfix_cpp_dir.join("UtilitySSL.h"));
-
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketAcceptor.h"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketAcceptor.cpp"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketConnection.h"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketConnection.cpp"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketInitiator.h"));
-    touch_file(libquickfix_cpp_dir.join("ThreadedSocketInitiator.cpp"));
-
     // Build quickfix as a static library
-    let quickfix_dst = Config::new(libquickfix_build_dir)
+    let mut quickfix_cmake_config = Config::new(libquickfix_build_dir);
+    quickfix_cmake_config
         .define("CMAKE_POLICY_VERSION_MINIMUM", "3.10")
-        .define("HAVE_SSL", "OFF")
+        .define("HAVE_SSL", read_cmake_opt("build-with-ssl"))
         .define("HAVE_MYSQL", read_cmake_opt("build-with-mysql"))
         .define("HAVE_POSTGRESQL", read_cmake_opt("build-with-postgres"))
         .define("HAVE_PYTHON", "OFF")
@@ -73,22 +66,37 @@ fn main() {
         .define("QUICKFIX_TESTS", "OFF")
         // Always compile libquickfix in release mode.
         // We are not here to debug this library.
-        .profile("RelWithDebInfo")
-        .build();
+        .profile("RelWithDebInfo");
 
+    if let Some(compiler_launcher) = get_compiler_launcher() {
+        quickfix_cmake_config
+            .define("CMAKE_C_COMPILER_LAUNCHER", compiler_launcher)
+            .define("CMAKE_CXX_COMPILER_LAUNCHER", compiler_launcher);
+    }
+
+    let quickfix_dst = quickfix_cmake_config.build();
     let quickfix_include_path = format!("{}/include", quickfix_dst.display());
     let quickfix_lib_path = format!("{}/lib", quickfix_dst.display());
 
     // Build quickfix C bind also as a static library.
     env::set_var("CMAKE_LIBRARY_PATH", [quickfix_lib_path].join(";"));
 
-    let quickfix_bind_dst = Config::new(".")
+    let mut quickfix_bind_cmake_config = Config::new(".");
+    quickfix_bind_cmake_config
         .cflag(format!("-I{quickfix_include_path}"))
         .cxxflag(format!("-I{quickfix_include_path}"))
         .define("QUICKFIX_BIND_EXAMPLES", "OFF")
+        .define("HAVE_SSL", read_cmake_opt("build-with-ssl"))
         .define("HAVE_MYSQL", read_cmake_opt("build-with-mysql"))
-        .define("HAVE_POSTGRESQL", read_cmake_opt("build-with-postgres"))
-        .build();
+        .define("HAVE_POSTGRESQL", read_cmake_opt("build-with-postgres"));
+
+    if let Some(compiler_launcher) = get_compiler_launcher() {
+        quickfix_bind_cmake_config
+            .define("CMAKE_C_COMPILER_LAUNCHER", compiler_launcher)
+            .define("CMAKE_CXX_COMPILER_LAUNCHER", compiler_launcher);
+    }
+
+    let quickfix_bind_dst = quickfix_bind_cmake_config.build();
 
     // Configure rustc.
     println!(
@@ -110,6 +118,10 @@ fn main() {
     }
 
     // Link with external libraries if needed.
+    if have_feature("build-with-ssl") {
+        println!("cargo:rustc-link-lib=ssl");
+        println!("cargo:rustc-link-lib=crypto");
+    }
     if have_feature("build-with-mysql") {
         println!("cargo:rustc-link-lib=mysqlclient");
     }

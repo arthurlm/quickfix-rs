@@ -24,7 +24,7 @@ This project is an **unofficial** binding between [quickfix](https://github.com/
 - [What is it, what it is not ?](https://github.com/arthurlm/quickfix-rs/blob/main/doc/ABOUT.md)
 - [FAQ](https://github.com/arthurlm/quickfix-rs/blob/main/doc/FAQ.md)
 - [Internal design](https://github.com/arthurlm/quickfix-rs/blob/main/doc/DEV_NOTES.md)
-- [Examples](https://github.com/arthurlm/quickfix-rs/blob/main/examples/)
+- [Examples](https://github.com/arthurlm/quickfix-rs-examples)
 
 External website:
 
@@ -87,7 +87,13 @@ fn main() -> Result<(), QuickFixError> {
     let log_factory = LogFactory::try_new(&StdLogger::Stdout)?;
     let app = Application::try_new(&MyApplication)?;
 
-    let mut acceptor = SocketAcceptor::try_new(&settings, &app, &store_factory, &log_factory)?;
+    let mut acceptor = Acceptor::try_new(
+        &settings,
+        &app,
+        &store_factory,
+        &log_factory,
+        FixSocketServerKind::SingleThreaded,
+    )?;
     acceptor.start()?;
 
     println!(">> App running, press 'q' to quit");
@@ -105,7 +111,7 @@ fn main() -> Result<(), QuickFixError> {
 }
 ```
 
-You may consider checking out this [directory](https://github.com/arthurlm/quickfix-rs/blob/main/examples/) for more examples.
+You may consider checking out this [repository](https://github.com/arthurlm/quickfix-rs-examples) for more examples.
 
 ## Is it ready for production ?
 
@@ -115,6 +121,8 @@ If some of your needs are missing: PR / feedbacks are welcomed 😁!
 **API MAY CHANGE IN FUTURE VERSION**\
 Crate is still in the [reviewing process](https://github.com/quickfix/quickfix/issues/533).
 Feel free to participate and share your point of view on this github issue.
+
+For list of breaking changes between version, please check [CHANGELOG](./CHANGELOG.md).
 
 **NOTE**: I am personally not using for now the generated message struct.
 I know they works fine thanks to unit tests and can be used in production code.

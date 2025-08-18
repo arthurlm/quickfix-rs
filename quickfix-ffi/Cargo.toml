@@ -1,6 +1,6 @@
 [package]
 name = "quickfix-ffi"
-version = "0.1.6"
+version = "0.2.0"
 authors = ["Arthur LE MOIGNE"]
 edition = "2021"
 description = "Low level binding to quickfix C++ library"
@@ -23,10 +23,6 @@ include = [
     # Exclude auto tools, makefiles and custom scripts
     "!/libquickfix/**/Makefile.am",
     "!/libquickfix/**/*.sh",
-    # Exclude SSL related code (we will inject dummy files to replace them in build.rs)
-    "!/libquickfix/src/C++/*SSL*.*",
-    # Exclude Threaded socket application related code (we will inject dummy files to replace them in build.rs)
-    "!/libquickfix/src/C++/ThreadedSocket*.*",
     # Do not include auto generated message files.
     "!/libquickfix/src/C++/fix40",
     "!/libquickfix/src/C++/fix41",
@@ -62,5 +58,6 @@ fs_extra = "1.3.0"
 
 [features]
 default = []
+build-with-ssl = []
 build-with-mysql = []
 build-with-postgres = []

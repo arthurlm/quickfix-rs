@@ -117,11 +117,11 @@ fn main() {
             .expect("Fail to build log factory");
         let application = FixApplication_new(0xFEED as *const ffi::c_void, &APP_CALLBACKS)
             .expect("Fail to build application");
-        let acceptor = FixSocketAcceptor_new(application, store_factory, settings, log_factory)
+        let acceptor = FixAcceptor_new(application, store_factory, settings, log_factory, 0, 0)
             .expect("Fail to build acceptor");
 
         println!(">> Acceptor START");
-        assert_eq!(FixSocketAcceptor_start(acceptor), 0);
+        assert_eq!(FixAcceptor_start(acceptor), 0);
 
         println!(">> Press Q to exit");
         loop {
@@ -132,10 +132,10 @@ fn main() {
         }
 
         println!(">> Acceptor STOP");
-        assert_eq!(FixSocketAcceptor_stop(acceptor), 0);
+        assert_eq!(FixAcceptor_stop(acceptor), 0);
 
         println!(">> Cleaning resources");
-        FixSocketAcceptor_delete(acceptor);
+        FixAcceptor_delete(acceptor);
         FixApplication_delete(application);
         FixLogFactory_delete(log_factory);
         FixMessageStoreFactory_delete(store_factory);

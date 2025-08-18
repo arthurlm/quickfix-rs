@@ -2,9 +2,9 @@ name: Code Coverage
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   CARGO_TERM_COLOR: always
@@ -23,17 +23,21 @@ jobs:
         with:
           components: llvm-tools-preview
 
-      - name: Install cargo-llvm-cov
-        uses: taiki-e/install-action@v2.18.9
-        with:
-          tool: cargo-llvm-cov
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - uses: taiki-e/install-action@nextest
 
       - name: Generate code coverage
-        run: cargo llvm-cov --workspace --exclude quickfix-ffi --ignore-filename-regex quickfix-ffi --all-features --codecov --output-path codecov.json
+        run: |
+          cargo llvm-cov nextest \
+            --workspace \
+            --exclude quickfix-ffi \
+            --ignore-filename-regex quickfix-ffi \
+            --all-features \
+            --codecov --output-path codecov.json
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3.1.4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: codecov.json
-          fail_ci_if_error: true
+          fail_ci_if_error: false

@@ -35,17 +35,19 @@ pub fn run(
     let app_receiver = Application::try_new(&receiver)?;
 
     // Init socket acceptor / initiator.
-    let mut socket_sender = SocketInitiator::try_new(
+    let mut socket_sender = Initiator::try_new(
         &settings_sender,
         &app_sender,
         &message_store_factory_sender,
         &log_factory,
+        FixSocketServerKind::default(),
     )?;
-    let mut socket_receiver = SocketAcceptor::try_new(
+    let mut socket_receiver = Acceptor::try_new(
         &settings_receiver,
         &app_receiver,
         &message_store_factory_receiver,
         &log_factory,
+        FixSocketServerKind::default(),
     )?;
 
     // Start the app

@@ -5,10 +5,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/libquickfix/cmake/")
 
+option(HAVE_SSL "Build with SSL" OFF)
 option(HAVE_MYSQL "Build with MySQL" OFF)
 option(HAVE_POSTGRESQL "Build with PostgreSQL" OFF)
 
 option(QUICKFIX_BIND_EXAMPLES "Build quickfix C binding examples" ON)
+
+if (HAVE_SSL)
+    find_package(OpenSSL REQUIRED)
+    include_directories(${OPENSSL_INCLUDE_DIR})
+    message("-- Building with OpenSSL")
+endif()
 
 if (HAVE_MYSQL)
     find_package(MySQL REQUIRED)
