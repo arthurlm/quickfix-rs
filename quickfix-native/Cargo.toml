@@ -1,0 +1,11 @@
+[package]
+name = "quickfix-native"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+thiserror = "2.0.12"
+quickfix-spec-parser = { path = "../quickfix-spec-parser", version = "0.1.0" }
+
+[lints.clippy]
+uninlined_format_args = "allow"
