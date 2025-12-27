@@ -33,7 +33,7 @@ impl Message {
             .ok_or_else(QuickFixError::from_last_error)
     }
 
-    /// Try reading underlying struct buffer as a FIX string.
+    /// Try reading underlying struct buffer as a vector of bytes.
     ///
     /// # Performances
     ///
@@ -42,7 +42,7 @@ impl Message {
     /// String will be generated twice in C++ code:
     /// - Once for getting a safe buffer length.
     /// - Then to copy buffer to rust "memory".
-    pub fn to_fix_string(&self) -> Result<String, QuickFixError> {
+    pub fn to_fix_raw_bytes(&self) -> Result<Vec<u8>, QuickFixError> {
         unsafe {
             // Prepare output buffer
             let buffer_len = FixMessage_getStringLen(self.0)
@@ -60,14 +60,29 @@ impl Message {
                 buffer_len,
             ))?;
 
-            // Convert to String
-            //
-            // NOTE: Here, I deliberately made the choice to drop C weird string / invalid UTF8 string
-            //       content. If this happen, there is not so much we can do about ...
-            //       Returning no error is sometime nicer, than an incomprehensible error.
-            let text = CString::from_vec_with_nul(buffer).unwrap_or_default();
-            Ok(text.to_string_lossy().to_string())
+            Ok(buffer)
         }
+    }
+
+    /// Try reading underlying struct buffer as a FIX string.
+    ///
+    /// # Performances
+    ///
+    /// Do not use this method in latency sensitive code.
+    ///
+    /// String will be generated twice in C++ code:
+    /// - Once for getting a safe buffer length.
+    /// - Then to copy buffer to rust "memory".
+    pub fn to_fix_string(&self) -> Result<String, QuickFixError> {
+        let buffer = self.to_fix_raw_bytes()?;
+
+        // Convert to String
+        //
+        // NOTE: Here, I deliberately made the choice to drop C weird string / invalid UTF8 string
+        //       content. If this happen, there is not so much we can do about ...
+        //       Returning no error is sometime nicer, than an incomprehensible error.
+        let text = CString::from_vec_with_nul(buffer).unwrap_or_default();
+        Ok(text.to_string_lossy().into())
     }
 
     /// Clone struct header part.
