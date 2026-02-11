@@ -67,7 +67,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "log",
  "quickfix-ffi",
@@ -76,7 +76,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-ffi"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "cmake",
  "fs_extra",
@@ -84,7 +84,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg-gen"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "convert_case",
  "quickfix",
@@ -93,7 +93,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg40"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -101,7 +101,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg41"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -109,7 +109,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg42"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -117,7 +117,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg43"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -125,7 +125,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg44"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -133,7 +133,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-msg50"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "quickfix",
  "quickfix-msg-gen",
@@ -141,7 +141,7 @@ dependencies = [
 
 [[package]]
 name = "quickfix-spec-parser"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "quick-xml",
  "thiserror",

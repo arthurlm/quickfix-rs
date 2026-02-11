@@ -1,6 +1,6 @@
 [package]
 name = "quickfix-spec-parser"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Arthur LE MOIGNE"]
 edition = "2021"
 description = "FIX XML spec file parser / writer"
