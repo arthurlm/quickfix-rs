@@ -4,7 +4,7 @@ use quickfix::*;
 
 use super::{build_news, build_settings, ServerType};
 
-static GLOBAL_LOCK: Mutex<u8> = Mutex::new(0);
+pub static GLOBAL_LOCK: Mutex<u8> = Mutex::new(0);
 
 /// Check full FIX application lifecycle:
 /// 1. Start and connect Acceptor <-> Initiator.
