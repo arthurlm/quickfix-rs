@@ -9,6 +9,10 @@ fn run<F>(server_kind: FixSocketServerKind, setting_builder: F) -> Result<(), Qu
 where
     F: Fn(ServerType, u16) -> Result<SessionSettings, QuickFixError>,
 {
+    let _lock = utils::checker::GLOBAL_LOCK
+        .lock()
+        .expect("GLOBAL_LOCK poisoned");
+
     let sender = FixRecorder::new(ServerType::Sender.session_id());
     let receiver = FixRecorder::new(ServerType::Receiver.session_id());
 
