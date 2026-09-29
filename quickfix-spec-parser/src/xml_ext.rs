@@ -9,12 +9,10 @@ pub fn read_attribute(item: &BytesStart, name: &str) -> Result<String, FixSpecEr
     let attr = item
         .attributes()
         .filter_map(|x| x.ok())
-        .find(|x| x.key.as_ref() == name.as_bytes())
+        .find(|x| x.key.as_ref() == name)
         .ok_or_else(|| FixSpecError::InvalidAttribute(name.to_string()))?;
 
-    let value = String::from_utf8(attr.value.to_vec())?;
-
-    Ok(value)
+    Ok(attr.value.to_string())
 }
 
 pub trait XmlObject {
@@ -68,13 +66,13 @@ pub fn parse_xml_list<T: XmlReadable>(
 
     loop {
         match reader.read_event()? {
-            Event::Start(element) if element.name().as_ref() == T::TAG_NAME.as_bytes() => {
+            Event::Start(element) if element.name().as_ref() == T::TAG_NAME => {
                 output.push(T::parse_xml_tree(&element, reader)?);
             }
-            Event::Empty(element) if element.name().as_ref() == T::TAG_NAME.as_bytes() => {
+            Event::Empty(element) if element.name().as_ref() == T::TAG_NAME => {
                 output.push(T::parse_xml_node(&element)?);
             }
-            Event::End(element) if element.name().as_ref() == end_tag.as_bytes() => {
+            Event::End(element) if element.name().as_ref() == end_tag => {
                 return Ok(output);
             }
             _ => {}

@@ -28,23 +28,23 @@ impl FieldValue {
         loop {
             match reader.read_event()? {
                 Event::Empty(element) | Event::Start(element)
-                    if element.name().as_ref() == Field::TAG_NAME.as_bytes() =>
+                    if element.name().as_ref() == Field::TAG_NAME =>
                 {
                     values.push(Self::Field(Field::parse_xml_tree(&element, reader)?));
                 }
                 Event::Empty(element) | Event::Start(element)
-                    if element.name().as_ref() == Group::TAG_NAME.as_bytes() =>
+                    if element.name().as_ref() == Group::TAG_NAME =>
                 {
                     values.push(Self::Group(Group::parse_xml_tree(&element, reader)?));
                 }
                 Event::Empty(element) | Event::Start(element)
-                    if element.name().as_ref() == Component::TAG_NAME.as_bytes() =>
+                    if element.name().as_ref() == Component::TAG_NAME =>
                 {
                     values.push(Self::Component(Component::parse_xml_tree(
                         &element, reader,
                     )?));
                 }
-                Event::End(element) if element.name().as_ref() == end_tag.as_bytes() => {
+                Event::End(element) if element.name().as_ref() == end_tag => {
                     return Ok(values);
                 }
                 _ => {}

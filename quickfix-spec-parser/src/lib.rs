@@ -56,7 +56,7 @@ pub fn parse_spec(input: &[u8]) -> Result<FixSpec, FixSpecError> {
 
     match reader.read_event()? {
         // If we are at start of FIX spec.
-        Event::Start(e) if e.name().as_ref() == FixSpec::TAG_NAME.as_bytes() => {
+        Event::Start(e) if e.name().as_ref() == FixSpec::TAG_NAME => {
             FixSpec::parse_xml_tree(&e, &mut reader)
         }
         // Otherwise document is invalid

@@ -74,16 +74,14 @@ impl XmlReadable for FixSpec {
         loop {
             match reader.read_event()? {
                 Event::Start(element) => match element.name().as_ref() {
-                    b"header" => output.headers = FieldValue::parse_xml_tree(reader, "header")?,
-                    b"messages" => output.messages = parse_xml_list(reader, "messages")?,
-                    b"trailer" => output.trailers = FieldValue::parse_xml_tree(reader, "trailer")?,
-                    b"components" => output.component_specs = parse_xml_list(reader, "components")?,
-                    b"fields" => output.field_specs = parse_xml_list(reader, "fields")?,
+                    "header" => output.headers = FieldValue::parse_xml_tree(reader, "header")?,
+                    "messages" => output.messages = parse_xml_list(reader, "messages")?,
+                    "trailer" => output.trailers = FieldValue::parse_xml_tree(reader, "trailer")?,
+                    "components" => output.component_specs = parse_xml_list(reader, "components")?,
+                    "fields" => output.field_specs = parse_xml_list(reader, "fields")?,
                     _ => {}
                 },
-                Event::End(element) if element.name().as_ref() == Self::TAG_NAME.as_bytes() => {
-                    break
-                }
+                Event::End(element) if element.name().as_ref() == Self::TAG_NAME => break,
                 _ => {}
             }
         }
