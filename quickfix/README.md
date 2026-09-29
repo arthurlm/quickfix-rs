@@ -51,6 +51,10 @@ External website:
   [FIX 4.4](https://docs.rs/quickfix-msg44/latest/quickfix_msg44/)
   [FIX 5.0](https://docs.rs/quickfix-msg50/latest/quickfix_msg50/)
 
+
+## Minimum Supported Rust Version (MSRV)
+This workspace and all its crates require Rust **1.70.0** or newer. Ensure your toolchain is updated before building.
+
 ## Examples
 
 Here is the minimal application you can write to getting started with quickfix:
