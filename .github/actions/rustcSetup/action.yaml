@@ -3,7 +3,7 @@ description: "Setup rustc to specific version number"
 inputs:
   rustc_version:
     description: "rustc version"
-    default: "1.70.0"
+    default: "1.85.0"
 
 runs:
   using: "composite"

@@ -8,7 +8,7 @@ repository = "https://github.com/arthurlm/quickfix-rs"
 license = "MIT OR Apache-1.1"
 keywords = ["quickfix", "fix-protocol", "finance"]
 categories = ["api-bindings", "finance"]
-rust-version = "1.70.0"
+rust-version = "1.85.0"
 
 [dependencies]
 quickfix-ffi = { path = "../quickfix-ffi", version = "0.2.0" }

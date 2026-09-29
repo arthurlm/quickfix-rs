@@ -3,7 +3,7 @@
 /*! This project is an **unofficial** binding between quickfix library and Rust projects.
 
 ![CI workflow](https://github.com/arthurlm/quickfix-rs/actions/workflows/ci.yml/badge.svg)
-![MSRV](https://img.shields.io/badge/MSRV-1.70.0-blue)
+![MSRV](https://img.shields.io/badge/MSRV-1.85.0-blue)
 [![codecov](https://codecov.io/gh/arthurlm/quickfix-rs/graph/badge.svg?token=WVEWW996GO)](https://codecov.io/gh/arthurlm/quickfix-rs)
 [![dependency status](https://deps.rs/repo/github/arthurlm/quickfix-rs/status.svg)](https://deps.rs/repo/github/arthurlm/quickfix-rs)
 
