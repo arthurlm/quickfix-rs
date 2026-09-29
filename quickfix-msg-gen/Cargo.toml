@@ -13,4 +13,4 @@ rust-version = "1.70.0"
 [dependencies]
 quickfix-spec-parser = { path = "../quickfix-spec-parser", version = "0.2.0" }
 quickfix = { path = "../quickfix", version = "0.2.0" }
-convert_case = "0.8.0"
+convert_case = "0.12.0"
