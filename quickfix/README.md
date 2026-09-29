@@ -1,7 +1,7 @@
 # QuickFIX Rust
 
 ![CI workflow](https://github.com/arthurlm/quickfix-rs/actions/workflows/ci.yml/badge.svg)
-![MSRV](https://img.shields.io/badge/MSRV-1.85.0-blue)
+![MSRV](https://img.shields.io/badge/MSRV-1.86.0-blue)
 [![codecov](https://codecov.io/gh/arthurlm/quickfix-rs/graph/badge.svg?token=WVEWW996GO)](https://codecov.io/gh/arthurlm/quickfix-rs)
 [![dependency status](https://deps.rs/repo/github/arthurlm/quickfix-rs/status.svg)](https://deps.rs/repo/github/arthurlm/quickfix-rs)
 
@@ -53,7 +53,7 @@ External website:
 
 
 ## Minimum Supported Rust Version (MSRV)
-This workspace and all its crates require Rust **1.85.0** or newer. Ensure your toolchain is updated before building.
+This workspace and all its crates require Rust **1.86.0** or newer. Ensure your toolchain is updated before building.
 
 ## Examples
 
