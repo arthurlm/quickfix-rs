@@ -47,7 +47,7 @@ where
                 store_factory.as_ffi_ptr(),
                 settings.0,
                 log_factory.0,
-                !server_mode.is_single_threaded() as i8,
+                server_mode.is_multi_threaded() as i8,
                 server_mode.is_ssl_enabled() as i8,
             )
         } {

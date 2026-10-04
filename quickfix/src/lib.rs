@@ -293,14 +293,14 @@ pub enum FixSocketServerKind {
 }
 
 impl FixSocketServerKind {
-    fn is_single_threaded(self) -> bool {
+    fn is_multi_threaded(self) -> bool {
         match self {
-            Self::SingleThreaded => true,
-            Self::MultiThreaded => false,
+            Self::SingleThreaded => false,
+            Self::MultiThreaded => true,
             #[cfg(feature = "build-with-ssl")]
-            Self::SslSingleThreaded => true,
+            Self::SslSingleThreaded => false,
             #[cfg(feature = "build-with-ssl")]
-            Self::SslMultiThreaded => false,
+            Self::SslMultiThreaded => true,
         }
     }
 
